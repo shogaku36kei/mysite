@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最近自宅の近くに松屋ができまして</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+            line-height: 1.9;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        
+        article {
+            background-color: #fff;
+            padding: 60px 50px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        article::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            line-height: 1.4;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+        
+        .date {
+            color: #95a5a6;
+            font-size: 14px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        h2 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: #34495e;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+        
+        p {
+            margin-bottom: 24px;
+            text-align: justify;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        ul {
+            margin: 30px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .highlight {
+            background: linear-gradient(transparent 60%, #fff9e6 60%);
+            padding: 2px 6px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #e0e0e0 50%, transparent 100%);
+            margin: 40px 0;
+        }
+        
+        .tags {
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .intro-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .conclusion-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 35px;
+            border-radius: 8px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .conclusion-box p {
+            margin-bottom: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            article {
+                padding: 40px 25px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <article>
+            <h1>最近自宅の近くに松屋ができまして</h1>
+            <p class="date">2025年11月14日</p>
+
+            <p>最近、自宅の近くに松屋ができました。これで私のアパートの周辺には、駅もコンビニも和食外食チェーン店も揃ったことになります。田舎のアパート住まいですが、生活しやすい環境が整いました。</p>
+
+            <div class="intro-box">
+                <p>そんなとき、ふと気づいたことがあります。この環境は、私が出張先でビジネスホテルを選ぶ基準とまったく同じだったのです。「駅に近い」「コンビニが近い」「和食系外食チェーン店で朝食がとれる」の3つ。</p>
+            </div>
+
+            <p>この何気ない選択基準について、少し思いを巡らせてみました。</p>
+
+            <hr>
+
+            <h2>「駅に近い」が意味するもの</h2>
+
+            <p>駅に近いホテルは、移動の起点として機能します。どこへ行くにも迷わず、時間のロスが少ない。到達しやすく、そこから次の行動へスムーズに移れる。</p>
+
+            <p>これは、ビジネスパートナーとして考えたとき、<span class="highlight">「アクセスのしやすさ」</span>に通じます。連絡窓口が明確で、すぐにたどり着ける。レスポンスが早く、「誰に聞けばいいか分からない」と迷わせない。必要なリソースや人脈につなげる起点となる。</p>
+
+            <h2>「コンビニが近い」が意味するもの</h2>
+
+            <p>コンビニは24時間、急な必要に応えてくれます。品揃えも豊富で、大抵のものは揃う。予期しない事態にも対応できる安心感がある。</p>
+
+            <p>これは、<span class="highlight">「柔軟性と即応力」</span>です。急な依頼や変更にも対応でき、困ったときに頼れる。専門外のことでも「できる範囲で協力する」姿勢を持ち、「それは私の担当じゃない」と突き放さない。そのワンストップの対応力が、信頼を深める。</p>
+
+            <h2>「和食系外食チェーン店」が意味するもの</h2>
+
+            <p>チェーン店の朝食は、予測可能な品質があります。ハズレがなく、リーズナブルで、慣れ親しんだ安心感がある。</p>
+
+            <p>これは、<span class="highlight">「一貫した品質とブレない信頼性」</span>です。約束を守り、期待を裏切らない。品質が安定していて、ムラがない。相手の価値観やニーズを理解し、無理な提案や押し付けをしない。長期的に付き合える関係性を大切にする。</p>
+
+            <hr>
+
+            <h2>統合すると見えてくるもの</h2>
+
+            <p>この3つの要件を統合すると、ビジネスパートナーに求められるのは「いつでも、すぐに、安心して頼れる存在」だと気づきました。</p>
+
+            <ul>
+                <li><strong>駅に近い</strong> ＝ アクセスしやすい</li>
+                <li><strong>コンビニが近い</strong> ＝ 柔軟に対応できる</li>
+                <li><strong>和食チェーン店</strong> ＝ 安定して信頼できる</li>
+            </ul>
+
+            <p>これは、ビジネスにおいて誰もが求める「便利さ」の本質です。</p>
+
+            <hr>
+
+            <h2>そして気づいたこと</h2>
+
+            <p>ビジネスホテル選びと、自宅アパートの立地条件。その共通点から見えてきたのは、ビジネスパートナーとして求められる在り方でした。</p>
+
+            <p>でも、ここで立ち止まって考えてみると、これは他人事ではない。</p>
+
+            <p>クライアントにとって、取引先にとって、プロジェクトメンバーにとって、そして家族にとって。パートナーとして求められるこの3つの要素は、そのまま私自身に求められていることではないか。</p>
+
+            <p>アクセスしやすく、柔軟に対応でき、安定して信頼できる。</p>
+
+            <div class="conclusion-box">
+                <p>それって結局、私自身に求められていることだったんだと。</p>
+            </div>
+
+            <div class="tags">
+                #ビジネスパートナー #働き方 #信頼関係
+            </div>
+        </article>
+    </div>
+</body>
+</html>
