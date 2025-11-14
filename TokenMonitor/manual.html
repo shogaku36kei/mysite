@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トークン監視ツール - 使い方ガイド</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section h3 {
+            font-size: 1.4em;
+            color: #764ba2;
+            margin: 25px 0 15px 0;
+        }
+
+        .step-box {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .step-box h4 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .critical-box {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .critical-box h4 {
+            color: #721c24;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .tip-box h4 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 700px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .button-demo {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 5px;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+        }
+
+        .button-demo:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 トークン監視ツール</h1>
+            <p>生成AIとの会話をスムーズに管理</p>
+        </header>
+
+        <div class="content">
+            <!-- ★★★ 追加：重要な注意事項（UTF-8） ★★★ -->
+            <div class="section">
+                <h2>⚠️ 使用前に必ずお読みください</h2>
+                
+                <div class="critical-box">
+                    <h4>🔴 文字コードについて（重要）</h4>
+                    <p>監視するテキストファイルは、<span class="highlight">必ず UTF-8 形式</span>で保存してください。</p>
+                    
+                    <h4 style="margin-top: 15px;">📝 UTF-8 で保存する方法</h4>
+                    
+                    <p><strong>【メモ帳の場合】</strong></p>
+                    <ol>
+                        <li>「ファイル」→「名前を付けて保存」</li>
+                        <li>画面下部の「エンコード」を <strong>UTF-8</strong> に変更</li>
+                        <li>「保存」をクリック</li>
+                    </ol>
+                    
+                    <p><strong>【VSCodeの場合】</strong></p>
+                    <ol>
+                        <li>画面右下の文字コード表示をクリック</li>
+                        <li>「エンコード付きで保存」を選択</li>
+                        <li>「UTF-8」を選択</li>
+                    </ol>
+                    
+                    <p><strong>【サクラエディタの場合】</strong></p>
+                    <ol>
+                        <li>「ファイル」→「名前を付けて保存」</li>
+                        <li>「文字コードセット」を <strong>UTF-8</strong> に変更</li>
+                        <li>「保存」をクリック</li>
+                    </ol>
+                    
+                    <div class="warning-box" style="margin-top: 15px;">
+                        <h4>⚠️ UTF-8 以外の文字コードで保存すると...</h4>
+                        <ul>
+                            <li>ファイル読み込みエラーが発生します</li>
+                            <li>トークン数が正しく計算されません</li>
+                            <li>文字化けが発生する可能性があります</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- はじめに -->
+            <div class="section">
+                <h2>📖 はじめに</h2>
+                <p>このツールは、<strong>ChatGPTやClaude、Geminiなどの生成AIとの会話</strong>で使用しているトークン数（文字数のようなもの）を監視するためのアプリケーションです。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 トークンとは？</h4>
+                    <p>トークンは、AIが文章を理解するための「単位」です。日本語の場合、<strong>1文字あたり約2～3トークン</strong>になります。</p>
+                    <p>例：「こんにちは」→ 約10トークン</p>
+                </div>
+
+                <p>生成AIには「トークン上限」があり、これを超えると会話の履歴が失われたり、会話が進まなくなってしまいます。このツールを使えば、<strong>上限に達する前に警告</strong>を受け取り、そこまでの会話内容をスムーズに新しい会話に引き継ぐことができます。</p>
+            </div>
+
+            <!-- 主な機能 -->
+            <div class="section">
+                <h2>✨ 主な機能</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>📊 リアルタイム監視</h3>
+                        <p>ファイルを保存すると自動的にトークン数を計算</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🤖 複数AI対応</h3>
+                        <p>GPT-4、Claude、Geminiなど主要AIに対応</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>⚠️ 自動警告</h3>
+                        <p>設定した閾値に達すると自動で通知</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📋 引き継ぎ支援</h3>
+                        <p>新しい会話用のプロンプトを自動生成</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 対応AI -->
+            <div class="section">
+                <h2>🤖 対応している生成AI</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>生成AI</th>
+                            <th>トークン上限</th>
+                            <th>備考</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GPT-4 Turbo / GPT-4o</td>
+                            <td>128,000</td>
+                            <td>OpenAI</td>
+                        </tr>
+                        <tr>
+                            <td>Claude 4 Opus / 4.5 Sonnet</td>
+                            <td>200,000</td>
+                            <td>Anthropic</td>
+                        </tr>
+                        <tr>
+                            <td>Gemini 2.5 Pro / Flash</td>
+                            <td>1,000,000</td>
+                            <td>Google</td>
+                        </tr>
+                        <tr>
+                            <td>Llama 3.1 (70B)</td>
+                            <td>128,000</td>
+                            <td>Meta</td>
+                        </tr>
+                        <tr>
+                            <td>Cohere Command A</td>
+                            <td>256,000</td>
+                            <td>Cohere</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 使い方 -->
+            <div class="section">
+                <h2>🚀 使い方</h2>
+
+                <div class="step-box">
+                    <h4><span class="emoji">1️⃣</span>アプリを起動する</h4>
+                    <p><strong>TokenMonitor.exe</strong> をダブルクリックして起動します。</p>
+                    <p>初回起動時は少し時間がかかります。</p>
+                </div>
+
+                <div class="step-box">
+                    <h4><span class="emoji">2️⃣</span>監視するファイルを選択する</h4>
+                    <p>画面上部の <a href="#" class="button-demo">📁 選択</a> ボタンをクリックして、会話ログをコピペ＆保存するテキストファイルを選択します。</p>
+                    <p>まだファイルがない場合は、<a href="#" class="button-demo">📄 新規作成</a> ボタンで新しいファイルを作成できます。</p>
+                    
+                    <!-- ★★★ 追加：UTF-8の注意 ★★★ -->
+                    <div class="critical-box" style="margin-top: 15px;">
+                        <h4>🔴 重要：文字コードは UTF-8 で保存してください</h4>
+                        <p>詳しくは上部の「使用前に必ずお読みください」を参照してください。</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4><span class="emoji">3️⃣</span>使用している生成AIを選択する</h4>
+                    <p>「プリセット」のドロップダウンメニューから、使用している生成AIを選択します。</p>
+                    <ul>
+                        <li>ChatGPTを使っている → <strong>GPT-4 Turbo</strong> または <strong>GPT-4o</strong></li>
+                        <li>Claudeを使っている → <strong>Claude 4.5 Sonnet</strong></li>
+                        <li>Geminiを使っている → <strong>Gemini 2.5 Pro</strong></li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h4><span class="emoji">4️⃣</span>会話ログを記録する</h4>
+                    <p>選択したテキストファイルに、生成AIとの会話をコピー&ペーストします。</p>
+                    <p><strong>記録例：</strong></p>
+                    <pre style="background: #f4f4f4; padding: 15px; border-radius: 8px; overflow-x: auto;">
+ユーザー: こんにちは！Pythonについて教えてください。
+
+AI: こんにちは！Pythonは初心者にも優しいプログラミング言語です。
+以下の特徴があります：
+1. シンプルで読みやすい文法
+2. 豊富なライブラリ
+3. 幅広い用途（Web開発、データ分析、AI開発など）
+
+何か具体的に知りたいことはありますか？
+
+ユーザー: データ分析について詳しく教えてください。
+
+AI: データ分析では、主に以下のライブラリを使用します...
+                    </pre>
+                </div>
+
+                <div class="step-box">
+                    <h4><span class="emoji">5️⃣</span>ファイルを保存する</h4>
+                    <p>テキストファイルを保存（Ctrl+S）すると、<strong>自動的にトークン数が更新</strong>されます。</p>
+                    <p><strong>保存（Ctrl+S）しないと、トークン数が更新されません！</strong></p>
+                    <p>画面中央のプログレスバーで、現在の使用状況を確認できます。</p>
+                    
+                    <!-- ★★★ 追加：手動更新ボタンの説明 ★★★ -->
+                    <div class="tip-box" style="margin-top: 15px;">
+                        <h4>💡 手動更新ボタンについて</h4>
+                        <p><a href="#" class="button-demo">🔄 手動更新</a> ボタンは、<strong>保存済みのファイルの内容を再読み込みしてトークン数を再計算</strong>する機能です。</p>
+                        <p><strong>使用例：</strong></p>
+                        <ul>
+                            <li>ファイルを保存したのにトークン数が更新されない場合</li>
+                            <li>自動監視が一時的に停止している場合</li>
+                            <li>現在のトークン数を確認したい場合</li>
+                        </ul>
+                        <p><strong>注意：</strong> このボタンは、<span class="highlight">保存済みのファイルを読み取るだけ</span>で、ファイルを保存する機能はありません。ファイルを編集した場合は、必ず先に保存（Ctrl+S）してから手動更新ボタンを押してください。</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h4><span class="emoji">6️⃣</span>閾値に達したら</h4>
+                    <p>設定した閾値（デフォルト70%）に達すると、<strong>警告メッセージ</strong>が表示されます。</p>
+                    <p><a href="#" class="button-demo">📋 引き継ぎプロンプト</a> ボタンをクリックすると、新しい会話用のプロンプトが表示されます。</p>
+                    <p>このプロンプトを現在の生成AIとの会話にコピー&ペーストすることで、新しい会話にスムーズに引き継ぐためのプロンプトが生成されます。</p>
+                </div>
+            </div>
+
+            <!-- カスタム設定 -->
+            <div class="section">
+                <h2>⚙️ カスタム設定</h2>
+
+                <h3>📊 カスタム上限の設定</h3>
+                <p>プリセットにない上限値を設定したい場合：</p>
+                <ol>
+                    <li>「カスタム上限」欄に数値を入力</li>
+                    <li><a href="#" class="button-demo">カスタム設定を適用</a> ボタンをクリック</li>
+                </ol>
+
+                <h3>⚠️ 警告閾値の変更</h3>
+                <p>「警告閾値」のスライダーを動かすことで、50%～95%の範囲で設定できます。</p>
+                <p><strong>推奨値：</strong> 70%（デフォルト）</p>
+
+                <h3>💾 設定の保存</h3>
+                <p><a href="#" class="button-demo">⚙️ 設定保存</a> ボタンをクリックすると、現在の設定が保存されます。</p>
+                <p>次回起動時に自動的に復元されます。</p>
+            </div>
+
+            <!-- よくある質問 -->
+            <div class="section">
+                <h2>❓ よくある質問</h2>
+
+                <h3>Q1: トークン数が表示されない</h3>
+                <div class="warning-box">
+                    <h4>💡 解決方法</h4>
+                    <ul>
+                        <li>ファイルを一度保存してください（Ctrl+S）</li>
+                        <li>または <a href="#" class="button-demo">🔄 手動更新</a> ボタンをクリック</li>
+                        <!-- ★★★ 追加：UTF-8の確認 ★★★ -->
+                        <li>ファイルが <span class="highlight">UTF-8 形式</span>で保存されているか確認</li>
+                    </ul>
+                </div>
+
+                <!-- ★★★ 追加：ファイル読み込みエラー ★★★ -->
+                <h3>Q2: 「ファイル読み込みエラー」が表示される</h3>
+                <div class="critical-box">
+                    <h4>🔴 原因と解決方法</h4>
+                    <p><strong>最も多い原因：</strong> ファイルが UTF-8 形式で保存されていない</p>
+                    <p><strong>解決方法：</strong></p>
+                    <ol>
+                        <li>テキストファイルを開く</li>
+                        <li>「名前を付けて保存」で文字コードを <strong>UTF-8</strong> に変更</li>
+                        <li>上書き保存</li>
+                        <li><a href="#" class="button-demo">🔄 手動更新</a> ボタンをクリック</li>
+                    </ol>
+                </div>
+
+                <h3>Q3: exeが起動しない</h3>
+                <div class="warning-box">
+                    <h4>💡 解決方法</h4>
+                    <p>セキュリティソフトでブロックされている可能性があります。</p>
+                    <p>また、初回起動時は時間がかかります。</p>
+                </div>
+
+                <h3>Q4: 設定が保存されない</h3>
+                <div class="warning-box">
+                    <h4>💡 解決方法</h4>
+                    <p>exeファイルのあるフォルダに<strong>書き込み権限</strong>があるか確認してください。</p>
+                    <p>管理者権限で実行すると解決する場合があります。</p>
+                </div>
+
+                <h3>Q5: トークン計算は正確ですか？</h3>
+                <div class="tip-box">
+                    <h4>📊 精度について</h4>
+                    <p>トークン計算は<strong>近似値</strong>です（誤差±5%程度）。</p>
+                    <ul>
+                        <li><strong>GPT系</strong>: ほぼ正確（公式ライブラリ使用）</li>
+                        <li><strong>Claude/Gemini等</strong>: 近似計算</li>
+                    </ul>
+                    <p>実用上は問題ありませんが、余裕を持って閾値を設定することをお勧めします。</p>
+                </div>
+
+                <!-- ★★★ 追加：手動更新ボタンに関するQ&A ★★★ -->
+                <h3>Q6: 手動更新ボタンを押してもトークン数が変わらない</h3>
+                <div class="tip-box">
+                    <h4>💡 確認事項</h4>
+                    <ul>
+                        <li>ファイルの内容を変更した後、<strong>保存（Ctrl+S）</strong>していますか？</li>
+                        <li>手動更新ボタンは、<span class="highlight">保存済みのファイルを読み取る</span>だけです</li>
+                        <li>ファイルを保存してから手動更新ボタンを押してください</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 注意事項 -->
+            <div class="section">
+                <h2>⚠️ 注意事項</h2>
+                <div class="warning-box">
+                    <h4>重要なポイント</h4>
+                    <ul>
+                        <!-- ★★★ 追加：UTF-8を最優先で記載 ★★★ -->
+                        <li><span class="highlight">ファイルは必ず UTF-8 形式で保存してください</span></li>
+                        <li>初回起動時は少し時間がかかる場合があります</li>
+                        <li>設定は exeファイルと同じフォルダの <strong>config.json</strong> に保存されます</li>
+                        <li>大容量ファイル（数万行）の場合、処理に時間がかかることがあります</li>
+                        <li>このツールはオフラインで動作しますが、トークン計算は近似値です</li>
+                        <li>手動更新ボタンは、<strong>保存済みのファイルを読み取る</strong>機能です</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- システム要件 -->
+            <div class="section">
+                <h2>💻 システム要件</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <th>要件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OS</td>
+                            <td>Windows 10/11 (64bit)</td>
+                        </tr>
+                        <tr>
+                            <td>メモリ</td>
+                            <td>2GB以上推奨</td>
+                        </tr>
+                        <tr>
+                            <td>ディスク空き容量</td>
+                            <td>200MB以上</td>
+                        </tr>
+                        <tr>
+                            <td>その他</td>
+                            <td>インターネット接続不要</td>
+                        </tr>
+                        <!-- ★★★ 追加：対応文字コード ★★★ -->
+                        <tr>
+                            <td>対応文字コード</td>
+                            <td><strong>UTF-8 のみ</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- バージョン情報 -->
+            <div class="section">
+                <h2>📝 バージョン情報</h2>
+                <p><strong>バージョン:</strong> 1.0</p>
+                <p><strong>リリース日:</strong> 2025年</p>
+                <p><strong>開発言語:</strong> Python 3.11</p>
+                <p><strong>GUIフレームワーク:</strong> tkinter</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 初学三十六景</p>
+            <p>このソフトウェアは生成AIを活用した内製品です。</p>
+        </footer>
+    </div>
+</body>
+</html>
