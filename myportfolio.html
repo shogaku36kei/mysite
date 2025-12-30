@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スキルポートフォリオ | 河原　輝明</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+            color: #fff;
+            padding: 60px 40px 50px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            letter-spacing: 0.05em;
+        }
+
+        header .tagline {
+            font-size: 1.15em;
+            font-weight: 300;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .section {
+            padding: 50px 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #2c5282;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .profile-label {
+            font-weight: 600;
+            color: #2c5282;
+            min-width: 80px;
+            margin-right: 10px;
+        }
+
+        .profile-value {
+            color: #4a5568;
+        }
+
+        .strength-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .strength-item {
+            background: #edf2f7;
+            padding: 15px 20px;
+            border-left: 4px solid #4299e1;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .skill-category {
+            margin-bottom: 35px;
+        }
+
+        .skill-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-category-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 19px;
+        }
+
+        .skill-tag {
+            background: #e6fffa;
+            color: #234e52;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+            border: 1px solid #b2f5ea;
+        }
+
+        .achievement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .achievement-item {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .achievement-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 12px;
+        }
+
+        .achievement-description {
+            color: #4a5568;
+            line-height: 1.9;
+        }
+
+        .achievement-description ul {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        .achievement-description li {
+            margin-bottom: 8px;
+        }
+
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .cert-item {
+            background: #fff5f5;
+            padding: 15px;
+            border-left: 4px solid #fc8181;
+            color: #742a2a;
+            font-weight: 500;
+        }
+
+        .learning-note {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 6px;
+            color: #744210;
+            line-height: 1.9;
+            border: 1px solid #fbd38d;
+        }
+
+        .message-box {
+            background: #f0f4f8;
+            padding: 30px;
+            border-radius: 8px;
+            line-height: 2;
+            color: #2d3748;
+            font-size: 1.05em;
+        }
+
+        .message-box strong {
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        footer {
+            background: #2d3748;
+            color: #cbd5e0;
+            text-align: center;
+            padding: 30px 40px;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 40px 25px 35px;
+            }
+
+            header h1 {
+                font-size: 1.7em;
+            }
+
+            header .tagline {
+                font-size: 1em;
+            }
+
+            .section {
+                padding: 35px 25px;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .strength-list {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .cert-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-tags {
+                margin-left: 0;
+            }
+
+            .skill-category-title {
+                padding-left: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>河原　輝明</h1>
+            <p class="tagline">公共DXを"構想から運用"まで担ってきた実務家<br>現場とITの橋渡し役として、実装可能な設計と組織調整を実践</p>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">プロフィール</h2>
+            <div class="profile-grid">
+                <div>
+                    <div class="profile-item">
+                        <span class="profile-label">年齢:</span>
+                        <span class="profile-value">46歳</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">現職:</span>
+                        <span class="profile-value">地方自治体職員</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">在籍年数:</span>
+                        <span class="profile-value">約24年</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-item">
+                        <span class="profile-label">役職:</span>
+                        <span class="profile-value">情報系部署 課長補佐</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">IT部門経験:</span>
+                        <span class="profile-value">約10年</span>
+                    </div>
+                </div>
+            </div>
+            <p style="color: #4a5568; margin-bottom: 20px;">
+                地方自治体において、デジタル化の企画から実装・運用まで一貫して携わってきました。技術的な知識を持ちながら、非IT職員や外部ベンダーとの調整を行い、「現場が使える仕組み」を実現することに注力してきました。公共セクター特有の制約条件の中で、長期的に安定稼働するシステム設計と、組織全体を巻き込んだDX推進の実務経験を持ちます。
+            </p>
+
+            <div class="strength-list">
+                <div class="strength-item">要件定義と関係者調整</div>
+                <div class="strength-item">現場視点のIT設計力</div>
+                <div class="strength-item">長期運用を前提とした設計思考</div>
+                <div class="strength-item">ベンダーコントロール力</div>
+                <div class="strength-item">セキュリティ・コンプライアンス対応</div>
+                <div class="strength-item">生成AIを活用した業務改善</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">スキルセット</h2>
+            
+            <div class="skill-category">
+                <h3 class="skill-category-title">技術スキル</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">要件定義・システム設計</span>
+                    <span class="skill-tag">セキュリティ設計・運用</span>
+                    <span class="skill-tag">AWS基盤設計(SAA)</span>
+                    <span class="skill-tag">Python(業務自動化)</span>
+                    <span class="skill-tag">ネットワーク・インフラ</span>
+                    <span class="skill-tag">生成AI活用(バイブコーディング)</span>
+                    <span class="skill-tag">情報システム監査</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3 class="skill-category-title">業務スキル</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">DX企画・推進</span>
+                    <span class="skill-tag">業務プロセス改善</span>
+                    <span class="skill-tag">RFP作成・ベンダー選定</span>
+                    <span class="skill-tag">契約管理・予算策定</span>
+                    <span class="skill-tag">プロジェクト管理</span>
+                    <span class="skill-tag">運用設計・保守計画</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3 class="skill-category-title">マネジメント・調整力</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">組織横断の合意形成</span>
+                    <span class="skill-tag">非IT職員への技術説明</span>
+                    <span class="skill-tag">経営層への提案・報告</span>
+                    <span class="skill-tag">外部ベンダー折衝</span>
+                    <span class="skill-tag">現場ヒアリング・要望整理</span>
+                    <span class="skill-tag">チーム育成・技術移転</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">主な実績</h2>
+            <div class="achievement-list">
+                <div class="achievement-item">
+                    <div class="achievement-title">自治体DX推進(企画・実行責任者)</div>
+                    <div class="achievement-description">
+                        市役所全体のデジタル化を推進する中核メンバーとして従事。単なるシステム導入ではなく、業務フローの見直しから運用定着まで一貫して設計・実装。
+                        <ul>
+                            <li>各部署の業務分析と課題抽出</li>
+                            <li>デジタル化ロードマップの策定と経営層への提案</li>
+                            <li>庁内関係者との調整と合意形成</li>
+                            <li>ベンダー選定・契約・プロジェクト推進</li>
+                            <li>生成AIを用いたバイブコーディングによる業務改善思想の普及と実装</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="achievement-item">
+                    <div class="achievement-title">新庁舎移転に伴うIT基盤整備(技術責任者)</div>
+                    <div class="achievement-description">
+                        庁舎移転プロジェクトにおいて、情報システム全般の移行を統括。ネットワーク、サーバー、端末、セキュリティを含む全体設計から移行計画の策定・実行を担当。
+                        <ul>
+                            <li>移転に伴うIT要件定義と全体設計</li>
+                            <li>ネットワーク・情報基盤の構築と移行</li>
+                            <li>業務継続を考慮した段階的移行計画の立案</li>
+                            <li>トラブル対応と迅速な問題解決</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="achievement-item">
+                    <div class="achievement-title">庁内システム企画・導入(複数案件)</div>
+                    <div class="achievement-description">
+                        各種業務システムの企画から調達、導入、運用開始までをリード。現場の声を反映した仕様策定と、長期運用を見据えた設計を実施。
+                        <ul>
+                            <li>業務部門との要件ヒアリングと仕様整理</li>
+                            <li>RFP作成とベンダー選定プロセスの管理</li>
+                            <li>導入後の運用支援と継続的改善</li>
+                            <li>セキュリティ・個人情報保護への適合確認</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">資格・学習姿勢</h2>
+            <div class="cert-grid">
+                <div class="cert-item">情報処理安全確保支援士</div>
+                <div class="cert-item">応用情報技術者</div>
+                <div class="cert-item">基本情報技術者</div>
+                <div class="cert-item">Python3エンジニア認定</div>
+                <div class="cert-item">AWS認定ソリューションアーキテクト</div>
+                <div class="cert-item">AWS認定クラウドプラクティショナー</div>
+            </div>
+            <div class="learning-note">
+                技術の進化に対応するため、業務と並行して継続的に学習を続けています。特にクラウド技術や生成AIの活用については、実務での適用可能性を常に模索しながら知識をアップデートしています。民間企業への転職後も、自律的に学び続ける姿勢を持ち続けます。
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">転職にあたって</h2>
+            <div class="message-box">
+                <p>
+                    <strong>公共セクターで培った「実装できる設計力」と「調整力」を、民間企業で活かしたい</strong>と考えています。
+                </p>
+                <p>
+                    自治体という複雑な組織において、技術だけでなく「人・組織・制度」を理解した上でシステムを構築してきました。この経験は、民間企業においても、現場とITの間に立ち、実際に運用される仕組みを作る力として発揮できると確信しています。
+                </p>
+                <p>
+                    40代ではありますが、豊富な実務経験と継続的な学習姿勢により、即戦力として貢献できます。特に、<strong>要件定義・プロジェクト推進・ベンダーマネジメント</strong>の領域では、入社初日から価値を提供できる自信があります。
+                </p>
+                <p>
+                    公共×IT×実務責任者という希少なキャリアを持つ人材として、貴社のDX推進やシステム企画に貢献させていただきたく存じます。
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            <p>本ポートフォリオは概要です。詳細な実績や具体的なスキルセットについては、面談にてご説明させていただきます。</p>
+            <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">© 2025 Makoto Tanaka. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
