@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>2026年 午年 年賀状</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        overflow: hidden;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(45deg, #1a0033, #330066, #660099, #9900cc);
+        background-size: 400% 400%;
+        animation: gradientShift 10s ease infinite;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 1000px;
+        padding: 10px;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        background: linear-gradient(135deg, rgba(255,215,0,0.9), rgba(255,140,0,0.9), rgba(255,69,0,0.9));
+        border-radius: 20px;
+        box-shadow: 0 0 60px rgba(255,215,0,0.8), 0 0 120px rgba(255,140,0,0.6);
+        padding: 20px;
+        transform-style: preserve-3d;
+        animation: cardFloat 6s ease-in-out infinite, cardRotate 20s linear infinite;
+        border: 3px solid gold;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    @keyframes cardFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+
+    @keyframes cardRotate {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+
+    .year {
+        font-size: clamp(60px, 15vw, 100px);
+        font-weight: bold;
+        text-align: center;
+        background: linear-gradient(45deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #9900ff, #ff0000);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: rainbowText 3s linear infinite, pulse 2s ease-in-out infinite;
+        text-shadow: 0 0 30px rgba(255,255,255,0.8);
+        margin: 10px 0;
+        line-height: 1;
+    }
+
+    @keyframes rainbowText {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 400% 50%; }
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+    }
+
+    .zodiac {
+        font-size: clamp(80px, 20vw, 120px);
+        text-align: center;
+        animation: gallop 1.5s ease-in-out infinite, colorChange 2s linear infinite;
+        transform-style: preserve-3d;
+        filter: drop-shadow(0 0 20px rgba(255,255,0,0.9));
+        margin: 5px 0;
+    }
+
+    @keyframes gallop {
+        0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+        25% { transform: translateX(-8px) translateY(-12px) rotate(-5deg); }
+        50% { transform: translateX(0px) translateY(0px) rotate(0deg); }
+        75% { transform: translateX(8px) translateY(-12px) rotate(5deg); }
+    }
+
+    @keyframes colorChange {
+        0%, 100% { filter: drop-shadow(0 0 20px rgba(255,255,0,0.9)) hue-rotate(0deg); }
+        50% { filter: drop-shadow(0 0 40px rgba(255,0,255,0.9)) hue-rotate(180deg); }
+    }
+
+    .horse-emoji {
+        display: inline-block;
+        animation: horseJump 1s ease-in-out infinite;
+    }
+
+    @keyframes horseJump {
+        0%, 100% { transform: translateY(0px) scaleX(1); }
+        50% { transform: translateY(-15px) scaleX(1.1); }
+    }
+
+    .zodiac-text {
+        font-size: clamp(28px, 8vw, 40px);
+        text-align: center;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 0 20px rgba(255,140,0,1), 0 0 40px rgba(255,69,0,0.8);
+        margin: 5px 0;
+        animation: textPulse 2s ease-in-out infinite;
+        letter-spacing: 4px;
+    }
+
+    @keyframes textPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .message {
+        font-size: clamp(18px, 5vw, 28px);
+        text-align: center;
+        color: white;
+        text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.8);
+        margin: 10px 0;
+        animation: glow 2s ease-in-out infinite;
+        font-weight: bold;
+        line-height: 1.4;
+        padding: 0 10px;
+    }
+
+    @keyframes glow {
+        0%, 100% { text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.8); }
+        50% { text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px rgba(255,215,0,1), 0 0 60px rgba(255,140,0,0.8); }
+    }
+
+    .message-small {
+        font-size: clamp(16px, 4.5vw, 24px);
+    }
+
+    .name {
+        font-size: clamp(20px, 6vw, 28px);
+        text-align: right;
+        color: white;
+        font-weight: bold;
+        text-shadow: 0 0 15px rgba(0,0,0,0.9), 0 0 30px rgba(255,0,0,0.8);
+        margin-top: 10px;
+        animation: nameShine 3s ease-in-out infinite;
+        width: 100%;
+        padding-right: 10px;
+    }
+
+    @keyframes nameShine {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; text-shadow: 0 0 25px rgba(255,255,255,1), 0 0 50px rgba(255,215,0,1); }
+    }
+
+    .decoration {
+        position: absolute;
+        font-size: clamp(25px, 6vw, 35px);
+        animation: float 3s ease-in-out infinite;
+        opacity: 0.8;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    @media (max-width: 480px) {
+        .card {
+            padding: 15px;
+            border-radius: 15px;
+        }
+        
+        .message {
+            margin: 8px 0;
+        }
+        
+        .zodiac-text {
+            letter-spacing: 2px;
+        }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+        .card {
+            max-height: 95vh;
+            padding: 10px;
+        }
+        
+        .year {
+            margin: 5px 0;
+        }
+        
+        .zodiac {
+            margin: 2px 0;
+        }
+        
+        .message {
+            margin: 5px 0;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="container">
+        <div class="card">
+            <div class="decoration" style="top: 10px; left: 15px; animation-delay: 0s;">🎊</div>
+            <div class="decoration" style="top: 15px; right: 15px; animation-delay: 0.5s;">🎉</div>
+            <div class="decoration" style="bottom: 25px; left: 20px; animation-delay: 1s;">✨</div>
+            <div class="decoration" style="bottom: 15px; right: 15px; animation-delay: 1.5s;">🌟</div>
+
+```
+        <div class="year">2026</div>
+        <div class="zodiac"><span class="horse-emoji">🐴</span></div>
+        <div class="zodiac-text">午年</div>
+        <div class="message">明けまして<br>おめでとうございます</div>
+        <div class="message message-small">本年もよろしく<br>お願いいたします</div>
+        <div class="name">河原輝明</div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 6;
+            this.vy = (Math.random() - 0.5) * 6;
+            this.life = 100;
+            this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            this.size = Math.random() * 3 + 1.5;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += 0.08;
+            this.life -= 1;
+        }
+
+        draw() {
+            ctx.globalAlpha = this.life / 100;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    let particles = [];
+
+    function createFirework(x, y) {
+        const particleCount = window.innerWidth < 768 ? 30 : 50;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle(x, y));
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles = particles.filter(p => p.life > 0);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    const fireworkInterval = window.innerWidth < 768 ? 700 : 500;
+    setInterval(() => {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height * 0.7;
+        createFirework(x, y);
+    }, fireworkInterval);
+
+    animate();
+
+    // 初期花火
+    const initialFireworks = window.innerWidth < 768 ? 3 : 5;
+    for (let i = 0; i < initialFireworks; i++) {
+        setTimeout(() => {
+            createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.6);
+        }, i * 200);
+    }
+
+    // リサイズ対応
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // タッチインタラクション（スマホ用）
+    const card = document.querySelector('.card');
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+
+    document.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            const x = (touch.clientX / window.innerWidth - 0.5) * 15;
+            const y = (touch.clientY / window.innerHeight - 0.5) * 15;
+            card.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+            lastTouchX = x;
+            lastTouchY = y;
+        }
+    });
+
+    document.addEventListener('touchend', () => {
+        card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+    });
+
+    // マウスインタラクション（PC用）
+    document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 20;
+        const y = (e.clientY / window.innerHeight - 0.5) * 20;
+        card.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+    });
+
+    // タッチで花火を打ち上げる
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            createFirework(touch.clientX, touch.clientY);
+        }
+    });
+
+    // クリックで花火を打ち上げる
+    document.addEventListener('click', (e) => {
+        createFirework(e.clientX, e.clientY);
+    });
+</script>
+```
+
+</body>
+</html>
