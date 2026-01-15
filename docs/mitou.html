@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未踏アドバンスト2025年度下期プロジェクト | 日本の未来を創る8つの挑戦</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .intro {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .intro h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .projects-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .project-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .project-title {
+            flex: 1;
+        }
+
+        .project-title h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .project-team {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .project-content {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .budget {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .pm-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .project-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .project-number {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚀 未踏アドバンスト事業 2025年度下期</h1>
+            <p class="subtitle">
+                日本の未来を創る8つの革新プロジェクト<br>
+                脳波トレーニングから製造業DXまで、社会を変える最先端技術に挑む
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <h2>未踏アドバンスト事業とは？</h2>
+            <p>
+                未踏アドバンスト事業は、IPA（情報処理推進機構）が実施する、革新的な技術やアイデアを持つ若手クリエイターを支援するプログラムです。
+                2025年度下期は、<strong>ヘルスケア・介護・製造業・教育・インフラ管理</strong>など、多様な分野で社会課題の解決に挑む8つのプロジェクトが採択されました。
+                それぞれに最大1,600万円の開発資金が提供され、経験豊富なプロジェクトマネージャーの支援のもと、社会実装を目指します。
+            </p>
+        </div>
+
+        <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">1</div>
+                    <div class="project-title">
+                        <h3>脳波を鍛える！集中力革命</h3>
+                        <p class="project-team">出利葉拓也 ✕ 杉野広尭 ✕ 山崎稜一郎</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>集中力低下という現代病を、脳波で解決。</strong></p>
+                    <p>
+                        スマホの通知、情報過多...現代人の集中力は危機的状況です。このプロジェクトでは、ニューロフィードバック技術を使って
+                        <strong>「脳波を鍛える」</strong>という革新的アプローチを実現。ゲーム感覚で楽しく続けられるアプリと、
+                        気軽に体験できる「集中ブース」で、誰でも集中力を高められる未来を創ります。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>低価格なモバイル脳波計で、誰でも簡単に測定＆トレーニング。AI解析で個人に最適化されたフィードバックを提供します。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 石黒 浩（大阪大学教授・ロボット研究の第一人者）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">🧠 脳科学</span>
+                        <span class="tag">🎮 ゲーミフィケーション</span>
+                        <span class="tag">🤖 AI</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">2</div>
+                    <div class="project-title">
+                        <h3>体幹で動く！未来の車いす</h3>
+                        <p class="project-team">川崎陽祐 ✕ 太田有希乃 ✕ 鈴木悠真 ✕ 木村冠斗</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>「自分で移動できる」喜びを、もう一度。</strong></p>
+                    <p>
+                        超高齢社会の日本で深刻化する介護負担。このプロジェクトは、わずかな体幹の動きだけで操作できるハンズフリー車いすを開発します。
+                        上肢に障害があっても自立的に移動でき、リハビリ効果も期待できる画期的システムです。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>利用者の運動能力レベルに合わせて調整可能。「過剰介助→身体機能低下」の悪循環を断ち切ります。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 漆原 茂（ULSコンサルティング取締役会長）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">♿ 介護テック</span>
+                        <span class="tag">🏥 リハビリ</span>
+                        <span class="tag">🦾 ロボティクス</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">3</div>
+                    <div class="project-title">
+                        <h3>地下を掘る、AIの目</h3>
+                        <p class="project-team">平田泰之 ✕ 戸井啓允 ✕ 倉嶋太郎</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>職人の勘と経験を、AIで誰でも使えるように。</strong></p>
+                    <p>
+                        CCS（二酸化炭素貯留）、地熱発電...脱炭素社会に不可欠な地下掘削。しかし、この分野は職人の経験に頼りきりで、
+                        人手不足が深刻です。このプロジェクトは、掘削機械を外付けデバイスで遠隔操作＆自動化し、
+                        一人で複数現場を担当できる革新的システムを実現します。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>既存の掘削機を改造せず、後付けで自動化可能。将来は月面掘削にも応用できる技術です。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 梶田 真実（株式会社Singular Perturbations CEO）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">🏗️ 建設DX</span>
+                        <span class="tag">🌍 脱炭素</span>
+                        <span class="tag">🤖 自動化</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">4</div>
+                    <div class="project-title">
+                        <h3>インタビューの裏側、AIが見抜く</h3>
+                        <p class="project-team">甲斐慎之助 ✕ 荒川力哉 ✕ 甲斐美文</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>捨てられてきた宝の山を、データ資産に変える。</strong></p>
+                    <p>
+                        リサーチ業界では、インタビューで得られた音声・映像・設計データが使い捨てにされています。
+                        このプロジェクトは、マルチモーダルAIでこれらを構造化し、継続活用できるデータ基盤を構築。
+                        ベテランの経験に依存しない、民主化された高速リサーチを実現します。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>文字だけでなく、声のトーンや表情まで分析。真のインサイト（潜在ニーズ）を引き出します。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 首藤 一幸（京都大学教授）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">🎤 リサーチ</span>
+                        <span class="tag">🧠 インサイト分析</span>
+                        <span class="tag">🤖 マルチモーダルAI</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">5</div>
+                    <div class="project-title">
+                        <h3>街路樹の未来を、3Dで予測</h3>
+                        <p class="project-team">河内大輝 ✕ 鈴木大樹 ✕ 望月陽介</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>スマホ動画だけで、街路樹管理が変わる。</strong></p>
+                    <p>
+                        全国に約7,700万本ある街路樹。管理の人手不足で、倒木事故や過剰伐採が問題です。
+                        このプロジェクトは、スマホで走行中に撮影した映像から街路樹を3D復元し、
+                        将来の電線・標識との干渉リスクを予測するシステムを開発。コストを数百分の一に削減します。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>高額な測量車が不要に。樹木の成長シミュレーションで、最適な剪定計画を立案できます。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 原田 達也（東京大学教授）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">🌳 インフラ管理</span>
+                        <span class="tag">📱 画像処理</span>
+                        <span class="tag">🎯 予測AI</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">6</div>
+                    <div class="project-title">
+                        <h3>職人技を、AIが継承する</h3>
+                        <p class="project-team">長谷川恭平 ✕ 平沼慶人 ✕ 木下陽斗 ✕ 舟田愛</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>製造業86%が抱える「技能継承問題」を解決。</strong></p>
+                    <p>
+                        日本の製造業を支える熟練技能。しかし、その多くは言語化されず、熟練者自身も説明できません。
+                        このプロジェクトは、ウェアラブルデバイスで作業を計測し、AIインタビュアーが対話を通じて暗黙知を形式知化。
+                        学習者へのフィードバックまで一貫して支援します。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>視線・音声・画像をマルチモーダル解析。工場作業を妨げない設計で、現場導入が容易です。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 平野 豊（平野リサーチラボ代表）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">🏭 製造業DX</span>
+                        <span class="tag">👨‍🏫 技能継承</span>
+                        <span class="tag">🤖 マルチモーダルAI</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+
+            <!-- Project 7 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">7</div>
+                    <div class="project-title">
+                        <h3>組版を、プログラマブルに</h3>
+                        <p class="project-team">和田優斗</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>生成AI時代に対応する、次世代の文書作成基盤。</strong></p>
+                    <p>
+                        LLMやUGCの普及で、大量コンテンツへの自動組版ニーズが急増。しかし、従来のDTPソフトは外部連携が困難です。
+                        このプロジェクトは、TypeScriptで柔軟に操作できる組版エンジンとSaaSを開発。
+                        InDesign形式への出力もサポートし、既存ワークフローとも連携できます。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>2020年未踏スーパークリエータが、現場課題から再挑戦。API経由でプログラマブルに制御可能。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 藤井 彰人（KDDI執行役員）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">📚 出版テック</span>
+                        <span class="tag">🤖 生成AI連携</span>
+                        <span class="tag">💻 OSS</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 800万円</div>
+                </div>
+            </div>
+
+            <!-- Project 8 -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-number">8</div>
+                    <div class="project-title">
+                        <h3>参考書が、AIで進化する</h3>
+                        <p class="project-team">豊井美雪 ✕ 田中勇吾 ✕ 橋本宏熙 ✕ 谷口宝</p>
+                    </div>
+                </div>
+                <div class="project-content">
+                    <p><strong>「読むだけ」から「対話して学ぶ」教科書へ。</strong></p>
+                    <p>
+                        既存の参考書・専門書は、人間の通読を前提に設計されています。このプロジェクトは、
+                        出版データを章・節・定義・演習などの構造化データに変換し、AIが文脈を理解した上で
+                        質問応答・要約・弱点分析・学習順序提示を行う学習支援プラットフォームを構築します。
+                    </p>
+                    <div class="section-title">🎯 ここがスゴイ！</div>
+                    <p>出版社が既存資産を大きく変えずにAI対応可能。ハルシネーション対策も実装。</p>
+                    <div class="pm-info">
+                        <strong>PM:</strong> 三木 寛文（MKマネジメント社長）
+                    </div>
+                    <div class="tags">
+                        <span class="tag">📖 教育テック</span>
+                        <span class="tag">🤖 LLM活用</span>
+                        <span class="tag">🎓 個別最適化学習</span>
+                    </div>
+                    <div class="budget">💰 開発資金: 1,600万円</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="intro">
+            <h2>🌟 これらのプロジェクトが目指すもの</h2>
+            <p>
+                <strong>ヘルスケア・介護・製造・インフラ・教育</strong>...分野は異なれど、すべてのプロジェクトに共通するのは、
+                <strong>「技術で社会課題を解決する」</strong>という強い想いです。
+            </p>
+            <p>
+                集中力向上、自立支援、技能継承、インフラ管理、学習体験の質的向上...これらの挑戦は、
+                私たちの日常生活を、そして日本の未来を大きく変える可能性を秘めています。
+            </p>
+            <p style="margin-top: 20px;">
+                <strong>未踏アドバンスト事業は、こうした若きクリエイターたちの挑戦を、全力で応援しています。</strong>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>詳細情報: <a href="https://www.ipa.go.jp/jinzai/mitou/advanced/2025second/index.html" target="_blank">IPA 未踏アドバンスト事業 公式サイト</a></p>
+            <p style="margin-top: 10px; font-size: 0.9em;">© 2026 IPA（情報処理推進機構）</p>
+        </div>
+    </footer>
+</body>
+</html>
