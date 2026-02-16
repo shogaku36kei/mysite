@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク管理アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .task-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+
+        .btn:hover {
+            background: #0f9afe;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .task-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .task-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid #4facfe;
+        }
+
+        .task-card.completed {
+            opacity: 0.7;
+            border-left-color: #28a745;
+        }
+
+        .task-card.high-priority {
+            border-left-color: #dc3545;
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .task-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .task-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .export-import {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 タスク管理アプリ</h1>
+            <p>効率的な業務管理システム</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 統計情報 -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">総タスク数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedTasks">0</div>
+                    <div class="stat-label">完了タスク</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingTasks">0</div>
+                    <div class="stat-label">未完了タスク</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="highPriorityTasks">0</div>
+                    <div class="stat-label">高優先度タスク</div>
+                </div>
+            </div>
+
+            <!-- タスク作成フォーム -->
+            <div class="task-form">
+                <h2 id="formTitle">新しいタスクを追加</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">タイトル *</label>
+                        <input type="text" id="taskTitle" required placeholder="タスクのタイトルを入力">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskDescription">説明</label>
+                        <textarea id="taskDescription" placeholder="タスクの詳細を入力してください"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskPriority">優先度</label>
+                            <select id="taskPriority">
+                                <option value="low">低</option>
+                                <option value="medium" selected>中</option>
+                                <option value="high">高</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taskDueDate">期限</label>
+                            <input type="date" id="taskDueDate">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskCategory">カテゴリ</label>
+                        <input type="text" id="taskCategory" placeholder="例: 営業、開発、会議">
+                    </div>
+                    
+                    <button type="submit" class="btn">タスクを追加</button>
+                    <button type="button" class="btn btn-danger" id="cancelBtn" style="display: none;">キャンセル</button>
+                </form>
+
+                <div class="export-import">
+                    <button type="button" class="btn btn-success" id="exportBtn">データをエクスポート</button>
+                    <button type="button" class="btn btn-warning" id="importBtn">データをインポート</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <!-- タスク一覧 -->
+            <div class="tasks-section">
+                <div class="section-title">📝 タスク一覧</div>
+                
+                <div class="task-filters">
+                    <button class="filter-btn active" data-filter="all">すべて</button>
+                    <button class="filter-btn" data-filter="pending">未完了</button>
+                    <button class="filter-btn" data-filter="completed">完了済み</button>
+                    <button class="filter-btn" data-filter="high">高優先度</button>
+                    <button class="filter-btn" data-filter="today">今日期限</button>
+                </div>
+                
+                <div class="task-grid" id="taskGrid">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                        <h3>まだタスクがありません</h3>
+                        <p>上のフォームから新しいタスクを追加してください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // タスク管理クラス
+        class TaskManager {
+            constructor() {
+                this.tasks = [];
+                this.editingTaskId = null;
+                this.currentFilter = 'all';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateStats();
+                console.log('TaskManager initialized');
+            }
+
+            bindEvents() {
+                // フォーム送信
+                document.getElementById('taskForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSubmit();
+                });
+
+                // キャンセルボタン
+                document.getElementById('cancelBtn').addEventListener('click', () => {
+                    this.cancelEdit();
+                });
+
+                // フィルターボタン
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.setFilter(e.target.dataset.filter);
+                    });
+                });
+
+                // エクスポート・インポート
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportTasks();
+                });
+
+                document.getElementById('importBtn').addEventListener('click', () => {
+                    document.getElementById('importFile').click();
+                });
+
+                document.getElementById('importFile').addEventListener('change', (e) => {
+                    this.importTasks(e);
+                });
+            }
+
+            handleSubmit() {
+                const title = document.getElementById('taskTitle').value.trim();
+                const description = document.getElementById('taskDescription').value.trim();
+                const priority = document.getElementById('taskPriority').value;
+                const dueDate = document.getElementById('taskDueDate').value;
+                const category = document.getElementById('taskCategory').value.trim();
+
+                if (!title) {
+                    alert('タイトルを入力してください');
+                    return;
+                }
+
+                const taskData = {
+                    title: title,
+                    description: description,
+                    priority: priority,
+                    dueDate: dueDate,
+                    category: category,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+
+                if (this.editingTaskId) {
+                    this.updateTask(this.editingTaskId, taskData);
+                    alert('タスクを更新しました');
+                } else {
+                    this.addTask(taskData);
+                    alert('タスクを追加しました');
+                }
+
+                this.resetForm();
+                this.renderTasks();
+                this.updateStats();
+            }
+
+            addTask(taskData) {
+                const task = {
+                    id: Date.now().toString(),
+                    ...taskData
+                };
+                this.tasks.push(task);
+            }
+
+            updateTask(id, taskData) {
+                const taskIndex = this.tasks.findIndex(task => task.id === id);
+                if (taskIndex !== -1) {
+                    this.tasks[taskIndex] = { ...this.tasks[taskIndex], ...taskData };
+                }
+            }
+
+            deleteTask(id) {
+                if (confirm('このタスクを削除してもよろしいですか？')) {
+                    this.tasks = this.tasks.filter(task => task.id !== id);
+                    this.renderTasks();
+                    this.updateStats();
+                    alert('タスクを削除しました');
+                }
+            }
+
+            toggleTaskComplete(id) {
+                const task = this.tasks.find(task => task.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    this.renderTasks();
+                    this.updateStats();
+                }
+            }
+
+            editTask(id) {
+                const task = this.tasks.find(task => task.id === id);
+                if (task) {
+                    this.editingTaskId = id;
+                    
+                    document.getElementById('taskTitle').value = task.title;
+                    document.getElementById('taskDescription').value = task.description;
+                    document.getElementById('taskPriority').value = task.priority;
+                    document.getElementById('taskDueDate').value = task.dueDate;
+                    document.getElementById('taskCategory').value = task.category;
+                    
+                    document.getElementById('formTitle').textContent = 'タスクを編集';
+                    document.querySelector('button[type="submit"]').textContent = '更新';
+                    document.getElementById('cancelBtn').style.display = 'inline-block';
+                    
+                    document.getElementById('taskForm').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            cancelEdit() {
+                this.editingTaskId = null;
+                this.resetForm();
+            }
+
+            resetForm() {
+                document.getElementById('taskForm').reset();
+                document.getElementById('formTitle').textContent = '新しいタスクを追加';
+                document.querySelector('button[type="submit"]').textContent = 'タスクを追加';
+                document.getElementById('cancelBtn').style.display = 'none';
+                this.editingTaskId = null;
+            }
+
+            setFilter(filter) {
+                this.currentFilter = filter;
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+                this.renderTasks();
+            }
+
+            getFilteredTasks() {
+                const today = new Date().toISOString().split('T')[0];
+                
+                switch (this.currentFilter) {
+                    case 'pending':
+                        return this.tasks.filter(task => !task.completed);
+                    case 'completed':
+                        return this.tasks.filter(task => task.completed);
+                    case 'high':
+                        return this.tasks.filter(task => task.priority === 'high');
+                    case 'today':
+                        return this.tasks.filter(task => task.dueDate === today);
+                    default:
+                        return this.tasks;
+                }
+            }
+
+            renderTasks() {
+                const taskGrid = document.getElementById('taskGrid');
+                const filteredTasks = this.getFilteredTasks();
+
+                if (filteredTasks.length === 0) {
+                    taskGrid.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                            <h3>${this.currentFilter === 'all' ? 'まだタスクがありません' : 'このフィルターに該当するタスクがありません'}</h3>
+                            <p>${this.currentFilter === 'all' ? '上のフォームから新しいタスクを追加してください' : '別のフィルターを試してください'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                filteredTasks.forEach(task => {
+                    const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('ja-JP') : '期限なし';
+                    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !task.completed;
+                    
+                    html += `
+                        <div class="task-card ${task.completed ? 'completed' : ''} ${task.priority === 'high' ? 'high-priority' : ''}">
+                            <div class="task-title">${task.title}</div>
+                            <div class="task-priority priority-${task.priority}">
+                                ${task.priority === 'high' ? '高' : task.priority === 'medium' ? '中' : '低'}優先度
+                            </div>
+                            ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                            <div class="task-meta">
+                                <span style="color: ${isOverdue ? '#dc3545' : '#888'}">
+                                    📅 ${dueDate} ${isOverdue ? '(期限切れ)' : ''}
+                                </span>
+                                ${task.category ? `<span>🏷️ ${task.category}</span>` : ''}
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn ${task.completed ? '' : 'btn-success'}" onclick="taskManager.toggleTaskComplete('${task.id}')">
+                                    ${task.completed ? '未完了にする' : '完了'}
+                                </button>
+                                <button class="btn btn-warning" onclick="taskManager.editTask('${task.id}')">
+                                    編集
+                                </button>
+                                <button class="btn btn-danger" onclick="taskManager.deleteTask('${task.id}')">
+                                    削除
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                taskGrid.innerHTML = html;
+            }
+
+            updateStats() {
+                const total = this.tasks.length;
+                const completed = this.tasks.filter(task => task.completed).length;
+                const pending = total - completed;
+                const highPriority = this.tasks.filter(task => task.priority === 'high' && !task.completed).length;
+
+                document.getElementById('totalTasks').textContent = total;
+                document.getElementById('completedTasks').textContent = completed;
+                document.getElementById('pendingTasks').textContent = pending;
+                document.getElementById('highPriorityTasks').textContent = highPriority;
+            }
+
+            exportTasks() {
+                if (this.tasks.length === 0) {
+                    alert('エクスポートするタスクがありません');
+                    return;
+                }
+
+                const tasksJson = JSON.stringify(this.tasks, null, 2);
+                const blob = new Blob([tasksJson], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tasks_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                URL.revokeObjectURL(url);
+                alert('タスクデータをエクスポートしました');
+            }
+
+            importTasks(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedTasks = JSON.parse(e.target.result);
+                        if (Array.isArray(importedTasks)) {
+                            if (confirm('現在のタスクデータは上書きされます。よろしいですか？')) {
+                                this.tasks = importedTasks;
+                                this.renderTasks();
+                                this.updateStats();
+                                alert('タスクデータをインポートしました');
+                            }
+                        } else {
+                            throw new Error('Invalid format');
+                        }
+                    } catch (error) {
+                        alert('ファイルの形式が正しくありません');
+                    }
+                    event.target.value = '';
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // アプリケーションの初期化
+        let taskManager;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing TaskManager...');
+            taskManager = new TaskManager();
+        });
+
+        // ブラウザがサポートしていない場合のフォールバック
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                if (!taskManager) {
+                    taskManager = new TaskManager();
+                }
+            });
+        } else {
+            taskManager = new TaskManager();
+        }
+    </script>
+</body>
+</html>
