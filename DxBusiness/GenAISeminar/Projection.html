@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>生成AIで誰でも簡単！業務改善ツール作成セミナー</title>
     <style>
 * {
@@ -15,6 +15,7 @@ body {
     font-family: 'Yu Gothic', 'Meiryo', sans-serif;
     background: #2c3e50;
     overflow: hidden;
+    -webkit-text-size-adjust: 100%;
 }
 
 /* スライドコンテナの基本設定 */
@@ -36,11 +37,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 3rem;
+    padding: 2rem 1.5rem;
     color: white;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .slide.active {
@@ -48,73 +51,55 @@ body {
     visibility: visible;
 }
 
-/* セクション1: イントロダクション（スライド1-8） - 落ち着いた紺色 */
+/* セクション別背景色 */
 .slide:nth-child(-n+8) {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
 }
 
-/* セクション2: バイブコーディング（スライド9-16） - 落ち着いた青緑 */
 .slide:nth-child(n+9):nth-child(-n+16) {
     background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
 }
 
-/* セクション3: ツールの類型（スライド17-21） - 落ち着いた青 */
 .slide:nth-child(n+17):nth-child(-n+21) {
     background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
 }
 
-/* セクション4: おすすめツール（スライド22-27） - 落ち着いた緑 */
 .slide:nth-child(n+22):nth-child(-n+27) {
     background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
 }
 
-/* セクション5: 実践（スライド28-44） - 落ち着いたオレンジ */
 .slide:nth-child(n+28):nth-child(-n+44) {
     background: linear-gradient(135deg, #d35400 0%, #e67e22 100%);
 }
 
-/* セクション6: スキル向上（スライド45-48） - 落ち着いた紫 */
 .slide:nth-child(n+45):nth-child(-n+48) {
     background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
 }
 
-/* セクション7: まとめ（スライド49-52） - 落ち着いた紺色 */
 .slide:nth-child(n+49) {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
 }
 
-/* タイトル：60pt相当 */
+/* 見出しのレスポンシブ対応 */
 .slide h1 {
-    font-size: 5rem;
-    margin-bottom: 2.5rem;
+    font-size: clamp(1.8rem, 6vw, 5rem);
+    margin-bottom: 1.5rem;
     text-align: center;
-    text-shadow: 3px 3px 8px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     line-height: 1.3;
     font-weight: bold;
 }
 
-/* 大見出し：48pt相当 */
 .slide h2 {
-    font-size: 4rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.5rem, 5vw, 4rem);
+    margin-bottom: 1.2rem;
     text-align: center;
-    text-shadow: 3px 3px 8px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     font-weight: bold;
 }
 
-/* 中見出し：36pt相当 */
 .slide h3 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    text-align: left;
-    width: 100%;
-    max-width: 1200px;
-    font-weight: bold;
-}
-
-/* 小見出し：28pt相当 */
-.slide h4 {
-    font-size: 2.3rem;
+    font-size: clamp(1.3rem, 4vw, 3rem);
     margin-bottom: 1rem;
     text-align: left;
     width: 100%;
@@ -122,101 +107,118 @@ body {
     font-weight: bold;
 }
 
-/* 本文：28pt相当 */
+.slide h4 {
+    font-size: clamp(1.1rem, 3.5vw, 2.3rem);
+    margin-bottom: 0.8rem;
+    text-align: left;
+    width: 100%;
+    max-width: 1200px;
+    font-weight: bold;
+}
+
+/* コンテンツのレスポンシブ対応 */
 .content {
     max-width: 1200px;
     width: 100%;
-    font-size: 2.2rem;
-    line-height: 1.7;
+    font-size: clamp(0.9rem, 3vw, 2.2rem);
+    line-height: 1.6;
     overflow: visible;
 }
 
 .content p {
-    font-size: 2.2rem;
-    line-height: 1.7;
-    margin-bottom: 1.2rem;
+    font-size: clamp(0.9rem, 3vw, 2.2rem);
+    line-height: 1.6;
+    margin-bottom: 1rem;
 }
 
 .content ul {
     list-style-position: outside;
-    margin-left: 3.5rem;
+    margin-left: 1.5rem;
 }
 
 .content ol {
     list-style-position: outside;
-    margin-left: 3.5rem;
+    margin-left: 1.5rem;
 }
 
 .content li {
-    margin-bottom: 1.3rem;
-    font-size: 2.2rem;
-    line-height: 1.6;
+    margin-bottom: 0.8rem;
+    font-size: clamp(0.9rem, 3vw, 2.2rem);
+    line-height: 1.5;
 }
 
 .content ul ul {
-    margin-top: 0.8rem;
-    margin-left: 3rem;
+    margin-top: 0.5rem;
+    margin-left: 1.5rem;
 }
 
 .content ul ul li {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: clamp(0.85rem, 2.8vw, 2rem);
+    margin-bottom: 0.6rem;
 }
 
+/* テーブルのスマホ対応 */
 .content table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(10px);
-    font-size: 1.8rem;
+    font-size: clamp(0.75rem, 2.5vw, 1.8rem);
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .content th, .content td {
-    border: 3px solid rgba(255,255,255,0.5);
-    padding: 1.2rem;
+    border: 2px solid rgba(255,255,255,0.5);
+    padding: 0.8rem 0.5rem;
     text-align: left;
-    font-size: 1.8rem;
+    font-size: clamp(0.75rem, 2.5vw, 1.8rem);
+    white-space: nowrap;
 }
 
 .content th {
     background: rgba(255,255,255,0.3);
     font-weight: bold;
-    font-size: 2rem;
+    font-size: clamp(0.8rem, 2.7vw, 2rem);
 }
 
 .highlight {
     background: rgba(255,255,255,0.3);
-    padding: 0.3rem 0.7rem;
-    border-radius: 8px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
     font-weight: bold;
 }
 
 .code-block {
     background: rgba(0,0,0,0.5);
-    padding: 1.5rem;
-    border-radius: 12px;
+    padding: 1rem;
+    border-radius: 8px;
     font-family: 'Courier New', monospace;
-    font-size: 1.6rem;
-    margin: 1.5rem 0;
+    font-size: clamp(0.75rem, 2.5vw, 1.6rem);
+    margin: 1rem 0;
     white-space: pre-wrap;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.5;
     border: 2px solid rgba(255,255,255,0.3);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .image-placeholder {
-    width: 700px;
-    height: 420px;
-    max-width: 85%;
+    width: 90%;
+    max-width: 700px;
+    height: auto;
+    min-height: 200px;
     background: rgba(255,255,255,0.2);
-    border: 4px dashed rgba(255,255,255,0.6);
+    border: 3px dashed rgba(255,255,255,0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 1.5rem auto;
-    border-radius: 15px;
-    font-size: 1.8rem;
+    margin: 1rem auto;
+    border-radius: 10px;
+    font-size: clamp(0.9rem, 3vw, 1.8rem);
 }
 
 .image-placeholder img {
@@ -227,16 +229,14 @@ body {
 
 .slide-number {
     position: absolute;
-    bottom: 1.5rem;
-    right: 2.5rem;
-    font-size: 1.8rem;
+    bottom: 4.5rem;
+    right: 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 1.8rem);
     opacity: 0.85;
     font-weight: bold;
 }
 
-/* ==================== 一覧表示モード ==================== */
-
-/* 一覧表示モード用のbodyクラス */
+/* ==================== 一覧表示モード（スマホ対応） ==================== */
 body.overview-active {
     overflow: auto;
 }
@@ -244,70 +244,67 @@ body.overview-active {
 body.overview-active .slide-container {
     height: auto;
     overflow: visible;
-    padding: 40px 20px;
+    padding: 20px 10px;
     background: #2c3e50;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
 }
 
-/* 一覧表示時はコントロールを隠す */
 body.overview-active #slide-controls,
 body.overview-active #progress-bar {
     display: none;
 }
 
-/* 一覧表示モードのスライド */
 .slide-container.overview-mode .slide {
     position: relative !important;
-    width: 320px !important;
-    height: 240px !important;
-    min-height: 240px !important;
+    width: calc(50% - 10px) !important;
+    min-width: 140px !important;
+    height: 180px !important;
+    min-height: 180px !important;
     display: inline-block !important;
     opacity: 1 !important;
     visibility: visible !important;
     margin: 0 !important;
-    padding: 10px !important;
+    padding: 8px !important;
     cursor: pointer !important;
     transform: scale(1) !important;
     transition: all 0.3s ease !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    border: 3px solid rgba(255,255,255,0.3);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.3);
     overflow: hidden;
 }
 
 .slide-container.overview-mode .slide:hover {
-    transform: scale(1.08) !important;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5) !important;
     border-color: #007bff;
     z-index: 10;
 }
 
-/* 一覧表示時のスライド番号表示 */
 .slide-container.overview-mode .slide::before {
     content: attr(data-slide-number);
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 5px;
     background: rgba(0,0,0,0.7);
     color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
     font-weight: bold;
     z-index: 100;
 }
 
-/* 一覧表示時のコンテンツ調整 */
 .slide-container.overview-mode .slide h1,
 .slide-container.overview-mode .slide h2 {
-    font-size: 1.2rem !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 0.3rem !important;
 }
 
 .slide-container.overview-mode .slide .content {
-    font-size: 0.7rem !important;
+    font-size: 0.6rem !important;
     overflow: hidden;
 }
 
@@ -315,27 +312,147 @@ body.overview-active #progress-bar {
     display: none;
 }
 
-/* ==================== その他 ==================== */
-
-/* コントロールパネルのアニメーション */
+/* ==================== コントロールパネル（スマホ最適化） ==================== */
 #slide-controls {
-    animation: fadeIn 0.3s;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    padding: 8px 12px;
+    border-radius: 25px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 95%;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+#slide-controls button {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* レスポンシブ対応 */
+#slide-controls button:active {
+    background: rgba(255,255,255,0.3);
+    transform: scale(0.95);
+}
+
+#slide-number {
+    font-size: 14px;
+    min-width: 60px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#timer {
+    font-size: 14px;
+    min-width: 50px;
+    color: #999;
+    font-weight: bold;
+}
+
+.control-separator {
+    border-left: 1px solid #666;
+    height: 20px;
+    margin: 0 3px;
+}
+
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: #007bff;
+    width: 0%;
+    transition: width 0.3s;
+    z-index: 1001;
+}
+
+/* ==================== スマホ専用の追加調整 ==================== */
 @media (max-width: 768px) {
-    .slide h1 { font-size: 3rem; }
-    .slide h2 { font-size: 2.5rem; }
-    .slide h3 { font-size: 2rem; }
-    .slide h4 { font-size: 1.7rem; }
-    .content { font-size: 1.5rem; }
-    .content li { font-size: 1.5rem; }
-    .image-placeholder { width: 90%; height: 300px; }
+    .slide {
+        padding: 1.5rem 1rem 5rem 1rem;
+    }
+    
+    .content table {
+        font-size: 0.75rem;
+    }
+    
+    .content th, .content td {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.75rem;
+    }
+    
+    .slide-number {
+        bottom: 4rem;
+        right: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    #slide-controls {
+        gap: 5px;
+        padding: 6px 10px;
+    }
+    
+    #slide-controls button {
+        font-size: 16px;
+        padding: 6px 10px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    .slide-container.overview-mode .slide {
+        width: calc(50% - 8px) !important;
+        height: 150px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .slide {
+        padding: 1rem 0.8rem 5rem 0.8rem;
+    }
+    
+    .content ul, .content ol {
+        margin-left: 1rem;
+    }
+    
+    .content ul ul {
+        margin-left: 1rem;
+    }
+    
+    #slide-controls {
+        bottom: 5px;
+        padding: 5px 8px;
+        gap: 4px;
+    }
+    
+    #slide-controls button {
+        font-size: 14px;
+        padding: 5px 8px;
+        min-width: 36px;
+        min-height: 36px;
+    }
+    
+    #slide-number, #timer {
+        font-size: 12px;
+    }
 }
 
 /* 印刷用 */
@@ -351,6 +468,12 @@ body.overview-active #progress-bar {
         visibility: visible !important;
     }
 }
+
+/* アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
     </style>
 </head>
 <body>
@@ -359,9 +482,9 @@ body.overview-active #progress-bar {
         <!-- スライド1: タイトル -->
         <div class="slide active">
             <h1>生成AIで誰でも簡単！<br>業務改善ツール作成セミナー</h1>
-            <div class="content" style="text-align: center; margin-top: 2rem;">
-                <p style="font-size: 2.2rem; font-weight: bold;">90分で学ぶ実践的スキル</p>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+            <div class="content" style="text-align: center; margin-top: 1rem;">
+                <p style="font-weight: bold;">90分で学ぶ実践的スキル</p>
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/title_image.png" alt="タイトル画像" style="display: none;">
                 </div>
             </div>
@@ -378,7 +501,7 @@ body.overview-active #progress-bar {
                     <li>PowerPointの資料作成にいつも多大な時間を費やしている職員</li>
                     <li>複雑なExcel数式や修正できないマクロのコードに悩んでいる職員</li>
                 </ul>
-                <h3 style="margin-top: 3rem;">目標</h3>
+                <h3 style="margin-top: 2rem;">目標</h3>
                 <ul>
                     <li>生成AIを使って，自力で実務の改善ができるようになる</li>
                 </ul>
@@ -456,10 +579,10 @@ body.overview-active #progress-bar {
             <h2>1. イントロダクション</h2>
             <div class="content" style="text-align: center;">
                 <h3 style="text-align: center; margin-top: 1rem;">生成AIで「コードが書けなくても」<br>業務改善ツールが作れる時代に</h3>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/intro_image.png" alt="イントロ画像" style="display: none;">
                 </div>
-            <p><a href="image/potrfolio_ver2.html" target="_blank" >(参考)講師スキルポートフォリオ</a></p>
+            <p><a href="image/potrfolio_ver2.html" target="_blank" style="color: #fff; text-decoration: underline;">(参考)講師スキルポートフォリオ</a></p>
             </div>
             <div class="slide-number">5 / 52</div>
         </div>
@@ -470,8 +593,8 @@ body.overview-active #progress-bar {
             <div class="content">
                 <ul>
                     <li><span class="highlight">プログラミングの専門知識がなくても</span>、日本語で指示するだけでツールが作れる</li>
-                    <li style="margin-top: 1.5rem;">市役所の日常業務で直面する課題を、<span class="highlight">自分の手で解決できる力</span>を身につける</li>
-                    <li style="margin-top: 1.5rem;">外部業者に依頼せず、<span class="highlight">その場で必要なツールを即座に作成</span>できるスキルを習得</li>
+                    <li style="margin-top: 1rem;">市役所の日常業務で直面する課題を、<span class="highlight">自分の手で解決できる力</span>を身につける</li>
+                    <li style="margin-top: 1rem;">外部業者に依頼せず、<span class="highlight">その場で必要なツールを即座に作成</span>できるスキルを習得</li>
                 </ul>
             </div>
             <div class="slide-number">6 / 52</div>
@@ -482,14 +605,14 @@ body.overview-active #progress-bar {
             <h2>今日のゴール</h2>
             <div class="content">
                 <h3>実際に手を動かして2つのツールを作成</h3>
-                <ul style="margin-top: 2rem;">
+                <ul style="margin-top: 1rem;">
                     <li><span class="highlight">① HTML形式の説明資料</span>を生成AIで作成
-                        <ul style="margin-left: 3rem; margin-top: 1rem;">
+                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
                             <li>印刷可能な業務マニュアルや説明資料</li>
                         </ul>
                     </li>
-                    <li style="margin-top: 2rem;"><span class="highlight">② Excelマクロ</span>で業務データを自動処理
-                        <ul style="margin-left: 3rem; margin-top: 1rem;">
+                    <li style="margin-top: 1rem;"><span class="highlight">② Excelマクロ</span>で業務データを自動処理
+                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
                             <li>条件分岐処理や重複チェックの自動化</li>
                         </ul>
                     </li>
@@ -503,10 +626,10 @@ body.overview-active #progress-bar {
             <h2>持ち帰れるスキル</h2>
             <div class="content">
                 <h3>明日から使えるバイブコーディングの基本</h3>
-                <ul style="margin-top: 2rem;">
+                <ul style="margin-top: 1rem;">
                     <li><span class="highlight">生成AIへの効果的な指示の出し方</span></li>
-                    <li style="margin-top: 1.5rem;"><span class="highlight">エラーが出たときの対処法</span></li>
-                    <li style="margin-top: 1.5rem;"><span class="highlight">業務で安全に使うためのルール</span></li>
+                    <li style="margin-top: 1rem;"><span class="highlight">エラーが出たときの対処法</span></li>
+                    <li style="margin-top: 1rem;"><span class="highlight">業務で安全に使うためのルール</span></li>
                 </ul>
             </div>
             <div class="slide-number">8 / 52</div>
@@ -517,10 +640,10 @@ body.overview-active #progress-bar {
             <h2>2. バイブコーディングと<br>プロンプトエンジニアリング</h2>
             <div class="content">
                 <h3>バイブコーディングとは</h3>
-                <p style="font-size: 2rem; margin: 1.5rem 0; font-weight: bold;"><span class="highlight">定義</span>：生成AIに自然言語で指示を出してコードを生成させる手法</p>
-                <ul style="margin-top: 2rem;">
+                <p style="margin: 1rem 0; font-weight: bold;"><span class="highlight">定義</span>：生成AIに自然言語で指示を出してコードを生成させる手法</p>
+                <ul style="margin-top: 1rem;">
                     <li>「Vibe（雰囲気・感覚）」で伝えるコーディング</li>
-                    <li style="margin-top: 1.5rem;"><span class="highlight">「こんな感じのツールが欲しい」と伝えるだけ</span>でコードが生成される　<a href="image/slide09_example.txt" target="_blank">(例)</a></li>
+                    <li style="margin-top: 1rem;"><span class="highlight">「こんな感じのツールが欲しい」と伝えるだけ</span>でコードが生成される　<a href="image/slide09_example.txt" target="_blank" style="color: #fff; text-decoration: underline;">(例)</a></li>
                 </ul>
             </div>
             <div class="slide-number">9 / 52</div>
@@ -533,8 +656,8 @@ body.overview-active #progress-bar {
                 <table>
                     <tr>
                         <th>項目</th>
-                        <th>従来のプログラミング</th>
-                        <th>バイブコーディング</th>
+                        <th>従来</th>
+                        <th>バイブ</th>
                     </tr>
                     <tr>
                         <td><strong>必要な知識</strong></td>
@@ -566,7 +689,7 @@ body.overview-active #progress-bar {
             <h2>プロンプトエンジニアリングの基礎</h2>
             <div class="content">
                 <h3 style="text-align: center;">良いプロンプトの3要素</h3>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/prompt_3elements.png" alt="3要素の図" style="display: none;">
                 </div>
             </div>
@@ -579,9 +702,9 @@ body.overview-active #progress-bar {
             <div class="content">
                 <ul>
                     <li><span class="highlight">「何を作りたいか」を具体的に伝える</span></li>
-                    <li style="margin-top: 1.5rem;">曖昧な表現を避け、完成形をイメージして説明</li>
+                    <li style="margin-top: 1rem;">曖昧な表現を避け、完成形をイメージして説明</li>
                 </ul>
-                <h4 style="margin-top: 3rem;">例</h4>
+                <h4 style="margin-top: 2rem;">例</h4>
                 <div class="code-block">❌ 「データ管理ツールを作って」
 
 ⭕ 「Excelで顧客リストから特定条件の行を抽出して
@@ -596,9 +719,9 @@ body.overview-active #progress-bar {
             <div class="content">
                 <ul>
                     <li><span class="highlight">「どんな動作をするか」を箇条書きで列挙</span></li>
-                    <li style="margin-top: 1.5rem;">入力→処理→出力の流れを明確に</li>
+                    <li style="margin-top: 1rem;">入力→処理→出力の流れを明確に</li>
                 </ul>
-                <h4 style="margin-top: 3rem;">例</h4>
+                <h4 style="margin-top: 2rem;">例</h4>
                 <div class="code-block">・A列に氏名、B列に年齢を入力
 ・ボタンを押すとC列に「成人」「未成年」を自動表示
 ・<span class="highlight">18歳</span>以上なら「成人」、未満なら「未成年」</div>
@@ -612,9 +735,9 @@ body.overview-active #progress-bar {
             <div class="content">
                 <ul>
                     <li><span class="highlight">使う環境・形式を明示</span><br>（例：Excel、HTML、Windows用など）</li>
-                    <li style="margin-top: 1.5rem;">データの形式や処理の範囲を指定</li>
+                    <li style="margin-top: 1rem;">データの形式や処理の範囲を指定</li>
                 </ul>
-                <h4 style="margin-top: 3rem;">例</h4>
+                <h4 style="margin-top: 2rem;">例</h4>
                 <div class="code-block">・使用環境：Windows、Excel 2016以降
 ・データ形式：2行目から開始（1行目は見出し）
 ・最終行は自動判定</div>
@@ -626,12 +749,12 @@ body.overview-active #progress-bar {
         <div class="slide">
             <h2>実例比較：❌ 悪い例</h2>
             <div class="content">
-                <div class="code-block" style="background: rgba(255,0,0,0.25); font-size: 2rem;">会議室管理ツールを作って</div>
-                <h4 style="margin-top: 3rem;">問題点</h4>
-                <ul style="margin-top: 1.5rem;">
+                <div class="code-block" style="background: rgba(255,0,0,0.25);">会議室管理ツールを作って</div>
+                <h4 style="margin-top: 2rem;">問題点</h4>
+                <ul style="margin-top: 1rem;">
                     <li>何をどう管理するのか不明確</li>
-                    <li style="margin-top: 1.5rem;">入力方法・出力形式が不明</li>
-                    <li style="margin-top: 1.5rem;">使用環境が不明</li>
+                    <li style="margin-top: 1rem;">入力方法・出力形式が不明</li>
+                    <li style="margin-top: 1rem;">使用環境が不明</li>
                 </ul>
             </div>
             <div class="slide-number">15 / 52</div>
@@ -644,11 +767,11 @@ body.overview-active #progress-bar {
                 <div class="code-block" style="background: rgba(0,255,0,0.25);">Excel VBAで、D列の値が100以上の行を検索し、
 当該行のC列、D列、E列、F列をSheet2の2行目から
 転記していくツールを生成してください</div>
-                <h4 style="margin-top: 2rem;">優れている点</h4>
-                <ul style="margin-top: 1.5rem;">
+                <h4 style="margin-top: 1.5rem;">優れている点</h4>
+                <ul style="margin-top: 1rem;">
                     <li>処理内容が明確（D列の値が100以上）</li>
-                    <li style="margin-top: 1rem;">対象範囲が明確（C〜F列）</li>
-                    <li style="margin-top: 1rem;">出力先が明確（Sheet2の2行目から）</li>
+                    <li style="margin-top: 0.8rem;">対象範囲が明確（C〜F列）</li>
+                    <li style="margin-top: 0.8rem;">出力先が明確（Sheet2の2行目から）</li>
                 </ul>
             </div>
             <div class="slide-number">16 / 52</div>
@@ -669,15 +792,15 @@ body.overview-active #progress-bar {
         <div class="slide">
             <h2>類型1：HTMLファイル単体で完結するもの</h2>
             <div class="content">
-                <h4>代表例　<a href="image/task_manage.html" target="_blank">(作成例)</a></h4>
+                <h4>代表例　<a href="image/task_manage.html" target="_blank" style="color: #fff; text-decoration: underline;">(作成例)</a></h4>
                 <p>マップ、タスク管理ツール、会議・プレゼン資料、業務マニュアルなど</p>
-                <h4 style="margin-top: 1rem;">特徴</h4>
+                <h4 style="margin-top: 0.8rem;">特徴</h4>
                 <ul>
                     <li>HTML単体で作成可能</li>
                     <li>スタイル（CSS）やJavaScriptの同梱が可能</li>
                     <li>ブラウザがあれば誰でも閲覧可能</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">メリット</h4>
+                <h4 style="margin-top: 0.8rem;">メリット</h4>
                 <ul>
                     <li><span class="highlight">サーバー不要</span>で配布が簡単</li>
                     <li><span class="highlight">軽量</span>で動作が速い</li>
@@ -693,12 +816,12 @@ body.overview-active #progress-bar {
             <div class="content">
                 <h4>代表例</h4>
                 <p>文字起こしツール、メディア変換・加工ツール、データ分析ツールなど</p>
-                <h4 style="margin-top: 1rem;">特徴</h4>
+                <h4 style="margin-top: 0.8rem;">特徴</h4>
                 <ul>
                     <li><span class="highlight">インターネットにつながっていない環境</span>でいろいろな処理を実現</li>
                     <li>専門的な処理（音声認識、画像処理等）に対応</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">メリット</h4>
+                <h4 style="margin-top: 0.8rem;">メリット</h4>
                 <ul>
                     <li><span class="highlight">機密情報を扱う業務</span>でも安心</li>
                     <li><span class="highlight">外部サービスに依存しない</span></li>
@@ -714,12 +837,12 @@ body.overview-active #progress-bar {
             <div class="content">
                 <h4>代表例</h4>
                 <p>QRコード受付、伝言板ツール、在庫管理ツール、予約システムなど</p>
-                <h4 style="margin-top: 1rem;">特徴</h4>
+                <h4 style="margin-top: 0.8rem;">特徴</h4>
                 <ul>
                     <li><span class="highlight">リアルタイムで変化するデータ</span>の編集と共有</li>
                     <li>複数人での同時利用が可能</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">メリット</h4>
+                <h4 style="margin-top: 0.8rem;">メリット</h4>
                 <ul>
                     <li><span class="highlight">紙ベースの業務をデジタル化</span></li>
                     <li>データの一元管理が実現</li>
@@ -735,12 +858,12 @@ body.overview-active #progress-bar {
             <div class="content">
                 <h4>代表例</h4>
                 <p>トークン計測、プロンプトテンプレート管理、引継ぎプロンプト生成など</p>
-                <h4 style="margin-top: 1rem;">特徴</h4>
+                <h4 style="margin-top: 0.8rem;">特徴</h4>
                 <ul>
                     <li><span class="highlight">生成AI利用を効率化</span></li>
                     <li>コスト管理やトーク上限の把握に役立つ</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">メリット</h4>
+                <h4 style="margin-top: 0.8rem;">メリット</h4>
                 <ul>
                     <li>生成AIの使い方が上達</li>
                     <li>無駄なトークン消費を防止</li>
@@ -768,12 +891,12 @@ body.overview-active #progress-bar {
 		<h4>リンク：【割愛】</h4>
                 <h4>用途</h4>
 		<p>部署内の連絡事項を一元管理</p>
-                <h4 style="margin-top: 1rem;">機能</h4>
+                <h4 style="margin-top: 0.8rem;">機能</h4>
                 <ul>
                     <li><span class="highlight">返信/既読ボタン機能</span>あり</li>
                     <li>投稿日時の自動記録</li>
                 </ul>
-                <div class="image-placeholder" style="width: 500px; height: 300px;">
+                <div class="image-placeholder" style="max-width: 500px; min-height: 150px;">
                     <img src="image/23_den.png" alt="伝言板ツール" style="display: none;">
                 </div>
             </div>
@@ -787,12 +910,12 @@ body.overview-active #progress-bar {
 		<h4>リンク：【割愛】</h4>
                 <h4>用途</h4>
                 <p>会議室の場所を一目で確認</p>
-                <h4 style="margin-top: 1rem;">機能</h4>
+                <h4 style="margin-top: 0.8rem;">機能</h4>
                 <ul>
                     <li><span class="highlight">拡大表示機能</span></li>
                     <li><span class="highlight">マウスホバーで室の場所を表示</span></li>
                 </ul>
-                <div class="image-placeholder" style="width: 500px; height: 300px;">
+                <div class="image-placeholder" style="max-width: 500px; min-height: 150px;">
                     <img src="image/Omitted.png" alt="会議室早見表" style="display: none;">
                 </div>
             </div>
@@ -806,12 +929,12 @@ body.overview-active #progress-bar {
 		<h4>リンク：【割愛】</h4>
                 <h4>用途</h4>
                 <p>会議音声を議事録に変換（機密情報も安心）</p>
-                <h4 style="margin-top: 1rem;">機能</h4>
+                <h4 style="margin-top: 0.8rem;">機能</h4>
                 <ul>
                     <li>音声ファイルを選択するだけで文字起こし</li>
                     <li><span class="highlight">タイムスタンプ付き出力</span></li>
                 </ul>
-                <div class="image-placeholder" style="width: 500px; height: 300px;">
+                <div class="image-placeholder" style="max-width: 500px; min-height: 150px;">
                     <img src="image/25_tr.png" alt="文字起こしツール" style="display: none;">
                 </div>
             </div>
@@ -825,12 +948,12 @@ body.overview-active #progress-bar {
 		<h4>リンク：【割愛】</h4>
                 <h4>用途</h4>
                 <p>イベント受付・出退勤管理の効率化</p>
-                <h4 style="margin-top: 1rem;">機能</h4>
+                <h4 style="margin-top: 0.8rem;">機能</h4>
                 <ul>
                     <li><span class="highlight">PC内蔵のカメラを利用</span>してQRコードを読込み</li>
                     <li>データベースファイルに自動記録</li>
                 </ul>
-                <div class="image-placeholder" style="width: 500px; height: 300px;">
+                <div class="image-placeholder" style="max-width: 500px; min-height: 150px;">
                     <img src="image/26_qr.png" alt="QRコード受付" style="display: none;">
                 </div>
             </div>
@@ -844,12 +967,12 @@ body.overview-active #progress-bar {
 		<h4>リンク：【割愛】</h4>
                 <h4>用途</h4>
                 <p>プロンプトの文字数・トークン数を確認</p>
-                <h4 style="margin-top: 1rem;">機能</h4>
+                <h4 style="margin-top: 0.8rem;">機能</h4>
                 <ul>
                     <li><span class="highlight">生成AIのモデル別</span>に利用トークン量の推定値を見積もり</li>
                     <li>複数プロンプトの一括計測</li>
                 </ul>
-                <div class="image-placeholder" style="width: 500px; height: 300px;">
+                <div class="image-placeholder" style="max-width: 500px; min-height: 150px;">
                     <img src="image/tool5_token_estimator.png" alt="トークン見積もり" style="display: none;">
                 </div>
             </div>
@@ -861,7 +984,7 @@ body.overview-active #progress-bar {
             <h2>5. バイブコーディング実践</h2>
             <div class="content" style="text-align: center;">
                 <h3 style="text-align: center;">実際に手を動かして<br>ツールを作ってみましょう！</h3>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/hands_on.png" alt="実践イメージ" style="display: none;">
                 </div>
             </div>
@@ -874,7 +997,7 @@ body.overview-active #progress-bar {
             <div class="content">
                 <h4>課題</h4>
                 <p>備品更新説明資料をHTML形式で作成</p>
-                <h4 style="margin-top: 1rem;">所要時間</h4>
+                <h4 style="margin-top: 0.8rem;">所要時間</h4>
                 <p>10分</p>
             </div>
             <div class="slide-number">29 / 52</div>
@@ -908,7 +1031,7 @@ body.overview-active #progress-bar {
                     <li>Enterキー等で生成AIにプロンプトを送信</li>
                     <li>数秒〜数十秒で完成したコードが出力される</li>
                 </ul>
-                <div class="image-placeholder" style="margin-top: 1rem;">
+                <div class="image-placeholder" style="margin-top: 0.8rem;">
                     <img src="image/Omitted.png" alt="Step1画面" style="display: none;">
                 </div>
             </div>
@@ -924,7 +1047,7 @@ body.overview-active #progress-bar {
                     <li>Windowsのメモ帳（または任意のテキストエディタ）に貼り付け</li>
                     <li>コードの先頭から末尾まで（&lt;!DOCTYPE html&gt;　～　&lt;/html&gt;）全て選択することが重要</li>
                 </ul>
-                <div class="image-placeholder" style="margin-top: 1rem;">
+                <div class="image-placeholder" style="margin-top: 0.8rem;">
                     <img src="image/step2_copy.png" alt="Step2画面" style="display: none;">
                 </div>
             </div>
@@ -940,7 +1063,7 @@ body.overview-active #progress-bar {
                     <li>保存場所は分かりやすい場所（デスクトップ等）</li>
                     <li>ファイルをダブルクリックしてブラウザで表示確認</li>
                 </ul>
-                <div class="image-placeholder" style="margin-top: 1rem;">
+                <div class="image-placeholder" style="margin-top: 0.8rem;">
                     <img src="image/step3_save.png" alt="Step3画面" style="display: none;">
                 </div>
             </div>
@@ -971,12 +1094,12 @@ body.overview-active #progress-bar {
                     <li>「タイトルを中央揃えにして、フォントサイズを大きくしてください」</li>
                     <li>「見出しに下線を追加してください」</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">機能の追加</h4>
+                <h4 style="margin-top: 0.8rem;">機能の追加</h4>
                 <ul>
                     <li>「各章の最後に『トップに戻る』リンクを追加してください」</li>
                     <li>「ページ番号を追加してください」</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">レイアウト調整</h4>
+                <h4 style="margin-top: 0.8rem;">レイアウト調整</h4>
                 <ul>
                     <li>「印刷内容を画面表示とは別に，A4サイズ用に最適化してください」</li>
                     <li>「余白を上下20mm、左右15mmに設定してください」</li>
@@ -991,7 +1114,7 @@ body.overview-active #progress-bar {
             <div class="content">
                 <h4>課題</h4>
                 <p>Excelファイル入力事項の整合性などの確認</p>
-                <h4 style="margin-top: 1rem;">所要時間</h4>
+                <h4 style="margin-top: 0.8rem;">所要時間</h4>
                 <p>15分</p>
             </div>
             <div class="slide-number">36 / 52</div>
@@ -1009,7 +1132,7 @@ body.overview-active #progress-bar {
 　　J列の値をクリア
 　- ない場合：H列の値をクリア
 ・最終行の確認はA列で行ってください</div>
-                <h4 style="margin-top: 1rem;">このマクロの用途</h4>
+                <h4 style="margin-top: 0.8rem;">このマクロの用途</h4>
                 <ul>
                     <li>継続案件と新規案件の自動判別</li>
                     <li>条件に応じたデータの自動入力・クリア</li>
@@ -1028,7 +1151,7 @@ body.overview-active #progress-bar {
 
 ・確認結果を分かりやすく表示するよう配慮をお願いします
 ・最終行の確認はA列で行ってください</div>
-                <h4 style="margin-top: 1rem;">このマクロの用途</h4>
+                <h4 style="margin-top: 0.8rem;">このマクロの用途</h4>
                 <ul>
                     <li>重複データの検出</li>
                     <li>データ入力ミスの防止</li>
@@ -1047,7 +1170,7 @@ body.overview-active #progress-bar {
                     <li>コード全体をコピー</li>
                     <li>コメント（説明文）も含めてコピーすると後で理解しやすい</li>
                 </ul>
-                <div class="image-placeholder" style="margin-top: 1rem;">
+                <div class="image-placeholder" style="margin-top: 0.8rem;">
                     <img src="image/excel_step1.png" alt="Excel Step1" style="display: none;">
                 </div>
             </div>
@@ -1059,13 +1182,13 @@ body.overview-active #progress-bar {
             <h2>Step 2：「開発」タブ→「Visual Basic」</h2>
             <div class="content">
                 <h4>「開発」タブが表示されていない場合</h4>
-                <ol style="list-style-position: inside; margin-left: 2rem;">
+                <ol style="list-style-position: inside; margin-left: 1rem;">
                     <li>ファイル→オプション</li>
                     <li>リボンのユーザー設定</li>
                     <li>「開発」にチェックを入れる</li>
                     <li>OKをクリック</li>
                 </ol>
-                <h4 style="margin-top: 1rem;">VBAエディタを開く</h4>
+                <h4 style="margin-top: 0.8rem;">VBAエディタを開く</h4>
                 <ul>
                     <li>「開発」タブ→「Visual Basic」をクリック</li>
                     <li>または Alt + F11 キーで起動</li>
@@ -1078,13 +1201,13 @@ body.overview-active #progress-bar {
         <div class="slide">
             <h2>Step 3：コードを貼り付けて実行</h2>
             <div class="content">
-                <ol style="list-style-position: inside; margin-left: 2rem;">
+                <ol style="list-style-position: inside; margin-left: 1rem;">
                     <li>VBAエディタで「挿入」→「標準モジュール」</li>
                     <li>生成されたコードを貼り付け</li>
                     <li>F5キーで実行（またはツールバーの▶ボタン）</li>
                     <li>実行前にテストデータで動作確認</li>
                 </ol>
-                <div class="image-placeholder" style="margin-top: 1rem;">
+                <div class="image-placeholder" style="margin-top: 0.8rem;">
                     <img src="image/Omitted.png" alt="Excel Step3" style="display: none;">
                 </div>
             </div>
@@ -1100,7 +1223,7 @@ body.overview-active #progress-bar {
                     <li>「以下のエラーが出ました。修正してください。」と伝える</li>
                     <li>エラーが出た行番号も伝えると修正が早い</li>
                 </ul>
-                <div class="code-block" style="margin-top: 1rem;">以下のエラーが出ました。修正してください。
+                <div class="code-block" style="margin-top: 0.8rem;">以下のエラーが出ました。修正してください。
 
 実行時エラー '1004':
 Range クラスの Select メソッドが失敗しました。</div>
@@ -1117,12 +1240,12 @@ Range クラスの Select メソッドが失敗しました。</div>
                     <li>原因：コードの一部が欠けている、文法ミス</li>
                     <li>対処法：エラーメッセージを生成AIに伝えて修正依頼</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">「実行時エラー」</h4>
+                <h4 style="margin-top: 0.8rem;">「実行時エラー」</h4>
                 <ul>
                     <li>原因：セル範囲の指定ミス、データ形式の不一致</li>
                     <li>対処法：エラーが出た行番号を確認して報告</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">「オブジェクトが見つかりません」</h4>
+                <h4 style="margin-top: 0.8rem;">「オブジェクトが見つかりません」</h4>
                 <ul>
                     <li>原因：シート名やセル範囲の指定が実際のファイルと異なる</li>
                     <li>対処法：実際のシート名を確認して指示</li>
@@ -1137,19 +1260,19 @@ Range クラスの Select メソッドが失敗しました。</div>
             <div class="content">
                 <ul>
                     <li><span class="highlight">テストデータで試す</span>
-                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <ul style="margin-left: 1.5rem; margin-top: 0.4rem;">
                             <li>本番データの前に少量のテストデータで動作確認</li>
                             <li>3〜5行程度のサンプルデータを用意</li>
                         </ul>
                     </li>
                     <li><span class="highlight">バックアップを取る</span>
-                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <ul style="margin-left: 1.5rem; margin-top: 0.4rem;">
                             <li>マクロ実行前に必ずファイルを保存</li>
                             <li>別名保存でバックアップを作成</li>
                         </ul>
                     </li>
                     <li><span class="highlight">段階的に機能追加</span>
-                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <ul style="margin-left: 1.5rem; margin-top: 0.4rem;">
                             <li>一度に全機能を実装せず、1つずつ動作確認</li>
                             <li>基本機能→応用機能の順に追加</li>
                         </ul>
@@ -1182,7 +1305,7 @@ Range クラスの Select メソッドが失敗しました。</div>
                     <li>契約書の具体的な内容</li>
                     <li>人事評価や給与情報</li>
                 </ul>
-                <h4 style="margin-top: 1rem;">ダミーデータで代用</h4>
+                <h4 style="margin-top: 0.8rem;">ダミーデータで代用</h4>
                 <ul>
                     <li>「Ｙ田Ｔ郎」「サンプル株式会社」</li>
                     <li>「sample@example.com」</li>
@@ -1217,7 +1340,7 @@ Range クラスの Select メソッドが失敗しました。</div>
             <div class="content">
                 <h4>トークとは</h4>
                 <p>生成AIの会話の単位（1つのチャット）</p>
-                <h4 style="margin-top: 1rem;">上限の目安</h4>
+                <h4 style="margin-top: 0.8rem;">上限の目安</h4>
                 <table>
                     <tr>
                         <th>モデル</th>
@@ -1244,7 +1367,7 @@ Range クラスの Select メソッドが失敗しました。</div>
             <h2>7. 質疑応答＆まとめ</h2>
             <div class="content" style="text-align: center;">
                 <h3 style="text-align: center;"></h3>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/qa_image.png" alt="質疑応答" style="display: none;">
                 </div>
             </div>
@@ -1260,11 +1383,11 @@ Range クラスの Select メソッドが失敗しました。</div>
                     <li>プログラミング知識不要</li>
                     <li>日本語で指示するだけ</li>
                 </ul>
-                <h3 style="margin-top: 1rem;">✅ 良いプロンプトの3要素</h3>
+                <h3 style="margin-top: 0.8rem;">✅ 良いプロンプトの3要素</h3>
                 <ul>
                     <li>明確な目的、必要な機能、制約条件</li>
                 </ul>
-                <h3 style="margin-top: 1rem;">✅ 安全に使うためのルール</h3>
+                <h3 style="margin-top: 0.8rem;">✅ 安全に使うためのルール</h3>
                 <ul>
                     <li>個人情報・機密情報は入力しない</li>
                     <li>組織のルールを確認</li>
@@ -1282,7 +1405,7 @@ Range クラスの Select メソッドが失敗しました。</div>
                     <li>今日作ったツール、紹介されたツールを実務で使ってみる</li>
                     <li>小さな困りごとを1つ、生成AIで解決してみる</li>
                 </ul>
-                <h3 style="margin-top: 1.5rem;">さらに学びたい方へ</h3>
+                <h3 style="margin-top: 1rem;">さらに学びたい方へ</h3>
                 <ul>
                     <li>生成AIの公式ドキュメントを読む</li>
                     <li>オンラインコミュニティで事例を共有</li>
@@ -1295,21 +1418,16 @@ Range クラスの Select メソッドが失敗しました。</div>
 <!-- スライド52: 最後に -->
 <div class="slide">
     <h1>ご参加ありがとうございました!</h1>
-    <div class="content" style="text-align: center; font-size: 1.4rem;">
-        <p style="margin: 2rem 0;">明日からの業務改善に、<br>ぜひ生成AIを活用してください</p>
-        <p style="margin: 2rem 0;">皆さんの業務改善の成功を<br>心から応援しています!</p>
-                <div class="image-placeholder" style="margin-top: 2rem;">
+    <div class="content" style="text-align: center;">
+        <p style="margin: 1.5rem 0;">明日からの業務改善に、<br>ぜひ生成AIを活用してください</p>
+        <p style="margin: 1.5rem 0;">皆さんの業務改善の成功を<br>心から応援しています!</p>
+                <div class="image-placeholder" style="margin-top: 1rem;">
                     <img src="image/thank_youall.png" alt="ありがとうございました" style="display: none;">
                 </div>
     </div>
     <div class="slide-number">52 / 52</div>
 </div>
 
-    </div>
-
-    <div class="navigation">
-        <button class="nav-button" onclick="previousSlide()">◀ 前へ</button>
-        <button class="nav-button" onclick="nextSlide()">次へ ▶</button>
     </div>
 
     <script>
@@ -1405,7 +1523,7 @@ function toggleFullscreen() {
     }
 }
 
-// スライド一覧表示切り替え（修正版）
+// スライド一覧表示切り替え
 function toggleOverview() {
     const container = document.querySelector('.slide-container');
     const body = document.body;
@@ -1417,7 +1535,7 @@ function toggleOverview() {
         
         // 全スライドを表示
         slides.forEach((slide, index) => {
-            slide.classList.add('active'); // 全て表示
+            slide.classList.add('active');
             slide.style.display = 'block';
             slide.style.position = 'relative';
             slide.style.transform = 'none';
@@ -1461,7 +1579,7 @@ function toggleTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
-        timerDisplay.style.color = '#666';
+        timerDisplay.style.color = '#999';
     } else {
         startTime = Date.now();
         timerInterval = setInterval(updateTimer, 1000);
@@ -1531,41 +1649,38 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// スワイプ操作（タッチデバイス対応）
+// スワイプ操作（タッチデバイス対応・改善版）
 let touchStartX = 0;
 let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
 
 document.addEventListener('touchstart', function(event) {
     touchStartX = event.changedTouches[0].screenX;
+    touchStartY = event.changedTouches[0].screenY;
 }, false);
 
 document.addEventListener('touchend', function(event) {
     touchEndX = event.changedTouches[0].screenX;
+    touchEndY = event.changedTouches[0].screenY;
     handleSwipe();
 }, false);
 
 function handleSwipe() {
     const swipeThreshold = 50;
-    if (touchEndX < touchStartX - swipeThreshold) {
-        nextSlide(); // 左スワイプ
-    }
-    if (touchEndX > touchStartX + swipeThreshold) {
-        previousSlide(); // 右スワイプ
+    const horizontalDiff = Math.abs(touchEndX - touchStartX);
+    const verticalDiff = Math.abs(touchEndY - touchStartY);
+    
+    // 横方向のスワイプが縦方向より大きい場合のみスライド切り替え
+    if (horizontalDiff > verticalDiff) {
+        if (touchEndX < touchStartX - swipeThreshold) {
+            nextSlide(); // 左スワイプ
+        }
+        if (touchEndX > touchStartX + swipeThreshold) {
+            previousSlide(); // 右スワイプ
+        }
     }
 }
-
-// マウスホイール操作
-let wheelTimeout;
-document.addEventListener('wheel', function(event) {
-    clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(() => {
-        if (event.deltaY > 0) {
-            nextSlide();
-        } else if (event.deltaY < 0) {
-            previousSlide();
-        }
-    }, 50);
-}, { passive: true });
 
 // 画像の自動表示
 document.addEventListener('DOMContentLoaded', function() {
@@ -1601,22 +1716,22 @@ document.addEventListener('DOMContentLoaded', function() {
     createControls();
 });
 
-// コントロールパネル作成
+// コントロールパネル作成（スマホ最適化版）
 function createControls() {
     const controlsHTML = `
-        <div id="slide-controls" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 30px; display: flex; gap: 15px; align-items: center; z-index: 1000; color: white; font-family: Arial, sans-serif;">
-            <button onclick="firstSlide()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="最初のスライド">⏮</button>
-            <button onclick="previousSlide()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="前のスライド">◀</button>
-            <span id="slide-number" style="font-size: 14px; min-width: 60px; text-align: center;">1 / ${totalSlides}</span>
-            <button onclick="nextSlide()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="次のスライド">▶</button>
-            <button onclick="lastSlide()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="最後のスライド">⏭</button>
-            <span style="border-left: 1px solid #666; height: 20px; margin: 0 5px;"></span>
-            <button onclick="toggleOverview()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="一覧表示 (O)">☷</button>
-            <button onclick="toggleFullscreen()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="フルスクリーン (F)">⛶</button>
-            <button onclick="toggleTimer()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;" title="タイマー (T)">⏱</button>
-            <span id="timer" style="font-size: 14px; min-width: 50px; color: #666;">00:00</span>
+        <div id="slide-controls">
+            <button onclick="firstSlide()" title="最初のスライド">⏮</button>
+            <button onclick="previousSlide()" title="前のスライド">◀</button>
+            <span id="slide-number">1 / ${totalSlides}</span>
+            <button onclick="nextSlide()" title="次のスライド">▶</button>
+            <button onclick="lastSlide()" title="最後のスライド">⏭</button>
+            <span class="control-separator"></span>
+            <button onclick="toggleOverview()" title="一覧表示 (O)">☷</button>
+            <button onclick="toggleFullscreen()" title="フルスクリーン (F)">⛶</button>
+            <button onclick="toggleTimer()" title="タイマー (T)">⏱</button>
+            <span id="timer">00:00</span>
         </div>
-        <div id="progress-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: #007bff; width: 0%; transition: width 0.3s; z-index: 1001;"></div>
+        <div id="progress-bar"></div>
     `;
     
     document.body.insertAdjacentHTML('beforeend', controlsHTML);
