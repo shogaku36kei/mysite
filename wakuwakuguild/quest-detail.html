@@ -203,51 +203,54 @@
       }
     });
 
-    async function acceptQuest() {
-      const memberId = document.getElementById('memberId').value;
-      const acceptType = document.getElementById('acceptType').value;
-      const message = document.getElementById('message').value;
-      
-      if (!memberId) {
-        alert('メンバーIDを入力してください');
-        return;
-      }
+async function acceptQuest() {
+  const memberId = document.getElementById('memberId').value;
+  const acceptType = document.getElementById('acceptType').value;
+  const message = document.getElementById('message').value;
+  
+  if (!memberId) {
+    alert('メンバーIDを入力してください');
+    return;
+  }
 
-      let acceptorId = memberId;
-      if (acceptType === 'パーティ') {
-        const partyId = document.getElementById('partyId').value;
-        if (!partyId) {
-          alert('パーティIDを入力してください');
-          return;
-        }
-        acceptorId = partyId;
-      }
-
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'acceptQuest',
-            questId: questId,
-            acceptorId: acceptorId,
-            acceptorType: acceptType,
-            message: message
-          })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          alert('クエストを受注しました！\nマイページから進捗を確認できます。');
-          window.location.href = 'mypage.html';
-        } else {
-          alert('受注に失敗しました: ' + result.message);
-        }
-      } catch (error) {
-        console.error('受注エラー:', error);
-        alert('受注処理中にエラーが発生しました');
-      }
+  let acceptorId = memberId;
+  if (acceptType === 'パーティ') {
+    const partyId = document.getElementById('partyId').value;
+    if (!partyId) {
+      alert('パーティIDを入力してください');
+      return;
     }
+    acceptorId = partyId;
+  }
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: JSON.stringify({
+        action: 'acceptQuest',
+        questId: questId,
+        acceptorId: acceptorId,
+        acceptorType: acceptType,
+        message: message
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('クエストを受注しました！\nマイページから進捗を確認できます。');
+      window.location.href = 'mypage.html';
+    } else {
+      alert('受注に失敗しました: ' + result.message);
+    }
+  } catch (error) {
+    console.error('受注エラー:', error);
+    alert('受注処理中にエラーが発生しました');
+  }
+}
   </script>
 </body>
 </html>
