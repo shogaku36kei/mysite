@@ -269,7 +269,13 @@
   let isLoggedIn = false;
 
   function initializePage() {
-    setupLogin();
+    // ログインフォームの存在確認
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      setupLogin();
+    } else {
+      console.error('loginForm が見つかりません');
+    }
   }
 
   /**
@@ -277,6 +283,11 @@
    */
   function setupLogin() {
     const loginForm = document.getElementById('loginForm');
+    
+    if (!loginForm) {
+      console.error('loginForm要素が存在しません');
+      return;
+    }
     
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -300,9 +311,14 @@
    * ダッシュボード表示
    */
   function showDashboard() {
-    document.getElementById('loginSection').style.display = 'none';
-    document.getElementById('dashboardContent').style.display = 'block';
-    setupTabs();
+    const loginSection = document.getElementById('loginSection');
+    const dashboardContent = document.getElementById('dashboardContent');
+    
+    if (loginSection) loginSection.style.display = 'none';
+    if (dashboardContent) {
+      dashboardContent.style.display = 'block';
+      setupTabs();
+    }
   }
 
   /**
@@ -320,13 +336,20 @@
     try {
       const stats = await API.get('getAdminStats');
       
-      document.getElementById('pendingTotal').textContent = stats.pendingTotal || 0;
-      document.getElementById('pendingMembers').textContent = stats.pendingMembers || 0;
-      document.getElementById('pendingClients').textContent = stats.pendingClients || 0;
-      document.getElementById('pendingQuests').textContent = stats.pendingQuests || 0;
-      document.getElementById('inProgress').textContent = stats.inProgress || 0;
-      document.getElementById('completed').textContent = stats.completed || 0;
-      document.getElementById('deposit').textContent = Utils.formatCurrency(stats.deposit || 0);
+      const elements = {
+        pendingTotal: stats.pendingTotal || 0,
+        pendingMembers: stats.pendingMembers || 0,
+        pendingClients: stats.pendingClients || 0,
+        pendingQuests: stats.pendingQuests || 0,
+        inProgress: stats.inProgress || 0,
+        completed: stats.completed || 0,
+        deposit: Utils.formatCurrency(stats.deposit || 0)
+      };
+      
+      Object.keys(elements).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.textContent = elements[key];
+      });
     } catch (error) {
       console.error('統計読み込みエラー:', error);
     }
@@ -352,6 +375,7 @@
    */
   function displayPendingMembers(members) {
     const container = document.getElementById('pendingMembersList');
+    if (!container) return;
     
     if (members.length === 0) {
       container.innerHTML = '<p class="no-data">審査待ちのメンバーはいません</p>';
@@ -396,6 +420,7 @@
    */
   function displayPendingClients(clients) {
     const container = document.getElementById('pendingClientsList');
+    if (!container) return;
     
     if (clients.length === 0) {
       container.innerHTML = '<p class="no-data">審査待ちの依頼主はいません</p>';
@@ -440,6 +465,7 @@
    */
   function displayPendingQuests(quests) {
     const container = document.getElementById('pendingQuestsList');
+    if (!container) return;
     
     if (quests.length === 0) {
       container.innerHTML = '<p class="no-data">審査待ちのクエストはありません</p>';
@@ -618,88 +644,12 @@
         document.querySelectorAll('.tab-content').forEach(content => {
           content.style.display = 'none';
         });
-        document.getElementById(`${tab}Tab`).style.display = 'block';
-        
-        // タブごとのデータ読み込み
-        switch(tab) {
-          case 'quests':
-            await loadAllQuests();
-            break;
-          case 'members':
-            await loadAllMembers();
-            break;
-          case 'clients':
-            await loadAllClients();
-            break;
-          case 'payment':
-            await loadPaymentData();
-            break;
-          case 'reports':
-            await loadReports();
-            break;
+        const tabContent = document.getElementById(`${tab}Tab`);
+        if (tabContent) {
+          tabContent.style.display = 'block';
         }
       });
     });
-  }
-
-  /**
-   * 全クエスト読み込み
-   */
-  async function loadAllQuests() {
-    try {
-      const quests = await API.get('getAllQuests');
-      // 表示処理（省略）
-    } catch (error) {
-      console.error('クエスト読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 全メンバー読み込み
-   */
-  async function loadAllMembers() {
-    try {
-      const members = await API.get('getAllMembers');
-      // 表示処理（省略）
-    } catch (error) {
-      console.error('メンバー読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 全依頼主読み込み
-   */
-  async function loadAllClients() {
-    try {
-      const clients = await API.get('getAllClients');
-      // 表示処理（省略）
-    } catch (error) {
-      console.error('依頼主読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 報酬データ読み込み
-   */
-  async function loadPaymentData() {
-    try {
-      const data = await API.get('getPaymentData');
-      // 表示処理（省略）
-    } catch (error) {
-      console.error('報酬データ読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 報告データ読み込み
-   */
-  async function loadReports() {
-    try {
-      const reports = await API.get('getReports');
-      // 表示処理（省略）
-    } catch (error) {
-      console.error('報告データ読み込みエラー:', error);
-    }
   }
 </script>
 </body>
