@@ -152,66 +152,70 @@
 
   <script src="js/config.js"></script>
   <script>
-    async function submitQuestForm(event) {
-      event.preventDefault();
-      
-      const clientId = document.getElementById('clientId').value;
-      if (!clientId) {
-        alert('依頼主IDを入力してください');
-        return;
-      }
+async function submitQuestForm(event) {
+  event.preventDefault();
+  
+  const clientId = document.getElementById('clientId').value;
+  if (!clientId) {
+    alert('依頼主IDを入力してください');
+    return;
+  }
 
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送信中...';
-      
-      const formData = new FormData(event.target);
-      
-      const questData = {
-        clientId: clientId,
-        questTitle: formData.get('questTitle'),
-        category: formData.get('category'),
-        difficulty: formData.get('difficulty'),
-        recommendRank: formData.get('recommendRank'),
-        description: formData.get('description'),
-        location: formData.get('location'),
-        desiredDate: formData.get('desiredDate'),
-        estimatedHours: formData.get('estimatedHours'),
-        reward: parseInt(formData.get('reward')),
-        requiredMembers: parseInt(formData.get('requiredMembers')),
-        equipment: formData.get('equipment'),
-        notes: formData.get('notes')
-      };
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送信中...';
+  
+  const formData = new FormData(event.target);
+  
+  const questData = {
+    clientId: clientId,
+    questTitle: formData.get('questTitle'),
+    category: formData.get('category'),
+    difficulty: formData.get('difficulty'),
+    recommendRank: formData.get('recommendRank'),
+    description: formData.get('description'),
+    location: formData.get('location'),
+    desiredDate: formData.get('desiredDate'),
+    estimatedHours: formData.get('estimatedHours'),
+    reward: parseInt(formData.get('reward')),
+    requiredMembers: parseInt(formData.get('requiredMembers')),
+    equipment: formData.get('equipment'),
+    notes: formData.get('notes')
+  };
 
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'registerQuest',
-            data: questData
-          })
-        });
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: JSON.stringify({
+        action: 'registerQuest',
+        data: questData
+      })
+    });
 
-        const result = await response.json();
-        
-        if (result.success) {
-          alert(`✅ クエストを投稿しました！\n\nクエストID: ${result.questId}\n\n事務局の審査後、掲示板に掲載されます。\n審査結果はメールでお知らせします。`);
-          event.target.reset();
-          document.getElementById('clientId').value = clientId; // 依頼主IDは保持
-        } else {
-          alert('❌ 投稿に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
-        }
-      } catch (error) {
-        console.error('投稿エラー:', error);
-        alert('❌ 投稿処理中にエラーが発生しました\n\nネットワーク接続を確認して、もう一度お試しください。');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'クエストを投稿する';
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert(`✅ クエストを投稿しました！\n\nクエストID: ${result.questId}\n\n事務局の審査後、掲示板に掲載されます。\n審査結果はメールでお知らせします。`);
+      event.target.reset();
+      document.getElementById('clientId').value = clientId;
+    } else {
+      alert('❌ 投稿に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+    }
+  } catch (error) {
+    console.error('投稿エラー:', error);
+    alert('❌ 投稿処理中にエラーが発生しました\n\n' + error.message + '\n\nネットワーク接続を確認して、もう一度お試しください。');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'クエストを投稿する';
+  }
+}
   </script>
 </body>
 </html>
