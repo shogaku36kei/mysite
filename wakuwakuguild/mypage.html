@@ -440,41 +440,41 @@
   /**
    * 依頼主クエストアイテムHTML生成
    */
-  function createClientQuestItemHTML(quest, status) {
-    let actions = '';
-    let dateLabel = '希望日';
-    
-    if (status === 'posting') {
-      dateLabel = '希望日';
-      actions = `
-        <button onclick="viewApplicants('${quest.id}')" class="btn-primary">応募者を見る</button>
-        <button onclick="cancelQuest('${quest.id}')" class="btn-secondary">募集中止</button>
-      `;
-    } else if (status === 'inProgress') {
-      dateLabel = '実施予定';
-      actions = `
-        <button onclick="confirmComplete('${quest.id}')" class="btn-primary">完了確認</button>
-        <button onclick="contactMember('${quest.acceptorId}')" class="btn-secondary">メッセージ</button>
-      `;
-    } else if (status === 'history') {
-      dateLabel = '完了日';
-    }
+	function createClientQuestItemHTML(quest, status) {
+	  let actions = '';
+	  let dateLabel = '希望日';
+	  
+	  if (status === 'posting') {
+	    dateLabel = '希望日';
+	    actions = `
+	      <button onclick="viewApplicants('${quest.id}')" class="btn-primary">応募者を見る</button>
+	      <button onclick="cancelQuest('${quest.id}')" class="btn-danger">募集中止</button>
+	    `;
+	  } else if (status === 'inProgress') {
+	    dateLabel = '実施予定';
+	    actions = `
+	      <button onclick="confirmComplete('${quest.id}')" class="btn-primary">完了確認</button>
+	      <button onclick="contactMember('${quest.acceptorId}')" class="btn-secondary">メッセージ</button>
+	    `;
+	  } else if (status === 'history') {
+	    dateLabel = '完了日';
+	  }
 
-    return `
-      <div class="quest-item ${status === 'history' ? 'completed' : ''}">
-        <div class="quest-info">
-          <h4>${escapeHtml(quest.title)}</h4>
-          ${quest.acceptorName ? `<p>👤 受注者: ${escapeHtml(quest.acceptorName)}</p>` : ''}
-          <p>📅 ${dateLabel}: ${formatDate(quest.date)}</p>
-          <p>💰 報酬: ¥${quest.reward.toLocaleString()}</p>
-          ${status === 'history' && quest.rating ? `<p>⭐ あなたの評価: ${quest.rating}</p>` : ''}
-        </div>
-        <div class="quest-actions">
-          ${actions}
-        </div>
-      </div>
-    `;
-  }
+	  return `
+	    <div class="quest-item ${status === 'history' ? 'completed' : ''}">
+	      <div class="quest-info">
+	        <h4>${escapeHtml(quest.title)}</h4>
+	        ${quest.acceptorName ? `<p>👤 受注者: ${escapeHtml(quest.acceptorName)}</p>` : ''}
+	        <p>📅 ${dateLabel}: ${formatDate(quest.date)}</p>
+	        <p>💰 報酬: ¥${quest.reward.toLocaleString()}</p>
+	        ${status === 'history' && quest.rating ? `<p>⭐ あなたの評価: ${quest.rating}</p>` : ''}
+	      </div>
+	      <div class="quest-actions">
+	        ${actions}
+	      </div>
+	    </div>
+	  `;
+	}
 
   /**
    * 経験値進捗計算
@@ -631,6 +631,43 @@
       alert('❌ 確認処理中にエラーが発生しました');
     }
   }
+
+/**
+ * クエスト募集中止（依頼主用）
+ */
+async function cancelQuest(questId) {
+  const reason = prompt('募集中止の理由を入力してください:');
+  if (!reason) return;
+
+  if (!confirm(`クエスト【${questId}】の募集を中止しますか？\n\n※受注者がいない場合のみ中止できます。`)) {
+    return;
+  }
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'cancelQuestByClient',
+        questId: questId,
+        clientId: currentUser.id,
+        reason: reason
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('✅ ' + result.message);
+      await loadClientQuests(currentUser.id);
+    } else {
+      alert('❌ 中止に失敗しました: ' + result.message);
+    }
+  } catch (error) {
+    console.error('中止エラー:', error);
+    alert('❌ 中止処理中にエラーが発生しました');
+  }
+}
 
   function viewApplicants(questId) {
     alert('応募者一覧機能は今後実装予定です');

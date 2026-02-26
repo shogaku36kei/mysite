@@ -415,37 +415,46 @@
     }
   }
 
-  function displayQuests(quests) {
-    const container = document.getElementById('questManagementList');
-    
-    if (!quests || quests.length === 0) {
-      container.innerHTML = '<p class="no-data">クエストがありません</p>';
-      return;
-    }
+	function displayQuests(quests) {
+	  const container = document.getElementById('questManagementList');
+	  
+	  if (!quests || quests.length === 0) {
+	    container.innerHTML = '<p class="no-data">クエストがありません</p>';
+	    return;
+	  }
 
-    let html = '<table class="admin-table"><thead><tr>';
-    html += '<th>ID</th><th>クエスト名</th><th>依頼主</th><th>受注者</th><th>報酬</th><th>ステータス</th><th>操作</th>';
-    html += '</tr></thead><tbody>';
+	  let html = '<table class="admin-table"><thead><tr>';
+	  html += '<th>ID</th><th>クエスト名</th><th>依頼主</th><th>受注者</th><th>報酬</th><th>審査状況</th><th>掲載状況</th><th>操作</th>';
+	  html += '</tr></thead><tbody>';
 
-    quests.forEach(quest => {
-      html += `
-        <tr>
-          <td>${quest.id}</td>
-          <td>${escapeHtml(quest.title)}</td>
-          <td>${quest.clientId}</td>
-          <td>${quest.acceptorId || '-'}</td>
-          <td>¥${quest.reward.toLocaleString()}</td>
-          <td><span class="status-badge status-${getStatusClass(quest.publicStatus)}">${quest.publicStatus}</span></td>
-          <td>
-            <button onclick="viewDetail('quest', '${quest.id}')" class="btn-secondary">詳細</button>
-          </td>
-        </tr>
-      `;
-    });
+	  quests.forEach(quest => {
+	    html += `
+	      <tr>
+	        <td>${quest.id}</td>
+	        <td>${escapeHtml(quest.title)}</td>
+	        <td>${quest.clientId}</td>
+	        <td>${quest.acceptorId || '-'}</td>
+	        <td>¥${quest.reward.toLocaleString()}</td>
+	        <td><span class="status-badge status-${quest.approvalStatus === '承認' ? 'active' : 'warning'}">${quest.approvalStatus}</span></td>
+	        <td><span class="status-badge status-${getStatusClass(quest.publicStatus)}">${quest.publicStatus}</span></td>
+	        <td>
+	          <button onclick="viewDetail('quest', '${quest.id}')" class="btn-secondary">詳細</button>
+	          ${quest.approvalStatus === '承認' && !quest.acceptorId ? 
+	            `<button onclick="revokeQuestApproval('${quest.id}')" class="btn-warning">承認取消</button>` : 
+	            ''
+	          }
+	          ${quest.approvalStatus === '承認' || quest.approvalStatus === '申請中' ? 
+	            `<button onclick="deleteQuestByAdmin('${quest.id}')" class="btn-danger">削除</button>` : 
+	            ''
+	          }
+	        </td>
+	      </tr>
+	    `;
+	  });
 
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
+	  html += '</tbody></table>';
+	  container.innerHTML = html;
+	}
 
   /**
    * メンバー管理
@@ -936,6 +945,78 @@
       location.reload();
     }
   }
+  /**
+	 * クエスト承認取消（審査状態に戻す）
+	 */
+	async function revokeQuestApproval(questId) {
+	  const reason = prompt('承認取消の理由を入力してください:');
+	  if (!reason) return;
+
+	  if (!confirm(`クエスト【${questId}】の承認を取り消しますか？\n\n※審査状態に戻り、再審査が必要になります。`)) {
+	    return;
+	  }
+
+	  try {
+	    const response = await fetch(GAS_WEB_APP_URL, {
+	      method: 'POST',
+	      headers: { 'Content-Type': 'text/plain' },
+	      body: JSON.stringify({
+	        action: 'revokeQuestApproval',
+	        questId: questId,
+	        reason: reason
+	      })
+	    });
+
+	    const result = await response.json();
+	    
+	    if (result.success) {
+	      alert('✅ ' + result.message);
+	      await loadQuestManagement();
+	      await loadApprovalData();
+	    } else {
+	      alert('❌ 取消に失敗しました: ' + result.message);
+	    }
+	  } catch (error) {
+	    console.error('取消エラー:', error);
+	    alert('❌ 取消処理中にエラーが発生しました');
+	  }
+	}
+
+	/**
+	 * クエスト削除（事務局用）
+	 */
+	async function deleteQuestByAdmin(questId) {
+	  const reason = prompt('削除理由を入力してください:');
+	  if (!reason) return;
+
+	  if (!confirm(`クエスト【${questId}】を削除しますか？\n\n※この操作は取り消せません。`)) {
+	    return;
+	  }
+
+	  try {
+	    const response = await fetch(GAS_WEB_APP_URL, {
+	      method: 'POST',
+	      headers: { 'Content-Type': 'text/plain' },
+	      body: JSON.stringify({
+	        action: 'deleteQuestByAdmin',
+	        questId: questId,
+	        reason: reason
+	      })
+	    });
+
+	    const result = await response.json();
+	    
+	    if (result.success) {
+	      alert('✅ ' + result.message);
+	      await loadQuestManagement();
+	    } else {
+	      alert('❌ 削除に失敗しました: ' + result.message);
+	    }
+	  } catch (error) {
+	    console.error('削除エラー:', error);
+	    alert('❌ 削除処理中にエラーが発生しました');
+	  }
+	}
 </script>
 </body>
 </html>

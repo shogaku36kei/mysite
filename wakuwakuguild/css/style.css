@@ -980,3 +980,36 @@ button:disabled {
   color: #667eea;
   border-bottom-color: #667eea;
 }
+
+/* 危険なボタン */
+.btn-danger {
+  background: #e63946;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.btn-danger:hover {
+  background: #c1121f;
+}
+
+/* 警告ボタン */
+.btn-warning {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.btn-warning:hover {
+  background: #d97706;
+}
+
