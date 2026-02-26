@@ -926,3 +926,27 @@ footer {
     width: 100%;
   }
 }
+
+/* ローディング表示 */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #667eea;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-data p {
+  margin: 0.5rem 0;
+}
+
+/* ボタン無効化時 */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
