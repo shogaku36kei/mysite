@@ -1188,3 +1188,136 @@ button:disabled {
   }
 }
 
+/* ========================================
+   報酬表示（改善版）
+======================================== */
+
+.reward-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.reward-per-person {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.reward-label {
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reward-amount-large {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.reward-total {
+  text-align: center;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 2px dashed #cbd5e0;
+}
+
+.reward-label-small {
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.reward-amount-small {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.reward-note {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-top: 0.3rem;
+}
+
+/* 源泉徴収情報 */
+.tax-info {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.tax-info p {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+}
+
+.tax-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.tax-table th {
+  text-align: left;
+  padding: 0.75rem;
+  background: #f7fafc;
+  font-weight: normal;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tax-table td {
+  text-align: right;
+  padding: 0.75rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  font-family: 'Courier New', monospace;
+}
+
+.tax-table tr.tax-total {
+  border-top: 2px solid #667eea;
+}
+
+.tax-table tr.tax-total th,
+.tax-table tr.tax-total td {
+  background: #f0f4ff;
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.tax-note {
+  font-size: 0.85rem;
+  color: #718096;
+  margin: 0;
+  font-style: italic;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .reward-amount-large {
+    font-size: 2rem;
+  }
+  
+  .reward-amount-small {
+    font-size: 1.2rem;
+  }
+  
+  .tax-table th,
+  .tax-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

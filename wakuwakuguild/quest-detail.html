@@ -117,88 +117,121 @@
       }
     }
 
-    /**
-     * クエスト詳細を表示
-     */
-    function displayQuestDetail(quest) {
-      const difficulty = DIFFICULTIES[quest.difficulty] || DIFFICULTIES[3];
-      
-      const html = `
-        <div class="quest-detail-header">
-          <h2>${quest.title}</h2>
-          <div class="quest-meta">
-            <div class="difficulty-large" title="${difficulty.label}">${difficulty.stars}</div>
-            <div class="recommend-rank">推奨ランク: ${quest.recommendRank}</div>
-            ${Utils.getCategoryBadge(quest.category)}
+/**
+ * クエスト詳細を表示
+ */
+function displayQuestDetail(quest) {
+  const difficulty = DIFFICULTIES[quest.difficulty] || DIFFICULTIES[3];
+  
+  // ★報酬計算を追加
+  const totalReward = Number(quest.reward);
+  const requiredMembers = Number(quest.requiredMembers);
+  const rewardPerPerson = Math.floor(totalReward / requiredMembers);
+  
+  const html = `
+    <div class="quest-detail-header">
+      <h2>${quest.title}</h2>
+      <div class="quest-meta">
+        <div class="difficulty-large" title="${difficulty.label}">${difficulty.stars}</div>
+        <div class="recommend-rank">推奨ランク: ${quest.recommendRank}</div>
+        ${Utils.getCategoryBadge(quest.category)}
+      </div>
+    </div>
+    
+    <div class="quest-detail-body">
+      <div class="detail-section">
+        <h3>📋 基本情報</h3>
+        <table class="detail-table">
+          <tr>
+            <th>依頼主</th>
+            <td>${quest.clientName}</td>
+          </tr>
+          <tr>
+            <th>実施場所</th>
+            <td>${quest.location}</td>
+          </tr>
+          <tr>
+            <th>希望日時</th>
+            <td>${Utils.formatDate(quest.desiredDate)}</td>
+          </tr>
+          <tr>
+            <th>所要時間</th>
+            <td>${quest.estimatedHours}</td>
+          </tr>
+          <tr>
+            <th>募集人数</th>
+            <td>${quest.requiredMembers}名</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="detail-section">
+        <h3>💰 報酬</h3>
+        
+        <!-- ★報酬表示を改善 -->
+        <div class="reward-display">
+          <div class="reward-per-person">
+            <div class="reward-label">1人あたりの報酬</div>
+            <div class="reward-amount-large">${Utils.formatCurrency(rewardPerPerson)}</div>
+          </div>
+          
+          <div class="reward-total">
+            <div class="reward-label-small">報酬総額</div>
+            <div class="reward-amount-small">${Utils.formatCurrency(totalReward)}</div>
+            <div class="reward-note">（${requiredMembers}名分）</div>
           </div>
         </div>
         
-        <div class="quest-detail-body">
-          <div class="detail-section">
-            <h3>📋 基本情報</h3>
-            <table class="detail-table">
-              <tr>
-                <th>依頼主</th>
-                <td>${quest.clientName}</td>
-              </tr>
-              <tr>
-                <th>実施場所</th>
-                <td>${quest.location}</td>
-              </tr>
-              <tr>
-                <th>希望日時</th>
-                <td>${Utils.formatDate(quest.desiredDate)}</td>
-              </tr>
-              <tr>
-                <th>所要時間</th>
-                <td>${quest.estimatedHours}</td>
-              </tr>
-              <tr>
-                <th>募集人数</th>
-                <td>${quest.requiredMembers}名</td>
-              </tr>
-            </table>
-          </div>
-
-          <div class="detail-section">
-            <h3>💰 報酬</h3>
-            <div class="reward-amount">${Utils.formatCurrency(quest.reward)}</div>
-            <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-              ※源泉徴収税（10.21%）が差し引かれます<br>
-              手取り額: ${Utils.formatCurrency(Utils.calculateNetAmount(quest.reward))}
-            </p>
-          </div>
-
-          <div class="detail-section">
-            <h3>📝 内容詳細</h3>
-            <div class="description-box">${quest.description}</div>
-          </div>
-
-          ${quest.equipment ? `
-            <div class="detail-section">
-              <h3>🛠️ 必要な道具・装備</h3>
-              <div class="equipment-box">${quest.equipment}</div>
-            </div>
-          ` : ''}
-
-          ${quest.notes ? `
-            <div class="detail-section">
-              <h3>⚠️ 注意事項・備考</h3>
-              <div class="notes-box">${quest.notes}</div>
-            </div>
-          ` : ''}
-
-          <div class="detail-section">
-            <h3>⭐ 獲得経験値</h3>
-            <div class="exp-info">
-              このクエストを完了すると <strong>${difficulty.exp} EXP</strong> を獲得できます
-            </div>
-          </div>
+        <div class="tax-info">
+          <p><strong>💡 源泉徴収について</strong></p>
+          <table class="tax-table">
+            <tr>
+              <th>1人あたり報酬</th>
+              <td>${Utils.formatCurrency(rewardPerPerson)}</td>
+            </tr>
+            <tr>
+              <th>源泉徴収税（10.21%）</th>
+              <td>- ${Utils.formatCurrency(Utils.calculateTax(rewardPerPerson))}</td>
+            </tr>
+            <tr class="tax-total">
+              <th>手取り額（1人あたり）</th>
+              <td><strong>${Utils.formatCurrency(Utils.calculateNetAmount(rewardPerPerson))}</strong></td>
+            </tr>
+          </table>
+          <p class="tax-note">※源泉徴収税は事務局が納税します</p>
         </div>
-      `;
-      
-      document.getElementById('questDetail').innerHTML = html;
-    }
+      </div>
+
+      <div class="detail-section">
+        <h3>📝 内容詳細</h3>
+        <div class="description-box">${quest.description}</div>
+      </div>
+
+      ${quest.equipment ? `
+        <div class="detail-section">
+          <h3>🛠️ 必要な道具・装備</h3>
+          <div class="equipment-box">${quest.equipment}</div>
+        </div>
+      ` : ''}
+
+      ${quest.notes ? `
+        <div class="detail-section">
+          <h3>⚠️ 注意事項・備考</h3>
+          <div class="notes-box">${quest.notes}</div>
+        </div>
+      ` : ''}
+
+      <div class="detail-section">
+        <h3>⭐ 獲得経験値</h3>
+        <div class="exp-info">
+          このクエストを完了すると <strong>${difficulty.exp} EXP</strong> を獲得できます
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('questDetail').innerHTML = html;
+}
 
     /**
      * メンバーID入力の監視
