@@ -683,10 +683,48 @@ async function cancelQuest(questId) {
     alert('メッセージ機能は今後実装予定です');
   }
 
-  async function updateProfile(event) {
-    event.preventDefault();
-    alert('プロフィール更新機能は今後実装予定です');
+/**
+ * クエスト募集中止（依頼主用）
+ */
+async function cancelQuest(questId) {
+  const reason = prompt('募集中止の理由を入力してください:');
+  if (!reason) return;
+
+  if (!confirm(`クエスト【${questId}】の募集を中止しますか？\n\n※受注者がいない場合のみ中止できます。`)) {
+    return;
   }
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'cancelQuestByClient',
+        questId: questId,
+        clientId: currentUser.id,
+        reason: reason
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('✅ ' + result.message);
+      await loadClientQuests(currentUser.id);
+    } else {
+      alert('❌ 中止に失敗しました: ' + result.message);
+    }
+  } catch (error) {
+    console.error('中止エラー:', error);
+    alert('❌ 中止処理中にエラーが発生しました');
+  }
+}
+
+async function updateProfile(event) {
+  event.preventDefault();
+  alert('プロフィール更新機能は今後実装予定です');
+}
+  
 </script>
 </body>
 </html>
