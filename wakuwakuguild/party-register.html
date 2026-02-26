@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>パーティ登録 - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="form-section">
+      <h2>👥 パーティ登録</h2>
+      <p>仲間と一緒にクエストに挑戦しよう！複数人で協力してより大きなクエストに挑めます。</p>
+
+      <form id="partyForm" onsubmit="submitPartyForm(event)">
+        <div class="form-group">
+          <label for="partyName">パーティ名 <span class="required">*</span></label>
+          <input type="text" id="partyName" name="partyName" required placeholder="例: 草刈り隊">
+          <small>他のメンバーや依頼主に表示される名前です</small>
+        </div>
+
+        <div class="form-group">
+          <label for="leaderId">リーダーID <span class="required">*</span></label>
+          <input type="text" id="leaderId" name="leaderId" required placeholder="例: M0001">
+          <small>パーティのリーダーとなるメンバーIDを入力してください</small>
+        </div>
+
+        <div class="form-group">
+          <label>パーティメンバー <span class="required">*</span></label>
+          <div id="memberList">
+            <div class="member-input-row">
+              <input type="text" name="member1" placeholder="メンバーID（例: M0002）" required>
+              <button type="button" onclick="removeMemberRow(this)" class="btn-remove">削除</button>
+            </div>
+          </div>
+          <button type="button" onclick="addMemberRow()" class="btn-secondary">メンバーを追加</button>
+          <small>リーダーを含めて最大5名まで登録できます</small>
+        </div>
+
+        <div class="form-group">
+          <label for="distributionMethod">報酬分配方式 <span class="required">*</span></label>
+          <select id="distributionMethod" name="distributionMethod" required>
+            <option value="">選択してください</option>
+            <option value="均等">均等分配（全員に同額）</option>
+            <option value="リーダー指定">リーダー指定（作業後に分配率を決定）</option>
+            <option value="個別振込">個別振込（各メンバーの口座に直接振込）</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="accountGroup">
+          <label for="accountType">報酬振込先 <span class="required">*</span></label>
+          <select id="accountType" name="accountType" required>
+            <option value="">選択してください</option>
+            <option value="リーダー口座">リーダーの登録口座を使用</option>
+            <option value="パーティ専用口座">パーティ専用口座を登録</option>
+          </select>
+        </div>
+
+        <fieldset id="partyAccountFields" style="display: none;">
+          <legend>💳 パーティ専用口座情報</legend>
+          
+          <div class="form-group">
+            <label for="bankName">銀行名 <span class="required">*</span></label>
+            <input type="text" id="bankName" name="bankName">
+          </div>
+
+          <div class="form-group">
+            <label for="branchName">支店名 <span class="required">*</span></label>
+            <input type="text" id="branchName" name="branchName">
+          </div>
+
+          <div class="form-group">
+            <label for="accountTypeDetail">口座種別 <span class="required">*</span></label>
+            <select id="accountTypeDetail" name="accountTypeDetail">
+              <option value="">選択してください</option>
+              <option value="普通">普通</option>
+              <option value="当座">当座</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="accountNumber">口座番号 <span class="required">*</span></label>
+            <input type="text" id="accountNumber" name="accountNumber">
+          </div>
+
+          <div class="form-group">
+            <label for="accountHolder">口座名義（カナ） <span class="required">*</span></label>
+            <input type="text" id="accountHolder" name="accountHolder">
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="partyDescription">パーティ紹介</label>
+          <textarea id="partyDescription" name="partyDescription" rows="4" placeholder="パーティの特徴や得意分野などを記入してください"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="agree" required>
+            パーティ規約に同意します
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary">パーティ登録申請</button>
+      </form>
+
+      <div class="info-box">
+        <h3>💡 パーティについて</h3>
+        <ul>
+          <li>パーティは2〜5名のメンバーで構成されます</li>
+          <li>リーダーがパーティを代表してクエストを受注します</li>
+          <li>報酬は選択した分配方式に従って支払われます</li>
+          <li>パーティのランクはメンバーの平均ランクで決まります</li>
+          <li>登録申請後、事務局の審査があります</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    let memberCount = 1;
+
+    function addMemberRow() {
+      if (memberCount >= 4) {
+        alert('メンバーは最大4名（リーダー含めて5名）まで追加できます');
+        return;
+      }
+      
+      memberCount++;
+      const memberList = document.getElementById('memberList');
+      const newRow = document.createElement('div');
+      newRow.className = 'member-input-row';
+      newRow.innerHTML = `
+        <input type="text" name="member${memberCount}" placeholder="メンバーID（例: M000${memberCount + 1}）">
+        <button type="button" onclick="removeMemberRow(this)" class="btn-remove">削除</button>
+      `;
+      memberList.appendChild(newRow);
+    }
+
+    function removeMemberRow(button) {
+      if (memberCount <= 1) {
+        alert('最低1名のメンバーが必要です');
+        return;
+      }
+      button.parentElement.remove();
+      memberCount--;
+    }
+
+    // 口座タイプ変更時の処理
+    document.getElementById('accountType')?.addEventListener('change', (e) => {
+      const partyAccountFields = document.getElementById('partyAccountFields');
+      if (e.target.value === 'パーティ専用口座') {
+        partyAccountFields.style.display = 'block';
+        // 必須項目を有効化
+        partyAccountFields.querySelectorAll('input, select').forEach(el => {
+          el.required = true;
+        });
+      } else {
+        partyAccountFields.style.display = 'none';
+        // 必須項目を無効化
+        partyAccountFields.querySelectorAll('input, select').forEach(el => {
+          el.required = false;
+        });
+      }
+    });
+
+    async function submitPartyForm(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(event.target);
+      
+      // メンバーIDを収集
+      const members = [formData.get('leaderId')];
+      for (let i = 1; i <= memberCount; i++) {
+        const memberId = formData.get(`member${i}`);
+        if (memberId) {
+          members.push(memberId);
+        }
+      }
+
+      const partyData = {
+        partyName: formData.get('partyName'),
+        leaderId: formData.get('leaderId'),
+        members: members.join(','),
+        distributionMethod: formData.get('distributionMethod'),
+        accountType: formData.get('accountType'),
+        bankName: formData.get('bankName'),
+        branchName: formData.get('branchName'),
+        accountTypeDetail: formData.get('accountTypeDetail'),
+        accountNumber: formData.get('accountNumber'),
+        accountHolder: formData.get('accountHolder'),
+        description: formData.get('partyDescription')
+      };
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'registerParty',
+            data: partyData
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('パーティ登録申請を受け付けました。\n事務局の審査をお待ちください。');
+          event.target.reset();
+          memberCount = 1;
+          document.getElementById('memberList').innerHTML = `
+            <div class="member-input-row">
+              <input type="text" name="member1" placeholder="メンバーID（例: M0002）" required>
+              <button type="button" onclick="removeMemberRow(this)" class="btn-remove">削除</button>
+            </div>
+          `;
+        } else {
+          alert('登録に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('登録エラー:', error);
+        alert('登録処理中にエラーが発生しました');
+      }
+    }
+  </script>
+</body>
+</html>
