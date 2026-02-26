@@ -5,25 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クエスト詳細 - わくわくギルド</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    .debug-box {
-      background: #fff3cd;
-      border: 2px solid #ffc107;
-      padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 5px;
-    }
-    .debug-box h4 {
-      margin: 0 0 0.5rem 0;
-      color: #856404;
-    }
-    .debug-box pre {
-      background: #fff;
-      padding: 0.5rem;
-      border-radius: 3px;
-      overflow-x: auto;
-    }
-  </style>
 </head>
 <body>
   <header>
@@ -42,15 +23,7 @@
   <main>
     <div class="container quest-detail-section">
       <div class="breadcrumb">
-        <a href="index.html">クエスト掲示板</a> &gt; クエスト詳細（デバッグモード）
-      </div>
-
-      <!-- デバッグ情報 -->
-      <div class="debug-box">
-        <h4>🔍 デバッグ情報</h4>
-        <div id="debugInfo">
-          <p>メンバーIDを入力してください...</p>
-        </div>
+        <a href="index.html">クエスト掲示板</a> &gt; クエスト詳細
       </div>
 
       <!-- クエスト詳細カード -->
@@ -60,23 +33,20 @@
 
       <!-- 受注フォーム -->
       <div class="action-section">
-        <h3>🎯 このクエストを受注する（テストモード）</h3>
+        <h3>🎯 このクエストを受注する</h3>
         
         <form id="acceptForm" class="accept-form">
           <div class="form-group">
             <label>メンバーID <span class="required">*</span></label>
-            <input type="text" id="memberId" name="memberId" required placeholder="例: M0004">
+            <input type="text" id="memberId" name="memberId" required placeholder="例: M0001">
             <small>登録時に発行されたメンバーIDを入力してください</small>
           </div>
 
-          <!-- 人数入力欄（常に表示してテスト） -->
-          <div class="form-group" id="participantCountGroup">
+          <!-- 人数入力欄（法人の場合のみ表示） -->
+          <div class="form-group" id="participantCountGroup" style="display: none;">
             <label>参加人数 <span class="required">*</span></label>
             <input type="number" id="participantCount" name="participantCount" min="1" value="1">
             <small id="participantCountHelp">参加する人数を入力してください</small>
-            <div id="participantCountStatus" style="margin-top: 0.5rem; padding: 0.5rem; background: #f0f0f0; border-radius: 3px;">
-              状態: <strong>待機中</strong>
-            </div>
           </div>
 
           <div class="form-group">
@@ -84,7 +54,7 @@
             <textarea id="message" name="message" rows="4" placeholder="依頼主へのメッセージがあれば入力してください"></textarea>
           </div>
 
-          <button type="submit" class="btn-primary">このクエストを受注する</button>
+          <button type="submit" class="btn-primary">このクエストを受注する ⚔️</button>
         </form>
       </div>
 
@@ -113,7 +83,6 @@
     let memberData = null;
 
     function initializePage() {
-      console.log('🚀 ページ初期化開始');
       loadQuestDetail();
       setupMemberIdInput();
     }
@@ -125,8 +94,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const questId = urlParams.get('id');
       
-      console.log('📋 クエストID:', questId);
-      
       if (!questId) {
         document.getElementById('questDetail').innerHTML = 
           '<div class="error">❌ クエストIDが指定されていません</div>';
@@ -136,8 +103,6 @@
       try {
         questData = await API.get('getQuestDetail', { id: questId });
         
-        console.log('✅ クエストデータ取得:', questData);
-        
         if (questData.error) {
           document.getElementById('questDetail').innerHTML = 
             `<div class="error">❌ ${questData.message}</div>`;
@@ -146,7 +111,7 @@
         
         displayQuestDetail(questData);
       } catch (error) {
-        console.error('❌ クエスト詳細読み込みエラー:', error);
+        console.error('クエスト詳細読み込みエラー:', error);
         document.getElementById('questDetail').innerHTML = 
           '<div class="error">❌ クエスト詳細の読み込みに失敗しました</div>';
       }
@@ -162,8 +127,9 @@
         <div class="quest-detail-header">
           <h2>${quest.title}</h2>
           <div class="quest-meta">
-            <div class="difficulty-large">${difficulty.stars}</div>
+            <div class="difficulty-large" title="${difficulty.label}">${difficulty.stars}</div>
             <div class="recommend-rank">推奨ランク: ${quest.recommendRank}</div>
+            ${Utils.getCategoryBadge(quest.category)}
           </div>
         </div>
         
@@ -171,21 +137,62 @@
           <div class="detail-section">
             <h3>📋 基本情報</h3>
             <table class="detail-table">
-              <tr><th>依頼主</th><td>${quest.clientName}</td></tr>
-              <tr><th>実施場所</th><td>${quest.location}</td></tr>
-              <tr><th>希望日時</th><td>${Utils.formatDate(quest.desiredDate)}</td></tr>
-              <tr><th>募集人数</th><td>${quest.requiredMembers}名</td></tr>
+              <tr>
+                <th>依頼主</th>
+                <td>${quest.clientName}</td>
+              </tr>
+              <tr>
+                <th>実施場所</th>
+                <td>${quest.location}</td>
+              </tr>
+              <tr>
+                <th>希望日時</th>
+                <td>${Utils.formatDate(quest.desiredDate)}</td>
+              </tr>
+              <tr>
+                <th>所要時間</th>
+                <td>${quest.estimatedHours}</td>
+              </tr>
+              <tr>
+                <th>募集人数</th>
+                <td>${quest.requiredMembers}名</td>
+              </tr>
             </table>
           </div>
 
           <div class="detail-section">
             <h3>💰 報酬</h3>
             <div class="reward-amount">${Utils.formatCurrency(quest.reward)}</div>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+              ※源泉徴収税（10.21%）が差し引かれます<br>
+              手取り額: ${Utils.formatCurrency(Utils.calculateNetAmount(quest.reward))}
+            </p>
           </div>
 
           <div class="detail-section">
             <h3>📝 内容詳細</h3>
             <div class="description-box">${quest.description}</div>
+          </div>
+
+          ${quest.equipment ? `
+            <div class="detail-section">
+              <h3>🛠️ 必要な道具・装備</h3>
+              <div class="equipment-box">${quest.equipment}</div>
+            </div>
+          ` : ''}
+
+          ${quest.notes ? `
+            <div class="detail-section">
+              <h3>⚠️ 注意事項・備考</h3>
+              <div class="notes-box">${quest.notes}</div>
+            </div>
+          ` : ''}
+
+          <div class="detail-section">
+            <h3>⭐ 獲得経験値</h3>
+            <div class="exp-info">
+              このクエストを完了すると <strong>${difficulty.exp} EXP</strong> を獲得できます
+            </div>
           </div>
         </div>
       `;
@@ -199,10 +206,8 @@
     function setupMemberIdInput() {
       const memberIdInput = document.getElementById('memberId');
       
-      console.log('👂 メンバーID入力監視を設定');
-      
       if (!memberIdInput) {
-        console.error('❌ memberId要素が見つかりません');
+        console.error('memberId要素が見つかりません');
         return;
       }
       
@@ -210,21 +215,9 @@
       memberIdInput.addEventListener('blur', async () => {
         const memberId = memberIdInput.value.trim();
         
-        console.log('📝 メンバーID入力（blur）:', memberId);
-        updateDebugInfo('メンバーID入力: ' + memberId);
-        
-        if (!memberId) {
-          updateDebugInfo('メンバーIDが空です');
-          return;
-        }
+        if (!memberId) return;
         
         await checkMemberType(memberId);
-      });
-      
-      // input イベント（リアルタイム）
-      memberIdInput.addEventListener('input', () => {
-        const memberId = memberIdInput.value.trim();
-        console.log('⌨️ メンバーID入力中:', memberId);
       });
     }
 
@@ -232,32 +225,20 @@
      * メンバー種別をチェック
      */
     async function checkMemberType(memberId) {
-      updateDebugInfo('API呼び出し開始...');
-      
       try {
-        console.log('🌐 API呼び出し: getMemberType, id=' + memberId);
-        
         const result = await API.get('getMemberType', { id: memberId });
-        
-        console.log('📦 API結果:', result);
-        updateDebugInfo('API結果: ' + JSON.stringify(result, null, 2));
         
         if (result.success) {
           memberData = result;
-          console.log('✅ メンバー種別:', result.userType);
-          console.log('🏢 法人名:', result.corporateName);
-          
           updateParticipantCountField(result.userType, result.corporateName);
         } else {
-          console.log('❌ メンバーが見つかりません:', result.message);
-          updateDebugInfo('エラー: ' + result.message);
           memberData = null;
           hideParticipantCountField();
+          Notification.warning('メンバーIDが見つかりません。正しいIDを入力してください。');
         }
       } catch (error) {
-        console.error('❌ API呼び出しエラー:', error);
-        updateDebugInfo('エラー: ' + error.toString());
-        alert('❌ メンバー情報の取得に失敗しました。\n\nエラー: ' + error.toString() + '\n\nGASが正しくデプロイされているか確認してください。');
+        console.error('メンバー情報取得エラー:', error);
+        Notification.error('メンバー情報の取得に失敗しました。しばらくしてから再度お試しください。');
         memberData = null;
       }
     }
@@ -266,30 +247,18 @@
      * 参加人数フィールドの表示制御
      */
     function updateParticipantCountField(userType, corporateName) {
-      console.log('🎛️ updateParticipantCountField 呼び出し');
-      console.log('   userType:', userType);
-      console.log('   corporateName:', corporateName);
-      
       const participantCountGroup = document.getElementById('participantCountGroup');
       const participantCountInput = document.getElementById('participantCount');
       const participantCountHelp = document.getElementById('participantCountHelp');
-      const participantCountStatus = document.getElementById('participantCountStatus');
       
       if (!participantCountGroup) {
-        console.error('❌ participantCountGroup要素が見つかりません');
+        console.error('participantCountGroup要素が見つかりません');
         return;
       }
       
       if (userType === '法人') {
         // 法人の場合: 人数入力欄を表示
-        console.log('🏢 法人ユーザー検出: 人数入力欄を表示');
-        
         participantCountGroup.style.display = 'block';
-        participantCountGroup.style.background = '#e8f5e9';
-        participantCountGroup.style.border = '2px solid #4caf50';
-        participantCountGroup.style.padding = '1rem';
-        participantCountGroup.style.borderRadius = '8px';
-        
         participantCountInput.required = true;
         participantCountInput.value = 1;
         
@@ -300,19 +269,15 @@
           participantCountHelp.innerHTML = `<strong>${corporateName}</strong>として参加する人数を入力してください`;
         }
         
-        participantCountStatus.innerHTML = '状態: <strong style="color: #4caf50;">✅ 法人ユーザー - 人数入力可能</strong>';
-        
-        updateDebugInfo(`法人ユーザー検出: ${corporateName}\n人数入力欄を表示しました`);
+        Notification.success(`法人ユーザー「${corporateName}」として認識されました。参加人数を入力してください。`, 3000);
         
       } else {
         // 個人の場合: 人数入力欄を非表示
-        console.log('👤 個人ユーザー検出: 人数入力欄を非表示');
-        
         participantCountGroup.style.display = 'none';
         participantCountInput.required = false;
         participantCountInput.value = 1;
         
-        updateDebugInfo('個人ユーザー検出\n人数は自動的に1名に設定されます');
+        Notification.info('個人ユーザーとして認識されました。1名での受注となります。', 3000);
       }
     }
 
@@ -327,17 +292,6 @@
     }
 
     /**
-     * デバッグ情報を更新
-     */
-    function updateDebugInfo(message) {
-      const debugInfo = document.getElementById('debugInfo');
-      if (debugInfo) {
-        const timestamp = new Date().toLocaleTimeString('ja-JP');
-        debugInfo.innerHTML = `<pre>[${timestamp}] ${message}</pre>`;
-      }
-    }
-
-    /**
      * 受注フォーム送信
      */
     document.getElementById('acceptForm').addEventListener('submit', async (e) => {
@@ -346,32 +300,34 @@
       const memberId = document.getElementById('memberId').value.trim();
       const participantCount = parseInt(document.getElementById('participantCount').value) || 1;
       
-      console.log('📤 受注送信:', { memberId, participantCount, memberData });
-      
       if (!memberId) {
-        alert('メンバーIDを入力してください');
+        Notification.error('メンバーIDを入力してください');
         return;
       }
       
       if (!memberData) {
-        alert('メンバー情報を取得してください（メンバーID入力後、他の場所をクリック）');
+        Notification.error('メンバー情報を取得してください（メンバーID入力後、他の場所をクリック）');
         return;
       }
       
       // 法人の場合の人数チェック
       if (memberData.userType === '法人') {
         if (participantCount < 1) {
-          alert('参加人数は1名以上を指定してください');
+          Notification.error('参加人数は1名以上を指定してください');
           return;
         }
         
         if (questData && participantCount > questData.requiredMembers) {
-          alert(`参加人数が募集人数（${questData.requiredMembers}名）を超えています`);
+          Notification.error(`参加人数が募集人数（${questData.requiredMembers}名）を超えています`);
           return;
         }
       }
       
-      if (!confirm(`このクエストを受注しますか？\n\nメンバーID: ${memberId}\n参加人数: ${participantCount}名\nユーザー種別: ${memberData.userType}`)) {
+      // 確認ダイアログ
+      const userTypeText = memberData.userType === '法人' ? 
+        `法人「${memberData.corporateName}」` : '個人';
+      
+      if (!confirm(`このクエストを受注しますか？\n\nユーザー種別: ${userTypeText}\n参加人数: ${participantCount}名`)) {
         return;
       }
       
@@ -389,20 +345,21 @@
           participantCount: participantCount
         });
         
-        console.log('✅ 受注結果:', result);
-        
         if (result.success) {
-          alert(`✅ ${result.message}\n\n受注が完了しました！マイページで確認できます。`);
-          location.href = 'mypage.html';
+          Notification.success('受注が完了しました！マイページで確認できます。', 0);
+          setTimeout(() => {
+            location.href = 'mypage.html';
+          }, 2000);
         } else {
-          alert(`❌ ${result.message}`);
+          Notification.error(result.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'このクエストを受注する ⚔️';
         }
       } catch (error) {
-        console.error('❌ 受注エラー:', error);
-        alert('❌ エラーが発生しました。\n\n' + error.toString());
-      } finally {
+        console.error('受注エラー:', error);
+        Notification.error('エラーが発生しました。しばらくしてから再度お試しください。');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'このクエストを受注する';
+        submitBtn.textContent = 'このクエストを受注する ⚔️';
       }
     });
   </script>

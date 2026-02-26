@@ -1013,3 +1013,178 @@ button:disabled {
   background: #d97706;
 }
 
+/* ========================================
+   クエスト詳細ページ
+======================================== */
+
+.quest-detail-section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.quest-detail-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.quest-detail-header {
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.quest-detail-header h2 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.quest-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.difficulty-large {
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.recommend-rank {
+  padding: 0.5rem 1rem;
+  background: #f7fafc;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.quest-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.detail-section {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.detail-section h3 {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detail-table th {
+  text-align: left;
+  padding: 0.75rem;
+  background: white;
+  font-weight: bold;
+  color: #4a5568;
+  width: 30%;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-table td {
+  padding: 0.75rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.reward-amount {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #667eea;
+  text-align: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.description-box,
+.equipment-box,
+.notes-box {
+  background: white;
+  padding: 1rem;
+  border-radius: 5px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.exp-info {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #4a5568;
+  padding: 1rem;
+  background: white;
+  border-radius: 5px;
+}
+
+/* 受注フォーム */
+.action-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.action-section h3 {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.accept-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#participantCountGroup {
+  transition: all 0.3s ease;
+  border: 2px solid #667eea;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f0f4ff;
+}
+
+#participantCountGroup label {
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .quest-detail-card,
+  .action-section {
+    padding: 1rem;
+  }
+  
+  .quest-detail-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .reward-amount {
+    font-size: 2rem;
+  }
+  
+  .detail-table th {
+    width: 40%;
+  }
+}
+
