@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>わくわくギルド - クエスト掲示板</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
 
+  <main class="container">
+    <section class="hero">
+      <h2>🗺️ 募集中のクエスト</h2>
+      <p>総社市ギルド事務局が認定した依頼一覧です。あなたのスキルで地域を支えよう！</p>
+    </section>
+
+    <div class="filter-bar">
+      <label>
+        カテゴリ:
+        <select id="categoryFilter">
+          <option value="">すべて</option>
+          <option value="草刈り">草刈り</option>
+          <option value="清掃">清掃</option>
+          <option value="IT支援">IT支援</option>
+          <option value="その他">その他</option>
+        </select>
+      </label>
+      <label>
+        難易度:
+        <select id="difficultyFilter">
+          <option value="">すべて</option>
+          <option value="★">★</option>
+          <option value="★★">★★</option>
+          <option value="★★★">★★★</option>
+          <option value="★★★★">★★★★</option>
+          <option value="★★★★★">★★★★★</option>
+        </select>
+      </label>
+      <button onclick="applyFilter()">絞り込み</button>
+    </div>
+
+    <div id="questList" class="quest-grid">
+      <!-- クエストカードが動的に生成される -->
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // ページ読み込み時にクエスト一覧を取得
+    window.addEventListener('DOMContentLoaded', loadQuests);
+
+    async function loadQuests() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuests`);
+        const quests = await response.json();
+        displayQuests(quests);
+      } catch (error) {
+        console.error('クエスト取得エラー:', error);
+        document.getElementById('questList').innerHTML = 
+          '<p class="error">クエストの読み込みに失敗しました。</p>';
+      }
+    }
+
+    function displayQuests(quests) {
+      const container = document.getElementById('questList');
+      container.innerHTML = '';
+
+      if (quests.length === 0) {
+        container.innerHTML = '<p>現在募集中のクエストはありません。</p>';
+        return;
+      }
+
+      quests.forEach(quest => {
+        const card = document.createElement('div');
+        card.className = 'quest-card';
+        card.innerHTML = `
+          <div class="quest-header">
+            <h3>${quest.title}</h3>
+            <span class="difficulty">${quest.difficulty}</span>
+          </div>
+          <div class="quest-body">
+            <p><strong>📍 場所:</strong> ${quest.location}</p>
+            <p><strong>📅 希望日:</strong> ${quest.desiredDate}</p>
+            <p><strong>👥 必要人数:</strong> ${quest.requiredMembers}名</p>
+            <p><strong>🏅 推奨ランク:</strong> ${quest.recommendRank}</p>
+            <p><strong>💰 報酬:</strong> ${quest.reward.toLocaleString()}円</p>
+          </div>
+          <div class="quest-footer">
+            <span class="category-tag">${quest.category}</span>
+            <button onclick="viewQuestDetail('${quest.id}')">詳細を見る</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function viewQuestDetail(questId) {
+      // 詳細ページへ遷移（実装は省略）
+      alert(`クエストID: ${questId} の詳細ページへ遷移します`);
+    }
+
+    function applyFilter() {
+      // フィルタリング処理（実装は省略）
+      alert('フィルタリング機能は実装中です');
+    }
+  </script>
+</body>
+</html>
