@@ -88,12 +88,12 @@
 
           <div class="form-group">
             <label for="accountNumber">口座番号 <span class="required">*</span></label>
-            <input type="text" id="accountNumber" name="accountNumber" required>
+            <input type="text" id="accountNumber" name="accountNumber" required pattern="[0-9]{7}" title="7桁の数字を入力してください">
           </div>
 
           <div class="form-group">
             <label for="accountHolder">口座名義（カナ） <span class="required">*</span></label>
-            <input type="text" id="accountHolder" name="accountHolder" required>
+            <input type="text" id="accountHolder" name="accountHolder" required pattern="[ァ-ヶー\s]+" title="全角カタカナで入力してください">
             <small>例: ヤマダタロウ</small>
           </div>
         </fieldset>
@@ -101,12 +101,22 @@
         <div class="form-group">
           <label>
             <input type="checkbox" name="agree" required>
-            <a href="#">利用規約</a>および<a href="#">プライバシーポリシー</a>に同意します
+            <a href="#" onclick="showTerms(); return false;">利用規約</a>および<a href="#" onclick="showPrivacy(); return false;">プライバシーポリシー</a>に同意します
           </label>
         </div>
 
-        <button type="submit" class="btn-primary">登録申請する</button>
+        <button type="submit" class="btn-primary" id="submitBtn">登録申請する</button>
       </form>
+
+      <div class="info-box">
+        <h3>💡 メンバー登録について</h3>
+        <ul>
+          <li>登録申請後、事務局が審査を行います（通常2-3営業日）</li>
+          <li>承認後、クエストへの応募が可能になります</li>
+          <li>初期ランクはFからスタートします</li>
+          <li>クエストを完了すると経験値を獲得し、ランクアップできます</li>
+        </ul>
+      </div>
     </section>
   </main>
 
@@ -116,8 +126,12 @@
 
   <script src="js/config.js"></script>
   <script>
-    function submitMemberForm(event) {
+    async function submitMemberForm(event) {
       event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
       
       const formData = new FormData(event.target);
       const skills = Array.from(formData.getAll('skills')).join(',');
@@ -136,10 +150,41 @@
         accountHolder: formData.get('accountHolder')
       };
 
-      // GASへPOST送信（実装は省略）
-      console.log('送信データ:', memberData);
-      alert('登録申請を受け付けました。事務局の審査をお待ちください。');
-      event.target.reset();
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'registerMember',
+            data: memberData
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✅ 登録申請を受け付けました！\n\nメンバーID: ${result.memberId}\n\n事務局の審査をお待ちください。\n審査結果はメールでお知らせします。\n\n※メンバーIDは大切に保管してください。`);
+          event.target.reset();
+        } else {
+          alert('❌ 登録に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+        }
+      } catch (error) {
+        console.error('登録エラー:', error);
+        alert('❌ 登録処理中にエラーが発生しました\n\nネットワーク接続を確認して、もう一度お試しください。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登録申請する';
+      }
+    }
+
+    function showTerms() {
+      alert('【利用規約】\n\n1. 本サービスは総社市が運営するスキルマッチングプラットフォームです\n2. 登録情報は適切に管理されます\n3. クエストの受注後は責任を持って完了してください\n4. 不正行為が発覚した場合は登録を抹消します\n\n※詳細は後日Webページで公開予定');
+    }
+
+    function showPrivacy() {
+      alert('【プライバシーポリシー】\n\n1. 個人情報は本サービスの運営目的のみに使用します\n2. 第三者への提供は行いません（法令に基づく場合を除く）\n3. 情報の管理には万全を期します\n\n※詳細は後日Webページで公開予定');
     }
   </script>
 </body>
