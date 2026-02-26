@@ -103,8 +103,19 @@
         <div class="form-group">
           <label for="reward">報酬額（税込） <span class="required">*</span></label>
           <input type="number" id="reward" name="reward" required min="1000" step="1000" placeholder="15000">
-          <small>報酬額は1,000円以上で設定してください。源泉徴収税（10.21%）は事務局が処理します。</small>
+          <small>報酬額は1,000円以上で設定してください。源泉徴収税（10.21%）が差し引かれます。</small>
         </div>
+
+		<!-- ★ここに追加 -->
+		<div class="form-group">
+		  <label for="rewardType">報酬の種類 <span class="required">*</span></label>
+		  <select id="rewardType" name="rewardType" required onchange="updateRewardDisplay()">
+		    <option value="">選択してください</option>
+		    <option value="total">総額（チーム全体で受け取る金額）</option>
+		    <option value="perPerson">1人あたり（各メンバーが受け取る金額）</option>
+		  </select>
+		  <small id="rewardNote" style="display:none; color: #2563eb; font-weight: bold;"></small>
+		</div>
 
         <div class="form-group">
           <label for="requiredMembers">必要人数 <span class="required">*</span></label>

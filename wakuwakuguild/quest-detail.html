@@ -5,6 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クエスト詳細 - わくわくギルド</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 募集枠情報表示 */
+    .slot-info {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      color: white;
+    }
+
+    .slot-display h4 {
+      margin: 0 0 15px 0;
+      font-size: 1.2em;
+    }
+
+    .slot-numbers {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .slot-numbers .remaining {
+      color: #ffd700;
+      font-size: 1.3em;
+    }
+
+    .slot-note {
+      margin: 10px 0 0 0;
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .slots-few .slot-info {
+      background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+      animation: pulse 1.5s infinite;
+    }
+
+    .slots-medium .slot-info {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    #participantCountGroup {
+      margin-top: 15px;
+    }
+
+    #rewardPreview {
+      display: block;
+      margin-top: 8px;
+      padding: 10px;
+      background: #f0f9ff;
+      border-left: 4px solid #2563eb;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -31,29 +91,44 @@
       </div>
 
       <div class="action-section">
-        <h3>このクエストに挑戦する</h3>
+        <h3>🎯 このクエストを受注する</h3>
+        
+        <div id="questSlotInfo" class="slot-info">
+          <!-- JavaScriptで動的に表示 -->
+        </div>
+        
         <div class="accept-form">
-          <p>ログインしているメンバーIDを入力してください</p>
           <div class="form-group">
-            <label for="memberId">メンバーID</label>
-            <input type="text" id="memberId" placeholder="例: M0001">
+            <label for="memberId">メンバーID <span style="color: red;">*</span></label>
+            <input type="text" id="memberId" placeholder="例: M0001" required>
           </div>
+
           <div class="form-group">
-            <label for="acceptType">受注タイプ</label>
-            <select id="acceptType">
-              <option value="個人">個人で受注</option>
-              <option value="パーティ">パーティで受注</option>
+            <label for="acceptType">受注タイプ <span style="color: red;">*</span></label>
+            <select id="acceptType" required onchange="togglePartyInput()">
+              <option value="">選択してください</option>
+              <option value="個人">個人（1名）</option>
+              <option value="パーティ">パーティ（複数名）</option>
             </select>
           </div>
-          <div class="form-group" id="partySelectGroup" style="display: none;">
-            <label for="partyId">パーティID</label>
+
+          <div class="form-group" id="partyIdGroup" style="display: none;">
+            <label for="partyId">パーティID <span style="color: red;">*</span></label>
             <input type="text" id="partyId" placeholder="例: P0001">
           </div>
+
+          <div class="form-group" id="participantCountGroup" style="display: none;">
+            <label for="participantCount">参加人数 <span style="color: red;">*</span></label>
+            <input type="number" id="participantCount" min="1" max="10" value="1" onchange="updateRewardPreview()">
+            <small id="rewardPreview"></small>
+          </div>
+
           <div class="form-group">
-            <label for="message">応募メッセージ</label>
+            <label for="message">応募メッセージ（任意）</label>
             <textarea id="message" rows="4" placeholder="意気込みや質問などをご記入ください"></textarea>
           </div>
-          <button onclick="acceptQuest()" class="btn-primary">このクエストを受注する</button>
+
+          <button onclick="acceptQuest()" class="btn-primary btn-large">このクエストを受注する</button>
         </div>
       </div>
 
@@ -64,6 +139,7 @@
           <li>推奨ランク未満でも受注可能ですが、難易度を考慮してください</li>
           <li>受注後のキャンセルはランクダウンの対象となります</li>
           <li>作業完了後は速やかに完了報告を行ってください</li>
+          <li>複数名募集のクエストは、個人でも応募可能です（報酬は人数分）</li>
         </ul>
       </div>
     </section>
@@ -75,9 +151,9 @@
 
   <script src="js/config.js"></script>
   <script>
-    // URLパラメータからクエストIDを取得
     const urlParams = new URLSearchParams(window.location.search);
     const questId = urlParams.get('id');
+    let currentQuest = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       if (questId) {
@@ -88,11 +164,21 @@
       }
     });
 
+    /**
+     * クエスト詳細読み込み
+     */
     async function loadQuestDetail(id) {
       try {
         const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuestDetail&id=${id}`);
         const quest = await response.json();
+        
+        if (quest.error) {
+          throw new Error(quest.error);
+        }
+        
+        currentQuest = quest;
         displayQuestDetail(quest);
+        displaySlotInfo(quest);
       } catch (error) {
         console.error('クエスト詳細取得エラー:', error);
         document.getElementById('questDetail').innerHTML = 
@@ -100,12 +186,16 @@
       }
     }
 
+    /**
+     * クエスト詳細表示
+     */
     function displayQuestDetail(quest) {
       const container = document.getElementById('questDetail');
+      const perPersonReward = Math.floor(quest.reward / quest.requiredMembers);
       
       container.innerHTML = `
         <div class="quest-detail-header">
-          <h2>${quest.title}</h2>
+          <h2>${escapeHtml(quest.title)}</h2>
           <div class="quest-meta">
             <span class="difficulty-large">${quest.difficulty}</span>
             <span class="recommend-rank">推奨ランク: ${quest.recommendRank}</span>
@@ -118,27 +208,32 @@
             <table class="detail-table">
               <tr>
                 <th>カテゴリ</th>
-                <td><span class="category-tag">${quest.category}</span></td>
+                <td><span class="category-tag">${escapeHtml(quest.category)}</span></td>
               </tr>
               <tr>
                 <th>実施場所</th>
-                <td>${quest.location}</td>
+                <td>${escapeHtml(quest.location)}</td>
               </tr>
               <tr>
                 <th>希望日時</th>
-                <td>${quest.desiredDate}</td>
+                <td>${formatDate(quest.desiredDate)}</td>
               </tr>
               <tr>
                 <th>所要時間</th>
-                <td>${quest.estimatedHours}</td>
+                <td>${quest.estimatedHours}時間</td>
               </tr>
               <tr>
-                <th>必要人数</th>
+                <th>募集人数</th>
                 <td>${quest.requiredMembers}名</td>
               </tr>
               <tr>
                 <th>報酬</th>
-                <td class="reward-amount">💰 ${quest.reward.toLocaleString()}円（税込）</td>
+                <td class="reward-amount">
+                  💰 ${quest.requiredMembers > 1 ? 
+                    `¥${perPersonReward.toLocaleString()}/人 <small style="color: #666;">(総額: ¥${quest.reward.toLocaleString()})</small>` : 
+                    `¥${quest.reward.toLocaleString()}`
+                  }
+                </td>
               </tr>
             </table>
           </div>
@@ -146,7 +241,7 @@
           <div class="detail-section">
             <h3>📝 内容詳細</h3>
             <div class="description-box">
-              ${quest.description.replace(/\n/g, '<br>')}
+              ${escapeHtml(quest.description).replace(/\n/g, '<br>')}
             </div>
           </div>
 
@@ -154,7 +249,7 @@
           <div class="detail-section">
             <h3>🛠️ 必要な道具・装備</h3>
             <div class="equipment-box">
-              ${quest.equipment.replace(/\n/g, '<br>')}
+              ${escapeHtml(quest.equipment).replace(/\n/g, '<br>')}
             </div>
           </div>
           ` : ''}
@@ -163,14 +258,14 @@
           <div class="detail-section">
             <h3>⚠️ 注意事項・備考</h3>
             <div class="notes-box">
-              ${quest.notes.replace(/\n/g, '<br>')}
+              ${escapeHtml(quest.notes).replace(/\n/g, '<br>')}
             </div>
           </div>
           ` : ''}
 
           <div class="detail-section">
             <h3>👤 依頼主情報</h3>
-            <p>依頼主: ${quest.clientName || '非公開'}</p>
+            <p>依頼主: ${escapeHtml(quest.clientName || '非公開')}</p>
             <p class="note">※詳細な連絡先は受注後に開示されます</p>
           </div>
 
@@ -182,6 +277,163 @@
       `;
     }
 
+    /**
+     * 募集枠情報表示
+     */
+    function displaySlotInfo(quest) {
+      const slotInfo = document.getElementById('questSlotInfo');
+      const remainingSlots = quest.remainingSlots !== undefined ? quest.remainingSlots : quest.requiredMembers;
+      const currentMembers = quest.currentMembers || 0;
+      const remainingPercent = Math.round((remainingSlots / quest.requiredMembers) * 100);
+      
+      let slotClass = 'slots-plenty';
+      if (remainingPercent <= 30) slotClass = 'slots-few';
+      else if (remainingPercent <= 60) slotClass = 'slots-medium';
+      
+      slotInfo.className = `slot-info ${slotClass}`;
+      slotInfo.innerHTML = `
+        <div class="slot-display">
+          <h4>📊 募集状況</h4>
+          <p class="slot-numbers">
+            残り <span class="remaining">${remainingSlots}名</span> / ${quest.requiredMembers}名
+          </p>
+          ${currentMembers > 0 ? `<p class="slot-note">※ 現在${currentMembers}名が応募済みです</p>` : ''}
+        </div>
+      `;
+      
+      // 参加人数の最大値を設定
+      document.getElementById('participantCount').max = remainingSlots;
+    }
+
+    /**
+     * 受注タイプ切り替え
+     */
+    function togglePartyInput() {
+      const acceptType = document.getElementById('acceptType').value;
+      const partyIdGroup = document.getElementById('partyIdGroup');
+      const participantCountGroup = document.getElementById('participantCountGroup');
+      const participantCountInput = document.getElementById('participantCount');
+      
+      if (acceptType === 'パーティ') {
+        partyIdGroup.style.display = 'block';
+        participantCountGroup.style.display = 'block';
+        participantCountInput.required = true;
+      } else {
+        partyIdGroup.style.display = 'none';
+        participantCountGroup.style.display = 'none';
+        participantCountInput.required = false;
+        participantCountInput.value = 1;
+      }
+      
+      updateRewardPreview();
+    }
+
+    /**
+     * 報酬プレビュー更新
+     */
+    function updateRewardPreview() {
+      const acceptType = document.getElementById('acceptType').value;
+      const participantCount = parseInt(document.getElementById('participantCount').value) || 1;
+      const rewardPreview = document.getElementById('rewardPreview');
+      
+      if (!currentQuest) return;
+      
+      const perPersonReward = Math.floor(currentQuest.reward / currentQuest.requiredMembers);
+      const remainingSlots = currentQuest.remainingSlots !== undefined ? currentQuest.remainingSlots : currentQuest.requiredMembers;
+      
+      if (acceptType === '個人') {
+        rewardPreview.textContent = `💰 あなたの報酬: ¥${perPersonReward.toLocaleString()}`;
+        rewardPreview.style.color = '#2563eb';
+        rewardPreview.style.display = 'block';
+      } else if (acceptType === 'パーティ') {
+        const totalReward = perPersonReward * participantCount;
+        rewardPreview.textContent = `💰 パーティ報酬: ¥${totalReward.toLocaleString()} (¥${perPersonReward.toLocaleString()} × ${participantCount}名)`;
+        rewardPreview.style.color = '#2563eb';
+        rewardPreview.style.display = 'block';
+        
+        if (participantCount > remainingSlots) {
+          rewardPreview.textContent = `⚠️ 残り募集人数(${remainingSlots}名)を超えています`;
+          rewardPreview.style.color = '#e63946';
+        }
+      } else {
+        rewardPreview.style.display = 'none';
+      }
+    }
+
+    /**
+     * クエスト受注
+     */
+    async function acceptQuest() {
+      const memberId = document.getElementById('memberId').value;
+      const acceptType = document.getElementById('acceptType').value;
+      const message = document.getElementById('message').value;
+      
+      if (!memberId) {
+        alert('メンバーIDを入力してください');
+        return;
+      }
+      
+      if (!acceptType) {
+        alert('受注タイプを選択してください');
+        return;
+      }
+
+      let acceptorId = memberId;
+      let participantCount = 1;
+      
+      if (acceptType === 'パーティ') {
+        const partyId = document.getElementById('partyId').value;
+        if (!partyId) {
+          alert('パーティIDを入力してください');
+          return;
+        }
+        acceptorId = partyId;
+        participantCount = parseInt(document.getElementById('participantCount').value) || 1;
+        
+        const remainingSlots = currentQuest.remainingSlots !== undefined ? currentQuest.remainingSlots : currentQuest.requiredMembers;
+        if (participantCount > remainingSlots) {
+          alert(`残り募集人数は${remainingSlots}名です`);
+          return;
+        }
+      }
+
+      if (!confirm(`${acceptType}として${participantCount}名で受注しますか？`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: JSON.stringify({
+            action: 'acceptQuest',
+            questId: questId,
+            acceptorId: acceptorId,
+            acceptorType: acceptType,
+            participantCount: participantCount,
+            message: message
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✅ ${result.message}\n\nマイページから進捗を確認できます。`);
+          window.location.href = 'mypage.html';
+        } else {
+          alert('❌ 受注に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('受注エラー:', error);
+        alert('❌ 受注処理中にエラーが発生しました');
+      }
+    }
+
+    /**
+     * 難易度から経験値を取得
+     */
     function getExpByDifficulty(difficulty) {
       const expTable = {
         '★': 10,
@@ -193,135 +445,42 @@
       return expTable[difficulty] || 10;
     }
 
-    // 受注タイプ変更時の処理
-    document.getElementById('acceptType')?.addEventListener('change', (e) => {
-      const partyGroup = document.getElementById('partySelectGroup');
-      if (e.target.value === 'パーティ') {
-        partyGroup.style.display = 'block';
-      } else {
-        partyGroup.style.display = 'none';
-      }
-    });
-
-async function acceptQuest() {
-  const memberId = document.getElementById('memberId').value;
-  const acceptType = document.getElementById('acceptType').value;
-  const message = document.getElementById('message').value;
-  
-  if (!memberId) {
-    alert('メンバーIDを入力してください');
-    return;
-  }
-
-  let acceptorId = memberId;
-  if (acceptType === 'パーティ') {
-    const partyId = document.getElementById('partyId').value;
-    if (!partyId) {
-      alert('パーティIDを入力してください');
-      return;
-    }
-    acceptorId = partyId;
-  }
-
-  try {
-    const response = await fetch(GAS_WEB_APP_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify({
-        action: 'acceptQuest',
-        questId: questId,
-        acceptorId: acceptorId,
-        acceptorType: acceptType,
-        message: message
-      })
-    });
-
-    const result = await response.json();
-    
-    if (result.success) {
-      alert('クエストを受注しました！\nマイページから進捗を確認できます。');
-      window.location.href = 'mypage.html';
-    } else {
-      alert('受注に失敗しました: ' + result.message);
-    }
-  } catch (error) {
-    console.error('受注エラー:', error);
-    alert('受注処理中にエラーが発生しました');
-  }
-}
     /**
- * 日付を日本語形式にフォーマット
- */
-function formatDate(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    
-    // 無効な日付チェック
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日 ${hour}:${minute}`;
-  } catch (error) {
-    return '-';
-  }
-}
+     * 日付フォーマット
+     */
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '-';
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minute = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}年${month}月${day}日 ${hour}:${minute}`;
+      } catch (error) {
+        return '-';
+      }
+    }
 
-/**
- * 日付のみ表示（時刻なし）
- */
-function formatDateOnly(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日`;
-  } catch (error) {
-    return '-';
-  }
-}
-
-/**
- * 相対時間表示（○日前、○時間前など）
- */
-function formatRelativeTime(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
-    
-    if (diffSec < 60) return `${diffSec}秒前`;
-    if (diffMin < 60) return `${diffMin}分前`;
-    if (diffHour < 24) return `${diffHour}時間前`;
-    if (diffDay < 7) return `${diffDay}日前`;
-    
-    return formatDateOnly(dateString);
-  } catch (error) {
-    return '-';
-  }
-}
+    /**
+     * XSS対策
+     */
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
+    }
   </script>
 </body>
 </html>

@@ -86,208 +86,235 @@
     <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
   </footer>
 
-  <script src="js/config.js"></script>
-  <script>
-    let allQuests = []; // 全クエストデータを保持
+<script src="js/config.js"></script>
+<script>
+  let allQuests = [];
 
-    // ページ読み込み時にクエスト一覧を取得
-    window.addEventListener('DOMContentLoaded', loadQuests);
+  window.addEventListener('DOMContentLoaded', loadQuests);
 
-    async function loadQuests() {
-      const loading = document.getElementById('loading');
-      const questList = document.getElementById('questList');
-      const noQuests = document.getElementById('noQuests');
+  /**
+   * クエスト一覧読み込み
+   */
+  async function loadQuests() {
+    const loading = document.getElementById('loading');
+    const questList = document.getElementById('questList');
+    const noQuests = document.getElementById('noQuests');
 
-      try {
-        loading.style.display = 'block';
-        questList.style.display = 'none';
-        noQuests.style.display = 'none';
+    try {
+      loading.style.display = 'block';
+      questList.style.display = 'none';
+      noQuests.style.display = 'none';
 
-        const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuests`);
-        
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const quests = await response.json();
-        allQuests = quests; // グローバル変数に保存
-        
-        loading.style.display = 'none';
-        
-        if (quests.length === 0) {
-          noQuests.style.display = 'block';
-        } else {
-          questList.style.display = 'grid';
-          displayQuests(quests);
-        }
-      } catch (error) {
-        console.error('クエスト取得エラー:', error);
-        loading.style.display = 'none';
-        questList.innerHTML = '<p class="error">❌ クエストの読み込みに失敗しました。<br>ページを再読み込みしてください。</p>';
-        questList.style.display = 'block';
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuests`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+
+      const quests = await response.json();
+      allQuests = quests;
+      
+      loading.style.display = 'none';
+      
+      if (quests.length === 0) {
+        noQuests.style.display = 'block';
+      } else {
+        questList.style.display = 'grid';
+        displayQuests(quests);
+      }
+    } catch (error) {
+      console.error('クエスト取得エラー:', error);
+      loading.style.display = 'none';
+      questList.innerHTML = '<p class="error">❌ クエストの読み込みに失敗しました。<br>ページを再読み込みしてください。</p>';
+      questList.style.display = 'block';
     }
-
-function displayQuests(quests) {
-  const questList = document.getElementById('questList');
-  questList.innerHTML = '';
-
-  quests.forEach(quest => {
-    const card = document.createElement('div');
-    card.className = 'quest-card';
-    card.innerHTML = `
-      <div class="quest-header">
-        <span class="quest-category">${escapeHtml(quest.category)}</span>
-        <span class="quest-difficulty">${quest.difficulty}</span>
-      </div>
-      <h3 class="quest-title">${escapeHtml(quest.title)}</h3>
-      <div class="quest-info">
-        <div class="info-item">
-          <span class="info-label">📍 場所</span>
-          <span class="info-value">${escapeHtml(quest.location)}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">📅 希望日時</span>
-          <span class="info-value">${formatDate(quest.desiredDate)}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">💰 報酬</span>
-          <span class="info-value reward">¥${quest.reward.toLocaleString()}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">👥 必要人数</span>
-          <span class="info-value">${quest.requiredMembers}名</span>
-        </div>
-      </div>
-      <div class="quest-footer">
-        <span class="rank-badge rank-${quest.recommendRank}">推奨ランク: ${quest.recommendRank}</span>
-        <button onclick="viewQuestDetail('${quest.id}')" class="btn-primary">詳細を見る</button>
-      </div>
-    `;
-    questList.appendChild(card);
-  });
-}
-
-    function viewQuestDetail(questId) {
-      window.location.href = `quest-detail.html?id=${questId}`;
-    }
-
-    function applyFilter() {
-      const categoryFilter = document.getElementById('categoryFilter').value;
-      const difficultyFilter = document.getElementById('difficultyFilter').value;
-      const rankFilter = document.getElementById('rankFilter').value;
-
-      const filteredQuests = allQuests.filter(quest => {
-        let match = true;
-        
-        if (categoryFilter && quest.category !== categoryFilter) {
-          match = false;
-        }
-        
-        if (difficultyFilter && quest.difficulty !== difficultyFilter) {
-          match = false;
-        }
-        
-        if (rankFilter && quest.recommendRank !== rankFilter) {
-          match = false;
-        }
-        
-        return match;
-      });
-
-      displayQuests(filteredQuests);
-    }
-
-    function resetFilter() {
-      document.getElementById('categoryFilter').value = '';
-      document.getElementById('difficultyFilter').value = '';
-      document.getElementById('rankFilter').value = '';
-      displayQuests(allQuests);
-    }
-
-    // XSS対策用のエスケープ関数
-    function escapeHtml(text) {
-      if (!text) return '';
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return text.toString().replace(/[&<>"']/g, m => map[m]);
-    }
-    /**
- * 日付を日本語形式にフォーマット
- */
-function formatDate(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    
-    // 無効な日付チェック
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日 ${hour}:${minute}`;
-  } catch (error) {
-    return '-';
   }
-}
 
-/**
- * 日付のみ表示（時刻なし）
- */
-function formatDateOnly(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日`;
-  } catch (error) {
-    return '-';
-  }
-}
+  /**
+   * クエスト表示（残り募集人数対応版）
+   */
+  function displayQuests(quests) {
+    const questList = document.getElementById('questList');
+    questList.innerHTML = '';
 
-/**
- * 相対時間表示（○日前、○時間前など）
- */
-function formatRelativeTime(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
-    
-    if (diffSec < 60) return `${diffSec}秒前`;
-    if (diffMin < 60) return `${diffMin}分前`;
-    if (diffHour < 24) return `${diffHour}時間前`;
-    if (diffDay < 7) return `${diffDay}日前`;
-    
-    return formatDateOnly(dateString);
-  } catch (error) {
-    return '-';
+    quests.forEach(quest => {
+      const perPersonReward = Math.floor(quest.reward / quest.requiredMembers);
+      
+      const remainingSlots = quest.remainingSlots !== undefined ? quest.remainingSlots : quest.requiredMembers;
+      const currentMembers = quest.currentMembers || 0;
+      const remainingPercent = Math.round((remainingSlots / quest.requiredMembers) * 100);
+      
+      let slotsClass = 'slots-plenty';
+      if (remainingPercent <= 30) slotsClass = 'slots-few';
+      else if (remainingPercent <= 60) slotsClass = 'slots-medium';
+      
+      const card = document.createElement('div');
+      card.className = 'quest-card';
+      card.innerHTML = `
+        <div class="quest-header">
+          <span class="quest-category">${escapeHtml(quest.category)}</span>
+          <span class="quest-difficulty">${quest.difficulty}</span>
+        </div>
+        <h3 class="quest-title">${escapeHtml(quest.title)}</h3>
+        <div class="quest-info">
+          <div class="info-item">
+            <span class="info-label">📍 場所</span>
+            <span class="info-value">${escapeHtml(quest.location)}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">📅 希望日時</span>
+            <span class="info-value">${formatDate(quest.desiredDate)}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">💰 報酬</span>
+            <span class="info-value reward">
+              ${quest.requiredMembers > 1 ? 
+                `¥${perPersonReward.toLocaleString()}/人<br><small style="color: #666;">(総額: ¥${quest.reward.toLocaleString()})</small>` : 
+                `¥${quest.reward.toLocaleString()}`
+              }
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">👥 募集人数</span>
+            <span class="info-value ${slotsClass}">
+              <strong>${remainingSlots}名</strong> / ${quest.requiredMembers}名
+              ${currentMembers > 0 ? `<br><small>(${currentMembers}名応募済)</small>` : ''}
+            </span>
+          </div>
+        </div>
+        <div class="quest-footer">
+          <span class="rank-badge rank-${quest.recommendRank}">推奨ランク: ${quest.recommendRank}</span>
+          <button onclick="viewQuestDetail('${quest.id}')" class="btn-primary">詳細を見る</button>
+        </div>
+      `;
+      questList.appendChild(card);
+    });
   }
-}
-  </script>
+
+  /**
+   * クエスト詳細ページへ遷移
+   */
+  function viewQuestDetail(questId) {
+    window.location.href = `quest-detail.html?id=${questId}`;
+  }
+
+  /**
+   * フィルター適用
+   */
+  function applyFilter() {
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const difficultyFilter = document.getElementById('difficultyFilter').value;
+    const rankFilter = document.getElementById('rankFilter').value;
+
+    const filteredQuests = allQuests.filter(quest => {
+      let match = true;
+      
+      if (categoryFilter && quest.category !== categoryFilter) {
+        match = false;
+      }
+      
+      if (difficultyFilter && quest.difficulty !== difficultyFilter) {
+        match = false;
+      }
+      
+      if (rankFilter && quest.recommendRank !== rankFilter) {
+        match = false;
+      }
+      
+      return match;
+    });
+
+    displayQuests(filteredQuests);
+  }
+
+  /**
+   * フィルターリセット
+   */
+  function resetFilter() {
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('difficultyFilter').value = '';
+    document.getElementById('rankFilter').value = '';
+    displayQuests(allQuests);
+  }
+
+  /**
+   * XSS対策
+   */
+  function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.toString().replace(/[&<>"']/g, m => map[m]);
+  }
+
+  /**
+   * 日付フォーマット
+   */
+  function formatDate(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
+      
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hour = String(date.getHours()).padStart(2, '0');
+      const minute = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}年${month}月${day}日 ${hour}:${minute}`;
+    } catch (error) {
+      return '-';
+    }
+  }
+
+  function formatDateOnly(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
+      
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}年${month}月${day}日`;
+    } catch (error) {
+      return '-';
+    }
+  }
+
+  function formatRelativeTime(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
+      
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHour = Math.floor(diffMin / 60);
+      const diffDay = Math.floor(diffHour / 24);
+      
+      if (diffSec < 60) return `${diffSec}秒前`;
+      if (diffMin < 60) return `${diffMin}分前`;
+      if (diffHour < 24) return `${diffHour}時間前`;
+      if (diffDay < 7) return `${diffDay}日前`;
+      
+      return formatDateOnly(dateString);
+    } catch (error) {
+      return '-';
+    }
+  }
+</script>
 </body>
 </html>
