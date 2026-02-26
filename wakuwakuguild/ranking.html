@@ -26,8 +26,34 @@
       <p>活躍しているメンバーたちをご紹介！</p>
     </section>
 
-    <div id="rankingList" class="ranking-container">
-      <!-- ランキングが動的に生成される -->
+    <div class="ranking-tabs">
+      <button class="ranking-tab-btn active" onclick="showRankingTab('exp')">経験値ランキング</button>
+      <button class="ranking-tab-btn" onclick="showRankingTab('quests')">完了数ランキング</button>
+      <button class="ranking-tab-btn" onclick="showRankingTab('rating')">評価ランキング</button>
+    </div>
+
+    <div class="loading" id="loading">
+      <p>🔄 ランキングを読み込んでいます...</p>
+    </div>
+
+    <!-- 経験値ランキング -->
+    <div id="expRanking" class="ranking-container" style="display: none;">
+      <!-- JavaScriptで動的に生成 -->
+    </div>
+
+    <!-- 完了数ランキング -->
+    <div id="questsRanking" class="ranking-container" style="display: none;">
+      <!-- JavaScriptで動的に生成 -->
+    </div>
+
+    <!-- 評価ランキング -->
+    <div id="ratingRanking" class="ranking-container" style="display: none;">
+      <!-- JavaScriptで動的に生成 -->
+    </div>
+
+    <div id="noData" class="no-data" style="display: none;">
+      <p>😔 まだランキングデータがありません</p>
+      <p>メンバー登録してクエストに挑戦しよう！</p>
     </div>
   </main>
 
@@ -37,41 +63,134 @@
 
   <script src="js/config.js"></script>
   <script>
+    let allMembers = [];
+    let currentTab = 'exp';
+
     window.addEventListener('DOMContentLoaded', loadRanking);
 
     async function loadRanking() {
+      const loading = document.getElementById('loading');
+      const noData = document.getElementById('noData');
+
       try {
+        loading.style.display = 'block';
+
         const response = await fetch(`${GAS_WEB_APP_URL}?action=getMembers`);
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
         const members = await response.json();
-        displayRanking(members);
+        allMembers = members;
+        
+        loading.style.display = 'none';
+        
+        if (members.length === 0) {
+          noData.style.display = 'block';
+        } else {
+          displayRanking('exp', members);
+        }
       } catch (error) {
         console.error('ランキング取得エラー:', error);
+        loading.style.display = 'none';
+        document.getElementById('expRanking').innerHTML = 
+          '<p class="error">❌ ランキングの読み込みに失敗しました</p>';
+        document.getElementById('expRanking').style.display = 'block';
       }
     }
 
-    function displayRanking(members) {
-      const container = document.getElementById('rankingList');
-      container.innerHTML = '';
+    function showRankingTab(tabName) {
+      currentTab = tabName;
+      
+      // タブボタンの切り替え
+      document.querySelectorAll('.ranking-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
 
-      members.forEach((member, index) => {
+      // コンテンツの切り替え
+      document.getElementById('expRanking').style.display = 'none';
+      document.getElementById('questsRanking').style.display = 'none';
+      document.getElementById('ratingRanking').style.display = 'none';
+
+      displayRanking(tabName, allMembers);
+    }
+
+    function displayRanking(type, members) {
+      let sortedMembers = [...members];
+      let containerId = '';
+
+      // ソート処理
+      switch(type) {
+        case 'exp':
+          sortedMembers.sort((a, b) => b.exp - a.exp);
+          containerId = 'expRanking';
+          break;
+        case 'quests':
+          sortedMembers.sort((a, b) => b.completedQuests - a.completedQuests);
+          containerId = 'questsRanking';
+          break;
+        case 'rating':
+          sortedMembers.sort((a, b) => b.rating - a.rating);
+          containerId = 'ratingRanking';
+          break;
+      }
+
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      container.style.display = 'flex';
+
+      if (sortedMembers.length === 0) {
+        container.innerHTML = '<p class="no-data">データがありません</p>';
+        return;
+      }
+
+      sortedMembers.forEach((member, index) => {
         const rankClass = index < 3 ? 'top-rank' : '';
         const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
         
         const card = document.createElement('div');
         card.className = `ranking-card ${rankClass}`;
+        
+        let mainStat = '';
+        switch(type) {
+          case 'exp':
+            mainStat = `<p><strong>経験値:</strong> ${member.exp} EXP</p>`;
+            break;
+          case 'quests':
+            mainStat = `<p><strong>完了クエスト:</strong> ${member.completedQuests}件</p>`;
+            break;
+          case 'rating':
+            mainStat = `<p><strong>評価:</strong> ⭐${member.rating.toFixed(1)}</p>`;
+            break;
+        }
+
         card.innerHTML = `
           <div class="rank-number">${medal} ${index + 1}位</div>
           <div class="member-info">
-            <h3>${member.nickname}</h3>
+            <h3>${escapeHtml(member.nickname)}</h3>
             <p><strong>ランク:</strong> <span class="rank-badge rank-${member.rank}">${member.rank}</span></p>
-            <p><strong>経験値:</strong> ${member.exp} EXP</p>
-            <p><strong>完了クエスト:</strong> ${member.completedQuests}件</p>
-            <p><strong>評価:</strong> ⭐${member.rating}</p>
-            <p><strong>スキル:</strong> ${member.skills}</p>
+            ${mainStat}
+            <p><strong>完了数:</strong> ${member.completedQuests}件</p>
+            <p><strong>評価:</strong> ⭐${member.rating > 0 ? member.rating.toFixed(1) : '未評価'}</p>
+            <p><strong>スキル:</strong> ${escapeHtml(member.skills || 'なし')}</p>
           </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
     }
   </script>
 </body>
