@@ -33,7 +33,10 @@
           <option value="">すべて</option>
           <option value="草刈り">草刈り</option>
           <option value="清掃">清掃</option>
+          <option value="力仕事">力仕事</option>
           <option value="IT支援">IT支援</option>
+          <option value="料理・調理">料理・調理</option>
+          <option value="イベント手伝い">イベント手伝い</option>
           <option value="その他">その他</option>
         </select>
       </label>
@@ -48,11 +51,34 @@
           <option value="★★★★★">★★★★★</option>
         </select>
       </label>
+      <label>
+        推奨ランク:
+        <select id="rankFilter">
+          <option value="">すべて</option>
+          <option value="F">F</option>
+          <option value="E">E</option>
+          <option value="D">D</option>
+          <option value="C">C</option>
+          <option value="B">B</option>
+          <option value="A">A</option>
+          <option value="S">S</option>
+        </select>
+      </label>
       <button onclick="applyFilter()">絞り込み</button>
+      <button onclick="resetFilter()" class="btn-secondary">リセット</button>
     </div>
 
-    <div id="questList" class="quest-grid">
+    <div class="loading" id="loading">
+      <p>🔄 クエストを読み込んでいます...</p>
+    </div>
+
+    <div id="questList" class="quest-grid" style="display: none;">
       <!-- クエストカードが動的に生成される -->
+    </div>
+
+    <div id="noQuests" class="no-data" style="display: none;">
+      <p>😔 現在募集中のクエストはありません</p>
+      <p>新しいクエストが投稿されるまでお待ちください</p>
     </div>
   </main>
 
@@ -61,20 +87,44 @@
   </footer>
 
   <script src="js/config.js"></script>
-  <script src="js/main.js"></script>
   <script>
+    let allQuests = []; // 全クエストデータを保持
+
     // ページ読み込み時にクエスト一覧を取得
     window.addEventListener('DOMContentLoaded', loadQuests);
 
     async function loadQuests() {
+      const loading = document.getElementById('loading');
+      const questList = document.getElementById('questList');
+      const noQuests = document.getElementById('noQuests');
+
       try {
+        loading.style.display = 'block';
+        questList.style.display = 'none';
+        noQuests.style.display = 'none';
+
         const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuests`);
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
         const quests = await response.json();
-        displayQuests(quests);
+        allQuests = quests; // グローバル変数に保存
+        
+        loading.style.display = 'none';
+        
+        if (quests.length === 0) {
+          noQuests.style.display = 'block';
+        } else {
+          questList.style.display = 'grid';
+          displayQuests(quests);
+        }
       } catch (error) {
         console.error('クエスト取得エラー:', error);
-        document.getElementById('questList').innerHTML = 
-          '<p class="error">クエストの読み込みに失敗しました。</p>';
+        loading.style.display = 'none';
+        questList.innerHTML = '<p class="error">❌ クエストの読み込みに失敗しました。<br>ページを再読み込みしてください。</p>';
+        questList.style.display = 'block';
       }
     }
 
@@ -83,27 +133,31 @@
       container.innerHTML = '';
 
       if (quests.length === 0) {
-        container.innerHTML = '<p>現在募集中のクエストはありません。</p>';
+        document.getElementById('noQuests').style.display = 'block';
+        container.style.display = 'none';
         return;
       }
+
+      document.getElementById('noQuests').style.display = 'none';
+      container.style.display = 'grid';
 
       quests.forEach(quest => {
         const card = document.createElement('div');
         card.className = 'quest-card';
         card.innerHTML = `
           <div class="quest-header">
-            <h3>${quest.title}</h3>
+            <h3>${escapeHtml(quest.title)}</h3>
             <span class="difficulty">${quest.difficulty}</span>
           </div>
           <div class="quest-body">
-            <p><strong>📍 場所:</strong> ${quest.location}</p>
-            <p><strong>📅 希望日:</strong> ${quest.desiredDate}</p>
+            <p><strong>📍 場所:</strong> ${escapeHtml(quest.location)}</p>
+            <p><strong>📅 希望日:</strong> ${escapeHtml(quest.desiredDate)}</p>
             <p><strong>👥 必要人数:</strong> ${quest.requiredMembers}名</p>
             <p><strong>🏅 推奨ランク:</strong> ${quest.recommendRank}</p>
             <p><strong>💰 報酬:</strong> ${quest.reward.toLocaleString()}円</p>
           </div>
           <div class="quest-footer">
-            <span class="category-tag">${quest.category}</span>
+            <span class="category-tag">${escapeHtml(quest.category)}</span>
             <button onclick="viewQuestDetail('${quest.id}')">詳細を見る</button>
           </div>
         `;
@@ -112,13 +166,53 @@
     }
 
     function viewQuestDetail(questId) {
-      // 詳細ページへ遷移（実装は省略）
-      alert(`クエストID: ${questId} の詳細ページへ遷移します`);
+      window.location.href = `quest-detail.html?id=${questId}`;
     }
 
     function applyFilter() {
-      // フィルタリング処理（実装は省略）
-      alert('フィルタリング機能は実装中です');
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const difficultyFilter = document.getElementById('difficultyFilter').value;
+      const rankFilter = document.getElementById('rankFilter').value;
+
+      const filteredQuests = allQuests.filter(quest => {
+        let match = true;
+        
+        if (categoryFilter && quest.category !== categoryFilter) {
+          match = false;
+        }
+        
+        if (difficultyFilter && quest.difficulty !== difficultyFilter) {
+          match = false;
+        }
+        
+        if (rankFilter && quest.recommendRank !== rankFilter) {
+          match = false;
+        }
+        
+        return match;
+      });
+
+      displayQuests(filteredQuests);
+    }
+
+    function resetFilter() {
+      document.getElementById('categoryFilter').value = '';
+      document.getElementById('difficultyFilter').value = '';
+      document.getElementById('rankFilter').value = '';
+      displayQuests(allQuests);
+    }
+
+    // XSS対策用のエスケープ関数
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
     }
   </script>
 </body>
