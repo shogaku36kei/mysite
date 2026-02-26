@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ギルドメンバー登録 - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="form-section">
+      <h2>🛡️ ギルドメンバー登録</h2>
+      <p>あなたもギルドの一員として、地域のクエストに挑戦しませんか？</p>
+
+      <form id="memberForm" onsubmit="submitMemberForm(event)">
+        <div class="form-group">
+          <label for="name">氏名 <span class="required">*</span></label>
+          <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="nickname">ニックネーム（ギルド内表示名） <span class="required">*</span></label>
+          <input type="text" id="nickname" name="nickname" required>
+          <small>他のメンバーや依頼主に表示される名前です</small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">メールアドレス <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">電話番号 <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+          <label for="address">住所 <span class="required">*</span></label>
+          <input type="text" id="address" name="address" required>
+        </div>
+
+        <div class="form-group">
+          <label for="skills">得意なスキル（複数選択可）</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="skills" value="草刈り"> 草刈り</label>
+            <label><input type="checkbox" name="skills" value="力仕事"> 力仕事</label>
+            <label><input type="checkbox" name="skills" value="IT支援"> IT支援</label>
+            <label><input type="checkbox" name="skills" value="料理"> 料理</label>
+            <label><input type="checkbox" name="skills" value="清掃"> 清掃</label>
+            <label><input type="checkbox" name="skills" value="その他"> その他</label>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>💳 報酬振込先情報</legend>
+          
+          <div class="form-group">
+            <label for="bankName">銀行名 <span class="required">*</span></label>
+            <input type="text" id="bankName" name="bankName" required>
+          </div>
+
+          <div class="form-group">
+            <label for="branchName">支店名 <span class="required">*</span></label>
+            <input type="text" id="branchName" name="branchName" required>
+          </div>
+
+          <div class="form-group">
+            <label for="accountType">口座種別 <span class="required">*</span></label>
+            <select id="accountType" name="accountType" required>
+              <option value="">選択してください</option>
+              <option value="普通">普通</option>
+              <option value="当座">当座</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="accountNumber">口座番号 <span class="required">*</span></label>
+            <input type="text" id="accountNumber" name="accountNumber" required>
+          </div>
+
+          <div class="form-group">
+            <label for="accountHolder">口座名義（カナ） <span class="required">*</span></label>
+            <input type="text" id="accountHolder" name="accountHolder" required>
+            <small>例: ヤマダタロウ</small>
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="agree" required>
+            <a href="#">利用規約</a>および<a href="#">プライバシーポリシー</a>に同意します
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary">登録申請する</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    function submitMemberForm(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(event.target);
+      const skills = Array.from(formData.getAll('skills')).join(',');
+      
+      const memberData = {
+        name: formData.get('name'),
+        nickname: formData.get('nickname'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        address: formData.get('address'),
+        skills: skills,
+        bankName: formData.get('bankName'),
+        branchName: formData.get('branchName'),
+        accountType: formData.get('accountType'),
+        accountNumber: formData.get('accountNumber'),
+        accountHolder: formData.get('accountHolder')
+      };
+
+      // GASへPOST送信（実装は省略）
+      console.log('送信データ:', memberData);
+      alert('登録申請を受け付けました。事務局の審査をお待ちください。');
+      event.target.reset();
+    }
+  </script>
+</body>
+</html>
