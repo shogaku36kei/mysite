@@ -174,505 +174,482 @@
     <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
   </footer>
 
-  <script src="js/config.js"></script>
-  <script>
-    let currentUser = null;
-    let currentUserType = null;
+<script src="js/config.js"></script>
+<script>
+  let currentUser = null;
+  let currentUserType = null;
 
-    async function handleLogin(event) {
-      event.preventDefault();
+  /**
+   * 日付フォーマット関数
+   */
+  function formatDate(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
       
-      const loginId = document.getElementById('loginId').value;
-      const email = document.getElementById('email').value;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hour = String(date.getHours()).padStart(2, '0');
+      const minute = String(date.getMinutes()).padStart(2, '0');
       
-      const loading = document.getElementById('loadingMypage');
-      const loginPrompt = document.getElementById('loginPrompt');
+      return `${year}年${month}月${day}日 ${hour}:${minute}`;
+    } catch (error) {
+      return '-';
+    }
+  }
+
+  function formatDateOnly(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '-';
       
-      loading.style.display = 'block';
-      loginPrompt.style.display = 'none';
-
-      try {
-        // ID判定
-        if (loginId.startsWith('M')) {
-          // メンバーログイン
-          await loadMemberData(loginId, email);
-        } else if (loginId.startsWith('C')) {
-          // 依頼主ログイン
-          await loadClientData(loginId, email);
-        } else {
-          throw new Error('無効なIDです');
-        }
-      } catch (error) {
-        console.error('ログインエラー:', error);
-        alert('❌ ログインに失敗しました\n\n' + error.message);
-        loading.style.display = 'none';
-        loginPrompt.style.display = 'block';
-      }
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}年${month}月${day}日`;
+    } catch (error) {
+      return '-';
     }
+  }
 
-    async function loadMemberData(memberId, email) {
-      try {
-        const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberData&id=${memberId}&email=${email}`);
-        const data = await response.json();
-        
-        if (!data.success) {
-          throw new Error(data.message || 'メンバー情報が見つかりません');
-        }
+  function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.toString().replace(/[&<>"']/g, m => map[m]);
+  }
 
-        currentUser = data.member;
-        currentUserType = 'member';
+  /**
+   * ログイン処理
+   */
+  async function handleLogin(event) {
+    event.preventDefault();
+    
+    const loginId = document.getElementById('loginId').value;
+    const email = document.getElementById('email').value;
+    
+    const loading = document.getElementById('loadingMypage');
+    const loginPrompt = document.getElementById('loginPrompt');
+    
+    loading.style.display = 'block';
+    loginPrompt.style.display = 'none';
 
-        // プロフィールカード表示
-        document.getElementById('memberNickname').textContent = data.member.nickname;
-        document.getElementById('memberRankBadge').textContent = `ランク${data.member.rank}`;
-        document.getElementById('memberRankBadge').className = `rank-badge rank-${data.member.rank}`;
-        document.getElementById('memberExp').textContent = `${data.member.exp} EXP`;
-        document.getElementById('memberQuests').textContent = `${data.member.completedQuests}件`;
-        document.getElementById('memberRating').textContent = `⭐${data.member.rating > 0 ? data.member.rating.toFixed(1) : '未評価'}`;
-
-        // 経験値バー
-        const expProgress = calculateExpProgress(data.member.rank, data.member.exp);
-        document.getElementById('expProgress').style.width = `${expProgress.percentage}%`;
-        document.getElementById('expText').textContent = `次のランクまであと${expProgress.remaining} EXP`;
-
-        // プロフィール編集フォーム
-        document.getElementById('profileMemberId').value = data.member.id;
-        document.getElementById('profileName').value = data.member.name;
-        document.getElementById('profileNickname').value = data.member.nickname;
-        document.getElementById('profileEmail').value = data.member.email;
-        document.getElementById('profilePhone').value = data.member.phone;
-        document.getElementById('profileSkills').value = data.member.skills;
-
-        // クエスト一覧を読み込み
-        await loadMemberQuests(memberId);
-
-        document.getElementById('loadingMypage').style.display = 'none';
-        document.getElementById('memberMypage').style.display = 'block';
-      } catch (error) {
-        throw error;
+    try {
+      if (loginId.startsWith('M')) {
+        await loadMemberData(loginId, email);
+      } else if (loginId.startsWith('C')) {
+        await loadClientData(loginId, email);
+      } else {
+        throw new Error('無効なIDです');
       }
+    } catch (error) {
+      console.error('ログインエラー:', error);
+      alert('❌ ログインに失敗しました\n\n' + error.message);
+      loading.style.display = 'none';
+      loginPrompt.style.display = 'block';
     }
+  }
 
-    async function loadClientData(clientId, email) {
-      try {
-        const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientData&id=${clientId}&email=${email}`);
-        const data = await response.json();
-        
-        if (!data.success) {
-          throw new Error(data.message || '依頼主情報が見つかりません');
-        }
-
-        currentUser = data.client;
-        currentUserType = 'client';
-
-        // プロフィール表示
-        document.getElementById('clientName').textContent = data.client.name;
-        document.getElementById('clientId').textContent = data.client.id;
-        document.getElementById('clientType').textContent = data.client.type || '-';
-
-        // クエスト一覧を読み込み
-        await loadClientQuests(clientId);
-
-        document.getElementById('loadingMypage').style.display = 'none';
-        document.getElementById('clientMypage').style.display = 'block';
-      } catch (error) {
-        throw error;
+  /**
+   * メンバーデータ読み込み
+   */
+  async function loadMemberData(memberId, email) {
+    try {
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberData&id=${memberId}&email=${email}`);
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || 'メンバー情報が見つかりません');
       }
+
+      currentUser = data.member;
+      currentUserType = 'member';
+
+      document.getElementById('memberNickname').textContent = data.member.nickname;
+      document.getElementById('memberRankBadge').textContent = `ランク${data.member.rank}`;
+      document.getElementById('memberRankBadge').className = `rank-badge rank-${data.member.rank}`;
+      document.getElementById('memberExp').textContent = `${data.member.exp} EXP`;
+      document.getElementById('memberQuests').textContent = `${data.member.completedQuests}件`;
+      document.getElementById('memberRating').textContent = `⭐${data.member.rating > 0 ? data.member.rating.toFixed(1) : '未評価'}`;
+
+      const expProgress = calculateExpProgress(data.member.rank, data.member.exp);
+      document.getElementById('expProgress').style.width = `${expProgress.percentage}%`;
+      document.getElementById('expText').textContent = `次のランクまであと${expProgress.remaining} EXP`;
+
+      document.getElementById('profileMemberId').value = data.member.id;
+      document.getElementById('profileName').value = data.member.name;
+      document.getElementById('profileNickname').value = data.member.nickname;
+      document.getElementById('profileEmail').value = data.member.email;
+      document.getElementById('profilePhone').value = data.member.phone;
+      document.getElementById('profileSkills').value = data.member.skills;
+
+      await loadMemberQuests(memberId);
+
+      document.getElementById('loadingMypage').style.display = 'none';
+      document.getElementById('memberMypage').style.display = 'block';
+    } catch (error) {
+      throw error;
     }
+  }
 
-    async function loadMemberQuests(memberId) {
-      try {
-        const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberQuests&id=${memberId}`);
-        const data = await response.json();
-
-        // 受注中のクエスト
-        const acceptedList = document.getElementById('acceptedQuestList');
-        acceptedList.innerHTML = '';
-        
-        if (data.accepted && data.accepted.length > 0) {
-          data.accepted.forEach(quest => {
-            acceptedList.innerHTML += createQuestItemHTML(quest, 'accepted');
-          });
-        } else {
-          acceptedList.innerHTML = '<p class="no-data">受注中のクエストはありません</p>';
-        }
-
-        // 完了したクエスト
-        const completedList = document.getElementById('completedQuestList');
-        completedList.innerHTML = '';
-        
-        if (data.completed && data.completed.length > 0) {
-          data.completed.forEach(quest => {
-            completedList.innerHTML += createQuestItemHTML(quest, 'completed');
-          });
-        } else {
-          completedList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
-        }
-      } catch (error) {
-        console.error('クエスト取得エラー:', error);
+  /**
+   * 依頼主データ読み込み
+   */
+  async function loadClientData(clientId, email) {
+    try {
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientData&id=${clientId}&email=${email}`);
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.message || '依頼主情報が見つかりません');
       }
+
+      currentUser = data.client;
+      currentUserType = 'client';
+
+      document.getElementById('clientName').textContent = data.client.name;
+      document.getElementById('clientId').textContent = data.client.id;
+      document.getElementById('clientType').textContent = data.client.type || '-';
+
+      await loadClientQuests(clientId);
+
+      document.getElementById('loadingMypage').style.display = 'none';
+      document.getElementById('clientMypage').style.display = 'block';
+    } catch (error) {
+      throw error;
     }
+  }
 
-    async function loadClientQuests(clientId) {
-      try {
-        const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientQuests&id=${clientId}`);
-        const data = await response.json();
+  /**
+   * メンバークエスト読み込み
+   */
+  async function loadMemberQuests(memberId) {
+    try {
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberQuests&id=${memberId}`);
+      const data = await response.json();
 
-        // 募集中のクエスト
-        const postingList = document.getElementById('postingQuestList');
-        postingList.innerHTML = '';
-        
-        if (data.posting && data.posting.length > 0) {
-          data.posting.forEach(quest => {
-            postingList.innerHTML += createClientQuestItemHTML(quest, 'posting');
-          });
-        } else {
-          postingList.innerHTML = '<p class="no-data">募集中のクエストはありません</p>';
-        }
-
-        // 進行中のクエスト
-        const inProgressList = document.getElementById('inProgressQuestList');
-        inProgressList.innerHTML = '';
-        
-        if (data.inProgress && data.inProgress.length > 0) {
-          data.inProgress.forEach(quest => {
-            inProgressList.innerHTML += createClientQuestItemHTML(quest, 'inProgress');
-          });
-        } else {
-          inProgressList.innerHTML = '<p class="no-data">進行中のクエストはありません</p>';
-        }
-
-        // 完了履歴
-        const historyList = document.getElementById('historyQuestList');
-        historyList.innerHTML = '';
-        
-        if (data.history && data.history.length > 0) {
-          data.history.forEach(quest => {
-            historyList.innerHTML += createClientQuestItemHTML(quest, 'history');
-          });
-        } else {
-          historyList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
-        }
-      } catch (error) {
-        console.error('クエスト取得エラー:', error);
+      const acceptedList = document.getElementById('acceptedQuestList');
+      acceptedList.innerHTML = '';
+      
+      if (data.accepted && data.accepted.length > 0) {
+        data.accepted.forEach(quest => {
+          acceptedList.innerHTML += createQuestItemHTML(quest, 'accepted');
+        });
+      } else {
+        acceptedList.innerHTML = '<p class="no-data">受注中のクエストはありません</p>';
       }
-    }
 
-    function createQuestItemHTML(quest, status) {
-      const isCompleted = status === 'completed';
-      return `
-        <div class="quest-item ${isCompleted ? 'completed' : ''}">
-          <div class="quest-info">
-            <h4>${escapeHtml(quest.title)}</h4>
-            <p>📍 ${escapeHtml(quest.location)}</p>
-            <p>📅 ${escapeHtml(quest.desiredDate)}</p>
-            <p>💰 報酬: ${quest.reward.toLocaleString()}円</p>
-            ${isCompleted ? `
-              <p>⭐ 評価: ${quest.rating || '未評価'}</p>
-              <p>🎖️ 獲得経験値: +${quest.exp || 0} EXP</p>
-            ` : ''}
-          </div>
-          <div class="quest-actions">
-            ${!isCompleted ? `
-              <button onclick="reportComplete('${quest.id}')" class="btn-primary">完了報告</button>
-              <button onclick="reportProblem('${quest.id}')" class="btn-secondary">問題報告</button>
-            ` : ''}
-          </div>
+      const completedList = document.getElementById('completedQuestList');
+      completedList.innerHTML = '';
+      
+      if (data.completed && data.completed.length > 0) {
+        data.completed.forEach(quest => {
+          completedList.innerHTML += createQuestItemHTML(quest, 'completed');
+        });
+      } else {
+        completedList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
+      }
+    } catch (error) {
+      console.error('クエスト取得エラー:', error);
+    }
+  }
+
+  /**
+   * 依頼主クエスト読み込み
+   */
+  async function loadClientQuests(clientId) {
+    try {
+      const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientQuests&id=${clientId}`);
+      const data = await response.json();
+
+      const postingList = document.getElementById('postingQuestList');
+      postingList.innerHTML = '';
+      
+      if (data.posting && data.posting.length > 0) {
+        data.posting.forEach(quest => {
+          postingList.innerHTML += createClientQuestItemHTML(quest, 'posting');
+        });
+      } else {
+        postingList.innerHTML = '<p class="no-data">募集中のクエストはありません</p>';
+      }
+
+      const inProgressList = document.getElementById('inProgressQuestList');
+      inProgressList.innerHTML = '';
+      
+      if (data.inProgress && data.inProgress.length > 0) {
+        data.inProgress.forEach(quest => {
+          inProgressList.innerHTML += createClientQuestItemHTML(quest, 'inProgress');
+        });
+      } else {
+        inProgressList.innerHTML = '<p class="no-data">進行中のクエストはありません</p>';
+      }
+
+      const historyList = document.getElementById('historyQuestList');
+      historyList.innerHTML = '';
+      
+      if (data.history && data.history.length > 0) {
+        data.history.forEach(quest => {
+          historyList.innerHTML += createClientQuestItemHTML(quest, 'history');
+        });
+      } else {
+        historyList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
+      }
+    } catch (error) {
+      console.error('クエスト取得エラー:', error);
+    }
+  }
+
+  /**
+   * クエストアイテムHTML生成
+   */
+  function createQuestItemHTML(quest, status) {
+    const isCompleted = status === 'completed';
+    return `
+      <div class="quest-item ${isCompleted ? 'completed' : ''}">
+        <div class="quest-info">
+          <h4>${escapeHtml(quest.title)}</h4>
+          <p>📍 ${escapeHtml(quest.location)}</p>
+          <p>📅 ${formatDate(quest.desiredDate)}</p>
+          <p>💰 報酬: ¥${quest.reward.toLocaleString()}</p>
+          ${isCompleted ? `
+            <p>⭐ 評価: ${quest.rating || '未評価'}</p>
+            <p>🎖️ 獲得経験値: +${quest.exp || 0} EXP</p>
+          ` : ''}
         </div>
-      `;
-    }
-
-    function createClientQuestItemHTML(quest, status) {
-      let actions = '';
-      
-      if (status === 'posting') {
-        actions = `
-          <button onclick="viewApplicants('${quest.id}')" class="btn-primary">応募者を見る</button>
-          <button onclick="cancelQuest('${quest.id}')" class="btn-secondary">募集中止</button>
-        `;
-      } else if (status === 'inProgress') {
-        actions = `
-          <button onclick="confirmComplete('${quest.id}')" class="btn-primary">完了確認</button>
-          <button onclick="contactMember('${quest.acceptorId}')" class="btn-secondary">メッセージ</button>
-        `;
-      }
-
-      return `
-        <div class="quest-item ${status === 'history' ? 'completed' : ''}">
-          <div class="quest-info">
-            <h4>${escapeHtml(quest.title)}</h4>
-            ${quest.acceptorName ? `<p>👤 受注者: ${escapeHtml(quest.acceptorName)}</p>` : ''}
-            <p>📅 ${status === 'posting' ? '希望日' : status === 'inProgress' ? '実施予定' : '完了日'}: ${escapeHtml(quest.date)}</p>
-            <p>💰 報酬: ${quest.reward.toLocaleString()}円</p>
-            ${status === 'history' && quest.rating ? `<p>⭐ あなたの評価: ${quest.rating}</p>` : ''}
-          </div>
-          <div class="quest-actions">
-            ${actions}
-          </div>
+        <div class="quest-actions">
+          ${!isCompleted ? `
+            <button onclick="reportComplete('${quest.id}')" class="btn-primary">完了報告</button>
+            <button onclick="reportProblem('${quest.id}')" class="btn-secondary">問題報告</button>
+          ` : ''}
         </div>
+      </div>
+    `;
+  }
+
+  /**
+   * 依頼主クエストアイテムHTML生成
+   */
+  function createClientQuestItemHTML(quest, status) {
+    let actions = '';
+    let dateLabel = '希望日';
+    
+    if (status === 'posting') {
+      dateLabel = '希望日';
+      actions = `
+        <button onclick="viewApplicants('${quest.id}')" class="btn-primary">応募者を見る</button>
+        <button onclick="cancelQuest('${quest.id}')" class="btn-secondary">募集中止</button>
       `;
+    } else if (status === 'inProgress') {
+      dateLabel = '実施予定';
+      actions = `
+        <button onclick="confirmComplete('${quest.id}')" class="btn-primary">完了確認</button>
+        <button onclick="contactMember('${quest.acceptorId}')" class="btn-secondary">メッセージ</button>
+      `;
+    } else if (status === 'history') {
+      dateLabel = '完了日';
     }
 
-    function calculateExpProgress(rank, exp) {
-      const rankThresholds = {
-        'F': 0,
-        'E': 10,
-        'D': 50,
-        'C': 150,
-        'B': 300,
-        'A': 500,
-        'S': 1000
-      };
-
-      const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S'];
-      const currentIndex = ranks.indexOf(rank);
-      
-      if (currentIndex === ranks.length - 1) {
-        return { percentage: 100, remaining: 0 };
-      }
-
-      const currentThreshold = rankThresholds[rank];
-      const nextThreshold = rankThresholds[ranks[currentIndex + 1]];
-      const range = nextThreshold - currentThreshold;
-      const progress = exp - currentThreshold;
-      const percentage = Math.min((progress / range) * 100, 100);
-      const remaining = Math.max(nextThreshold - exp, 0);
-
-      return { percentage, remaining };
-    }
-
-    function showTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
-      });
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      if (tabName === 'accepted') {
-        document.getElementById('acceptedTab').style.display = 'block';
-      } else if (tabName === 'completed') {
-        document.getElementById('completedTab').style.display = 'block';
-      } else if (tabName === 'profile') {
-        document.getElementById('profileTab').style.display = 'block';
-      }
-      
-      event.target.classList.add('active');
-    }
-
-    function showClientTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
-      });
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      const tabMap = {
-        'posting': 'postingTab',
-        'inProgress': 'inProgressTab',
-        'history': 'historyTab',
-        'newQuest': 'newQuestTab'
-      };
-      
-      document.getElementById(tabMap[tabName]).style.display = 'block';
-      event.target.classList.add('active');
-    }
-
-    async function reportComplete(questId) {
-      const comment = prompt('完了報告のコメントを入力してください:');
-      if (!comment) return;
-
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'reportComplete',
-            questId: questId,
-            memberId: currentUser.id,
-            comment: comment
-          })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          alert('✅ 完了報告を送信しました。\n依頼主の確認をお待ちください。');
-          await loadMemberQuests(currentUser.id);
-        } else {
-          alert('❌ 報告に失敗しました: ' + result.message);
-        }
-      } catch (error) {
-        console.error('報告エラー:', error);
-        alert('❌ 報告処理中にエラーが発生しました');
-      }
-    }
-
-    async function reportProblem(questId) {
-      const problem = prompt('発生した問題を入力してください:');
-      if (!problem) return;
-
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'reportProblem',
-            questId: questId,
-            memberId: currentUser.id,
-            problem: problem
-          })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          alert('✅ 問題報告を事務局に送信しました。\n事務局から連絡があるまでお待ちください。');
-        } else {
-          alert('❌ 報告に失敗しました: ' + result.message);
-        }
-      } catch (error) {
-        console.error('報告エラー:', error);
-        alert('❌ 報告処理中にエラーが発生しました');
-      }
-    }
-
-    async function confirmComplete(questId) {
-      const rating = prompt('評価を入力してください（1-5）:');
-      if (!rating || rating < 1 || rating > 5) {
-        alert('1から5の数字を入力してください');
-        return;
-      }
-
-      const comment = prompt('コメントを入力してください:');
-      if (!comment) return;
-
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'confirmComplete',
-            questId: questId,
-            clientId: currentUser.id,
-            rating: parseInt(rating),
-            comment: comment
-          })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          alert('✅ クエストを完了確認しました。\n報酬の支払い処理を開始します。');
-          await loadClientQuests(currentUser.id);
-        } else {
-          alert('❌ 確認に失敗しました: ' + result.message);
-        }
-      } catch (error) {
-        console.error('確認エラー:', error);
-        alert('❌ 確認処理中にエラーが発生しました');
-      }
-    }
-
-    function viewApplicants(questId) {
-      alert('応募者一覧機能は今後実装予定です');
-    }
-
-    function cancelQuest(questId) {
-      if (confirm('本当に募集を中止しますか？')) {
-        alert('募集中止機能は今後実装予定です');
-      }
-    }
-
-    function contactMember(memberId) {
-      alert('メッセージ機能は今後実装予定です');
-    }
-
-    async function updateProfile(event) {
-      event.preventDefault();
-      alert('プロフィール更新機能は今後実装予定です');
-    }
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return text.toString().replace(/[&<>"']/g, m => map[m]);
-    }
-    /**
- * 日付を日本語形式にフォーマット
- */
-function formatDate(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    
-    // 無効な日付チェック
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日 ${hour}:${minute}`;
-  } catch (error) {
-    return '-';
+    return `
+      <div class="quest-item ${status === 'history' ? 'completed' : ''}">
+        <div class="quest-info">
+          <h4>${escapeHtml(quest.title)}</h4>
+          ${quest.acceptorName ? `<p>👤 受注者: ${escapeHtml(quest.acceptorName)}</p>` : ''}
+          <p>📅 ${dateLabel}: ${formatDate(quest.date)}</p>
+          <p>💰 報酬: ¥${quest.reward.toLocaleString()}</p>
+          ${status === 'history' && quest.rating ? `<p>⭐ あなたの評価: ${quest.rating}</p>` : ''}
+        </div>
+        <div class="quest-actions">
+          ${actions}
+        </div>
+      </div>
+    `;
   }
-}
 
-/**
- * 日付のみ表示（時刻なし）
- */
-function formatDateOnly(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日`;
-  } catch (error) {
-    return '-';
-  }
-}
+  /**
+   * 経験値進捗計算
+   */
+  function calculateExpProgress(rank, exp) {
+    const rankThresholds = {
+      'F': 0, 'E': 10, 'D': 50, 'C': 150, 'B': 300, 'A': 500, 'S': 1000
+    };
 
-/**
- * 相対時間表示（○日前、○時間前など）
- */
-function formatRelativeTime(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
+    const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S'];
+    const currentIndex = ranks.indexOf(rank);
     
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
-    
-    if (diffSec < 60) return `${diffSec}秒前`;
-    if (diffMin < 60) return `${diffMin}分前`;
-    if (diffHour < 24) return `${diffHour}時間前`;
-    if (diffDay < 7) return `${diffDay}日前`;
-    
-    return formatDateOnly(dateString);
-  } catch (error) {
-    return '-';
+    if (currentIndex === ranks.length - 1) {
+      return { percentage: 100, remaining: 0 };
+    }
+
+    const currentThreshold = rankThresholds[rank];
+    const nextThreshold = rankThresholds[ranks[currentIndex + 1]];
+    const range = nextThreshold - currentThreshold;
+    const progress = exp - currentThreshold;
+    const percentage = Math.min((progress / range) * 100, 100);
+    const remaining = Math.max(nextThreshold - exp, 0);
+
+    return { percentage, remaining };
   }
-}
-  </script>
+
+  /**
+   * タブ切り替え
+   */
+  function showTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    const tabMap = {
+      'accepted': 'acceptedTab',
+      'completed': 'completedTab',
+      'profile': 'profileTab'
+    };
+    
+    document.getElementById(tabMap[tabName]).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  function showClientTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    const tabMap = {
+      'posting': 'postingTab',
+      'inProgress': 'inProgressTab',
+      'history': 'historyTab',
+      'newQuest': 'newQuestTab'
+    };
+    
+    document.getElementById(tabMap[tabName]).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  /**
+   * クエスト操作
+   */
+  async function reportComplete(questId) {
+    const comment = prompt('完了報告のコメントを入力してください:');
+    if (!comment) return;
+
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          action: 'reportComplete',
+          questId: questId,
+          memberId: currentUser.id,
+          comment: comment
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('✅ 完了報告を送信しました。\n依頼主の確認をお待ちください。');
+        await loadMemberQuests(currentUser.id);
+      } else {
+        alert('❌ 報告に失敗しました: ' + result.message);
+      }
+    } catch (error) {
+      console.error('報告エラー:', error);
+      alert('❌ 報告処理中にエラーが発生しました');
+    }
+  }
+
+  async function reportProblem(questId) {
+    const problem = prompt('発生した問題を入力してください:');
+    if (!problem) return;
+
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          action: 'reportProblem',
+          questId: questId,
+          memberId: currentUser.id,
+          problem: problem
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('✅ 問題報告を事務局に送信しました。');
+      } else {
+        alert('❌ 報告に失敗しました: ' + result.message);
+      }
+    } catch (error) {
+      console.error('報告エラー:', error);
+      alert('❌ 報告処理中にエラーが発生しました');
+    }
+  }
+
+  async function confirmComplete(questId) {
+    const rating = prompt('評価を入力してください（1-5）:');
+    if (!rating || rating < 1 || rating > 5) {
+      alert('1から5の数字を入力してください');
+      return;
+    }
+
+    const comment = prompt('コメントを入力してください:');
+    if (!comment) return;
+
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          action: 'confirmComplete',
+          questId: questId,
+          clientId: currentUser.id,
+          rating: parseInt(rating),
+          comment: comment
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('✅ クエストを完了確認しました。');
+        await loadClientQuests(currentUser.id);
+      } else {
+        alert('❌ 確認に失敗しました: ' + result.message);
+      }
+    } catch (error) {
+      console.error('確認エラー:', error);
+      alert('❌ 確認処理中にエラーが発生しました');
+    }
+  }
+
+  function viewApplicants(questId) {
+    alert('応募者一覧機能は今後実装予定です');
+  }
+
+  function cancelQuest(questId) {
+    if (confirm('本当に募集を中止しますか？')) {
+      alert('募集中止機能は今後実装予定です');
+    }
+  }
+
+  function contactMember(memberId) {
+    alert('メッセージ機能は今後実装予定です');
+  }
+
+  async function updateProfile(event) {
+    event.preventDefault();
+    alert('プロフィール更新機能は今後実装予定です');
+  }
+</script>
 </body>
 </html>
