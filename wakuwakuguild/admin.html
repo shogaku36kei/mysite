@@ -3,654 +3,524 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>事務局管理画面 - わくわくギルド</title>
+  <title>🔐 管理画面 - わくわくギルド</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header>
     <div class="container">
-      <h1>⚔️ わくわくギルド - 事務局</h1>
+      <h1>⚔️ わくわくギルド</h1>
       <nav>
-        <a href="admin.html">ダッシュボード</a>
-        <a href="index.html" target="_blank">公開ページへ</a>
-        <a href="#" onclick="logout()">ログアウト</a>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="admin-section">
-      <h2>🛡️ 事務局管理画面</h2>
-      
-      <!-- ログイン画面 -->
-      <div class="admin-login" id="adminLogin">
+  <main>
+    <div class="container admin-section">
+      <div class="hero">
+        <h2>🔐 管理画面</h2>
+        <p>総社市ギルド事務局専用ページ</p>
+      </div>
+
+      <!-- ログインセクション -->
+      <div id="loginSection" class="admin-login">
         <h3>管理者ログイン</h3>
-        <form onsubmit="handleAdminLogin(event)">
+        <form id="loginForm">
           <div class="form-group">
             <label>管理者ID</label>
-            <input type="text" id="adminId" required placeholder="admin">
+            <input type="text" id="adminId" name="adminId" required>
           </div>
           <div class="form-group">
             <label>パスワード</label>
-            <input type="password" id="adminPassword" required placeholder="password">
+            <input type="password" id="password" name="password" required>
           </div>
           <button type="submit" class="btn-primary">ログイン</button>
         </form>
-        <p class="note">※デモ版: どんなID/パスワードでもログイン可能</p>
+        <p class="note">※デモ版: どんなID/パスワードでもログイン可能です</p>
       </div>
 
-      <!-- ローディング -->
-      <div id="adminLoading" class="loading" style="display: none;">
-        <p>🔄 データを読み込んでいます...</p>
-      </div>
-
-      <!-- ダッシュボード -->
-      <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+      <!-- ダッシュボードコンテンツ -->
+      <div id="dashboardContent" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <h3>📊 統計ダッシュボード</h3>
+          <button onclick="logout()" class="btn-secondary">ログアウト</button>
+        </div>
+        
         <div class="dashboard-stats">
           <div class="stat-card">
-            <h3>📋 審査待ち</h3>
-            <p class="stat-number" id="statPending">0件</p>
-            <small id="statPendingDetail">メンバー: 0件 / 依頼主: 0件 / クエスト: 0件</small>
+            <h3>⏳ 審査待ち</h3>
+            <div class="stat-number" id="pendingTotal">0</div>
+            <small>
+              メンバー: <span id="pendingMembers">0</span> |
+              依頼主: <span id="pendingClients">0</span> |
+              クエスト: <span id="pendingQuests">0</span>
+            </small>
           </div>
+          
           <div class="stat-card">
-            <h3>🔄 進行中クエスト</h3>
-            <p class="stat-number" id="statInProgress">0件</p>
-            <small>受注済・進行中の案件</small>
+            <h3>⚙️ 進行中</h3>
+            <div class="stat-number" id="inProgress">0</div>
+            <small>現在進行中のクエスト</small>
           </div>
+          
           <div class="stat-card">
-            <h3>✅ 完了クエスト</h3>
-            <p class="stat-number" id="statCompleted">0件</p>
-            <small>今月の完了数</small>
+            <h3>✅ 今月完了</h3>
+            <div class="stat-number" id="completed">0</div>
+            <small>今月完了したクエスト</small>
           </div>
+          
           <div class="stat-card">
             <h3>💰 預かり金</h3>
-            <p class="stat-number" id="statDeposit">¥0</p>
-            <small>未払い報酬総額</small>
+            <div class="stat-number" id="deposit">¥0</div>
+            <small>進行中クエストの報酬総額</small>
           </div>
         </div>
 
+        <!-- タブ -->
         <div class="tabs">
-          <button class="tab-btn active" onclick="showAdminTab('approval')">審査待ち</button>
-          <button class="tab-btn" onclick="showAdminTab('quests')">クエスト管理</button>
-          <button class="tab-btn" onclick="showAdminTab('members')">メンバー管理</button>
-          <button class="tab-btn" onclick="showAdminTab('clients')">依頼主管理</button>
-          <button class="tab-btn" onclick="showAdminTab('payment')">報酬支払管理</button>
-          <button class="tab-btn" onclick="showAdminTab('reports')">報告・問題対応</button>
+          <button class="tab-btn active" data-tab="approval">審査管理</button>
+          <button class="tab-btn" data-tab="quests">クエスト管理</button>
+          <button class="tab-btn" data-tab="members">メンバー管理</button>
+          <button class="tab-btn" data-tab="clients">依頼主管理</button>
         </div>
 
-        <!-- 審査待ちタブ -->
+        <!-- 審査管理タブ -->
         <div id="approvalTab" class="tab-content">
-          <h3>📋 審査待ち一覧</h3>
+          <h4>⏳ 審査待ちリスト</h4>
           
-          <h4>メンバー登録申請</h4>
-          <div id="memberApprovalList">
-            <p class="loading">読み込み中...</p>
-          </div>
-
-          <h4>依頼主登録申請</h4>
-          <div id="clientApprovalList">
-            <p class="loading">読み込み中...</p>
-          </div>
-
-          <h4>クエスト投稿審査</h4>
-          <div id="questApprovalList">
-            <p class="loading">読み込み中...</p>
-          </div>
+          <h5 style="margin-top: 2rem;">メンバー申請</h5>
+          <div id="pendingMembersList"></div>
+          
+          <h5 style="margin-top: 2rem;">依頼主申請</h5>
+          <div id="pendingClientsList"></div>
+          
+          <h5 style="margin-top: 2rem;">クエスト申請</h5>
+          <div id="pendingQuestsList"></div>
         </div>
 
         <!-- クエスト管理タブ -->
         <div id="questsTab" class="tab-content" style="display: none;">
-          <h3>🗺️ クエスト管理</h3>
-          <div class="filter-bar">
-            <select id="questStatusFilter">
-              <option value="">すべて</option>
-              <option value="募集中">募集中</option>
-              <option value="受注済">受注済</option>
-              <option value="完了">完了</option>
-              <option value="キャンセル">キャンセル</option>
-            </select>
-            <input type="text" id="questSearchInput" placeholder="クエスト名で検索...">
-            <button onclick="filterQuests()">絞り込み</button>
-            <button onclick="resetQuestFilter()" class="btn-secondary">リセット</button>
-          </div>
-          <div id="questManagementList">
-            <p class="loading">読み込み中...</p>
+          <h4>📋 全クエスト管理</h4>
+          <div id="allQuestsList">
+            <p class="no-data">準備中</p>
           </div>
         </div>
 
         <!-- メンバー管理タブ -->
         <div id="membersTab" class="tab-content" style="display: none;">
-          <h3>👥 メンバー管理</h3>
-          <div class="filter-bar">
-            <select id="memberStatusFilter">
-              <option value="">すべて</option>
-              <option value="承認">活動中</option>
-              <option value="停止">停止中</option>
-            </select>
-            <input type="text" id="memberSearchInput" placeholder="ニックネームで検索...">
-            <button onclick="filterMembers()">絞り込み</button>
-            <button onclick="resetMemberFilter()" class="btn-secondary">リセット</button>
-          </div>
-          <div id="memberManagementList">
-            <p class="loading">読み込み中...</p>
+          <h4>👥 全メンバー管理</h4>
+          <div id="allMembersList">
+            <p class="no-data">準備中</p>
           </div>
         </div>
 
         <!-- 依頼主管理タブ -->
         <div id="clientsTab" class="tab-content" style="display: none;">
-          <h3>📋 依頼主管理</h3>
-          <div class="filter-bar">
-            <input type="text" id="clientSearchInput" placeholder="依頼主名で検索...">
-            <button onclick="filterClients()">絞り込み</button>
-            <button onclick="resetClientFilter()" class="btn-secondary">リセット</button>
-          </div>
-          <div id="clientManagementList">
-            <p class="loading">読み込み中...</p>
-          </div>
-        </div>
-
-        <!-- 報酬支払管理タブ -->
-        <div id="paymentTab" class="tab-content" style="display: none;">
-          <h3>💰 報酬支払管理</h3>
-          
-          <h4>支払予定</h4>
-          <div id="paymentPendingList">
-            <p class="loading">読み込み中...</p>
-          </div>
-
-          <h4>支払完了</h4>
-          <div id="paymentCompletedList">
-            <p class="loading">読み込み中...</p>
-          </div>
-        </div>
-
-        <!-- 報告・問題対応タブ -->
-        <div id="reportsTab" class="tab-content" style="display: none;">
-          <h3>⚠️ 報告・問題対応</h3>
-          <div id="reportsList">
-            <p class="loading">読み込み中...</p>
+          <h4>📝 全依頼主管理</h4>
+          <div id="allClientsList">
+            <p class="no-data">準備中</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <footer>
-    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+    <p>© 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
   </footer>
 
-<!-- admin.html のダッシュボード部分 -->
-<div id="dashboardContent" style="display: none;">
-  <h3>📊 統計ダッシュボード</h3>
-  
-  <div class="dashboard-stats">
-    <div class="stat-card">
-      <h3>⏳ 審査待ち</h3>
-      <div class="stat-number" id="pendingTotal">0</div>
-      <small>
-        メンバー: <span id="pendingMembers">0</span> |
-        依頼主: <span id="pendingClients">0</span> |
-        クエスト: <span id="pendingQuests">0</span>
-      </small>
-    </div>
-    
-    <div class="stat-card">
-      <h3>⚙️ 進行中</h3>
-      <div class="stat-number" id="inProgress">0</div>
-      <small>現在進行中のクエスト</small>
-    </div>
-    
-    <div class="stat-card">
-      <h3>✅ 今月完了</h3>
-      <div class="stat-number" id="completed">0</div>
-      <small>今月完了したクエスト</small>
-    </div>
-    
-    <div class="stat-card">
-      <h3>💰 預かり金</h3>
-      <div class="stat-number" id="deposit">¥0</div>
-      <small>進行中クエストの報酬総額</small>
-    </div>
-  </div>
+  <script src="js/config.js"></script>
+  <script>
+    let isLoggedIn = false;
 
-  <!-- タブ -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="approval">審査管理</button>
-    <button class="tab-btn" data-tab="quests">クエスト管理</button>
-    <button class="tab-btn" data-tab="members">メンバー管理</button>
-    <button class="tab-btn" data-tab="clients">依頼主管理</button>
-    <button class="tab-btn" data-tab="payment">報酬管理</button>
-    <button class="tab-btn" data-tab="reports">報告管理</button>
-  </div>
-
-  <!-- 審査管理タブ -->
-  <div id="approvalTab" class="tab-content">
-    <h4>⏳ 審査待ちリスト</h4>
-    
-    <h5>メンバー申請</h5>
-    <div id="pendingMembersList"></div>
-    
-    <h5>依頼主申請</h5>
-    <div id="pendingClientsList"></div>
-    
-    <h5>クエスト申請</h5>
-    <div id="pendingQuestsList"></div>
-  </div>
-
-  <!-- その他のタブコンテンツ -->
-  <div id="questsTab" class="tab-content" style="display: none;">
-    <h4>📋 全クエスト管理</h4>
-    <div id="allQuestsList"></div>
-  </div>
-
-  <div id="membersTab" class="tab-content" style="display: none;">
-    <h4>👥 全メンバー管理</h4>
-    <div id="allMembersList"></div>
-  </div>
-
-  <div id="clientsTab" class="tab-content" style="display: none;">
-    <h4>📝 全依頼主管理</h4>
-    <div id="allClientsList"></div>
-  </div>
-
-  <div id="paymentTab" class="tab-content" style="display: none;">
-    <h4>💰 報酬管理</h4>
-    <div id="paymentList"></div>
-  </div>
-
-  <div id="reportsTab" class="tab-content" style="display: none;">
-    <h4>📢 報告管理</h4>
-    <div id="reportsList"></div>
-  </div>
-</div>
-
-<script src="js/config.js"></script>
-<script>
-  let isLoggedIn = false;
-
-  function initializePage() {
-    // ログインフォームの存在確認
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-      setupLogin();
-    } else {
-      console.error('loginForm が見つかりません');
-    }
-  }
-
-  /**
-   * ログイン処理
-   */
-  function setupLogin() {
-    const loginForm = document.getElementById('loginForm');
-    
-    if (!loginForm) {
-      console.error('loginForm要素が存在しません');
-      return;
-    }
-    
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const adminId = document.getElementById('adminId').value;
-      const password = document.getElementById('password').value;
-      
-      // デモ版: どんなID/パスワードでもログイン可能
-      if (adminId && password) {
-        isLoggedIn = true;
-        Storage.saveLogin('admin', adminId, { name: '管理者' });
-        showDashboard();
-        loadAllData();
+    function initializePage() {
+      // ログインフォームの存在確認
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        console.log('✅ loginForm が見つかりました');
+        setupLogin();
       } else {
-        alert('IDとパスワードを入力してください');
+        console.error('❌ loginForm が見つかりません');
       }
-    });
-  }
-
-  /**
-   * ダッシュボード表示
-   */
-  function showDashboard() {
-    const loginSection = document.getElementById('loginSection');
-    const dashboardContent = document.getElementById('dashboardContent');
-    
-    if (loginSection) loginSection.style.display = 'none';
-    if (dashboardContent) {
-      dashboardContent.style.display = 'block';
-      setupTabs();
     }
-  }
 
-  /**
-   * 全データ読み込み
-   */
-  async function loadAllData() {
-    await loadStats();
-    await loadApprovalData();
-  }
-
-  /**
-   * 統計情報読み込み
-   */
-  async function loadStats() {
-    try {
-      const stats = await API.get('getAdminStats');
+    /**
+     * ログイン処理
+     */
+    function setupLogin() {
+      const loginForm = document.getElementById('loginForm');
       
-      const elements = {
-        pendingTotal: stats.pendingTotal || 0,
-        pendingMembers: stats.pendingMembers || 0,
-        pendingClients: stats.pendingClients || 0,
-        pendingQuests: stats.pendingQuests || 0,
-        inProgress: stats.inProgress || 0,
-        completed: stats.completed || 0,
-        deposit: Utils.formatCurrency(stats.deposit || 0)
-      };
-      
-      Object.keys(elements).forEach(key => {
-        const el = document.getElementById(key);
-        if (el) el.textContent = elements[key];
-      });
-    } catch (error) {
-      console.error('統計読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 審査データ読み込み
-   */
-  async function loadApprovalData() {
-    try {
-      const data = await API.get('getApprovalData');
-      
-      displayPendingMembers(data.members || []);
-      displayPendingClients(data.clients || []);
-      displayPendingQuests(data.quests || []);
-    } catch (error) {
-      console.error('審査データ読み込みエラー:', error);
-    }
-  }
-
-  /**
-   * 審査待ちメンバー表示
-   */
-  function displayPendingMembers(members) {
-    const container = document.getElementById('pendingMembersList');
-    if (!container) return;
-    
-    if (members.length === 0) {
-      container.innerHTML = '<p class="no-data">審査待ちのメンバーはいません</p>';
-      return;
-    }
-    
-    const table = `
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>ニックネーム</th>
-            <th>氏名</th>
-            <th>メール</th>
-            <th>登録日</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${members.map(m => `
-            <tr>
-              <td>${m.id}</td>
-              <td>${m.nickname}</td>
-              <td>${m.name}</td>
-              <td>${m.email}</td>
-              <td>${Utils.formatDate(m.registeredDate)}</td>
-              <td>
-                <button class="btn-approve" onclick="approveMember('${m.id}')">承認</button>
-                <button class="btn-reject" onclick="rejectMember('${m.id}')">却下</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    
-    container.innerHTML = table;
-  }
-
-  /**
-   * 審査待ち依頼主表示
-   */
-  function displayPendingClients(clients) {
-    const container = document.getElementById('pendingClientsList');
-    if (!container) return;
-    
-    if (clients.length === 0) {
-      container.innerHTML = '<p class="no-data">審査待ちの依頼主はいません</p>';
-      return;
-    }
-    
-    const table = `
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>依頼主名</th>
-            <th>種別</th>
-            <th>メール</th>
-            <th>登録日</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${clients.map(c => `
-            <tr>
-              <td>${c.id}</td>
-              <td>${c.name}</td>
-              <td>${c.type}</td>
-              <td>${c.email}</td>
-              <td>${Utils.formatDate(c.registeredDate)}</td>
-              <td>
-                <button class="btn-approve" onclick="approveClient('${c.id}')">承認</button>
-                <button class="btn-reject" onclick="rejectClient('${c.id}')">却下</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    
-    container.innerHTML = table;
-  }
-
-  /**
-   * 審査待ちクエスト表示
-   */
-  function displayPendingQuests(quests) {
-    const container = document.getElementById('pendingQuestsList');
-    if (!container) return;
-    
-    if (quests.length === 0) {
-      container.innerHTML = '<p class="no-data">審査待ちのクエストはありません</p>';
-      return;
-    }
-    
-    const table = `
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>タイトル</th>
-            <th>依頼主ID</th>
-            <th>報酬</th>
-            <th>登録日</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${quests.map(q => `
-            <tr>
-              <td>${q.id}</td>
-              <td>${q.title}</td>
-              <td>${q.clientId}</td>
-              <td>${Utils.formatCurrency(q.reward)}</td>
-              <td>${Utils.formatDate(q.registeredDate)}</td>
-              <td>
-                <button class="btn-approve" onclick="approveQuest('${q.id}')">承認</button>
-                <button class="btn-reject" onclick="rejectQuest('${q.id}')">却下</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    
-    container.innerHTML = table;
-  }
-
-  /**
-   * メンバー承認
-   */
-  async function approveMember(id) {
-    if (!confirm(`メンバー ${id} を承認しますか？`)) return;
-    
-    try {
-      const result = await API.post('approve', { type: 'member', id: id });
-      
-      if (result.success) {
-        Notification.success('メンバーを承認しました');
-        loadAllData();
-      } else {
-        Notification.error('承認に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * メンバー却下
-   */
-  async function rejectMember(id) {
-    const reason = prompt('却下理由を入力してください:');
-    if (!reason) return;
-    
-    try {
-      const result = await API.post('reject', { type: 'member', id: id, reason: reason });
-      
-      if (result.success) {
-        Notification.success('メンバーを却下しました');
-        loadAllData();
-      } else {
-        Notification.error('却下に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * 依頼主承認
-   */
-  async function approveClient(id) {
-    if (!confirm(`依頼主 ${id} を承認しますか？`)) return;
-    
-    try {
-      const result = await API.post('approve', { type: 'client', id: id });
-      
-      if (result.success) {
-        Notification.success('依頼主を承認しました');
-        loadAllData();
-      } else {
-        Notification.error('承認に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * 依頼主却下
-   */
-  async function rejectClient(id) {
-    const reason = prompt('却下理由を入力してください:');
-    if (!reason) return;
-    
-    try {
-      const result = await API.post('reject', { type: 'client', id: id, reason: reason });
-      
-      if (result.success) {
-        Notification.success('依頼主を却下しました');
-        loadAllData();
-      } else {
-        Notification.error('却下に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * クエスト承認
-   */
-  async function approveQuest(id) {
-    if (!confirm(`クエスト ${id} を承認しますか？`)) return;
-    
-    try {
-      const result = await API.post('approve', { type: 'quest', id: id });
-      
-      if (result.success) {
-        Notification.success('クエストを承認しました');
-        loadAllData();
-      } else {
-        Notification.error('承認に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * クエスト却下
-   */
-  async function rejectQuest(id) {
-    const reason = prompt('却下理由を入力してください:');
-    if (!reason) return;
-    
-    try {
-      const result = await API.post('reject', { type: 'quest', id: id, reason: reason });
-      
-      if (result.success) {
-        Notification.success('クエストを却下しました');
-        loadAllData();
-      } else {
-        Notification.error('却下に失敗しました: ' + result.message);
-      }
-    } catch (error) {
-      Notification.error('エラーが発生しました');
-    }
-  }
-
-  /**
-   * タブ切り替え
-   */
-  function setupTabs() {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const tab = btn.dataset.tab;
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         
-        // タブボタンのアクティブ切り替え
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        const adminId = document.getElementById('adminId').value;
+        const password = document.getElementById('password').value;
         
-        // タブコンテンツの表示切り替え
-        document.querySelectorAll('.tab-content').forEach(content => {
-          content.style.display = 'none';
-        });
-        const tabContent = document.getElementById(`${tab}Tab`);
-        if (tabContent) {
-          tabContent.style.display = 'block';
+        // デモ版: どんなID/パスワードでもログイン可能
+        if (adminId && password) {
+          console.log('✅ ログイン成功');
+          isLoggedIn = true;
+          Storage.saveLogin('admin', adminId, { name: '管理者' });
+          showDashboard();
+          loadAllData();
+        } else {
+          alert('IDとパスワードを入力してください');
         }
       });
-    });
-  }
-</script>
+    }
+
+    /**
+     * ダッシュボード表示
+     */
+    function showDashboard() {
+      const loginSection = document.getElementById('loginSection');
+      const dashboardContent = document.getElementById('dashboardContent');
+      
+      if (loginSection) loginSection.style.display = 'none';
+      if (dashboardContent) {
+        dashboardContent.style.display = 'block';
+        setupTabs();
+      }
+    }
+
+    /**
+     * ログアウト
+     */
+    function logout() {
+      if (confirm('ログアウトしますか？')) {
+        Storage.clearLogin();
+        location.reload();
+      }
+    }
+
+    /**
+     * 全データ読み込み
+     */
+    async function loadAllData() {
+      await loadStats();
+      await loadApprovalData();
+    }
+
+    /**
+     * 統計情報読み込み
+     */
+    async function loadStats() {
+      try {
+        const stats = await API.get('getAdminStats');
+        
+        document.getElementById('pendingTotal').textContent = stats.pendingTotal || 0;
+        document.getElementById('pendingMembers').textContent = stats.pendingMembers || 0;
+        document.getElementById('pendingClients').textContent = stats.pendingClients || 0;
+        document.getElementById('pendingQuests').textContent = stats.pendingQuests || 0;
+        document.getElementById('inProgress').textContent = stats.inProgress || 0;
+        document.getElementById('completed').textContent = stats.completed || 0;
+        document.getElementById('deposit').textContent = Utils.formatCurrency(stats.deposit || 0);
+      } catch (error) {
+        console.error('統計読み込みエラー:', error);
+      }
+    }
+
+    /**
+     * 審査データ読み込み
+     */
+    async function loadApprovalData() {
+      try {
+        const data = await API.get('getApprovalData');
+        
+        displayPendingMembers(data.members || []);
+        displayPendingClients(data.clients || []);
+        displayPendingQuests(data.quests || []);
+      } catch (error) {
+        console.error('審査データ読み込みエラー:', error);
+      }
+    }
+
+    /**
+     * 審査待ちメンバー表示
+     */
+    function displayPendingMembers(members) {
+      const container = document.getElementById('pendingMembersList');
+      if (!container) return;
+      
+      if (members.length === 0) {
+        container.innerHTML = '<p class="no-data">審査待ちのメンバーはいません</p>';
+        return;
+      }
+      
+      const table = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ニックネーム</th>
+              <th>氏名</th>
+              <th>メール</th>
+              <th>登録日</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${members.map(m => `
+              <tr>
+                <td>${m.id}</td>
+                <td>${m.nickname}</td>
+                <td>${m.name}</td>
+                <td>${m.email}</td>
+                <td>${Utils.formatDate(m.registeredDate)}</td>
+                <td>
+                  <button class="btn-approve" onclick="approveMember('${m.id}')">承認</button>
+                  <button class="btn-reject" onclick="rejectMember('${m.id}')">却下</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+
+    /**
+     * 審査待ち依頼主表示
+     */
+    function displayPendingClients(clients) {
+      const container = document.getElementById('pendingClientsList');
+      if (!container) return;
+      
+      if (clients.length === 0) {
+        container.innerHTML = '<p class="no-data">審査待ちの依頼主はいません</p>';
+        return;
+      }
+      
+      const table = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>依頼主名</th>
+              <th>種別</th>
+              <th>メール</th>
+              <th>登録日</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${clients.map(c => `
+              <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.type}</td>
+                <td>${c.email}</td>
+                <td>${Utils.formatDate(c.registeredDate)}</td>
+                <td>
+                  <button class="btn-approve" onclick="approveClient('${c.id}')">承認</button>
+                  <button class="btn-reject" onclick="rejectClient('${c.id}')">却下</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+
+    /**
+     * 審査待ちクエスト表示
+     */
+    function displayPendingQuests(quests) {
+      const container = document.getElementById('pendingQuestsList');
+      if (!container) return;
+      
+      if (quests.length === 0) {
+        container.innerHTML = '<p class="no-data">審査待ちのクエストはありません</p>';
+        return;
+      }
+      
+      const table = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>タイトル</th>
+              <th>依頼主ID</th>
+              <th>報酬</th>
+              <th>登録日</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${quests.map(q => `
+              <tr>
+                <td>${q.id}</td>
+                <td>${q.title}</td>
+                <td>${q.clientId}</td>
+                <td>${Utils.formatCurrency(q.reward)}</td>
+                <td>${Utils.formatDate(q.registeredDate)}</td>
+                <td>
+                  <button class="btn-approve" onclick="approveQuest('${q.id}')">承認</button>
+                  <button class="btn-reject" onclick="rejectQuest('${q.id}')">却下</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+
+    /**
+     * メンバー承認
+     */
+    async function approveMember(id) {
+      if (!confirm(`メンバー ${id} を承認しますか？`)) return;
+      
+      try {
+        const result = await API.post('approve', { type: 'member', id: id });
+        
+        if (result.success) {
+          Notification.success('メンバーを承認しました');
+          loadAllData();
+        } else {
+          Notification.error('承認に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * メンバー却下
+     */
+    async function rejectMember(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (!reason) return;
+      
+      try {
+        const result = await API.post('reject', { type: 'member', id: id, reason: reason });
+        
+        if (result.success) {
+          Notification.success('メンバーを却下しました');
+          loadAllData();
+        } else {
+          Notification.error('却下に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * 依頼主承認
+     */
+    async function approveClient(id) {
+      if (!confirm(`依頼主 ${id} を承認しますか？`)) return;
+      
+      try {
+        const result = await API.post('approve', { type: 'client', id: id });
+        
+        if (result.success) {
+          Notification.success('依頼主を承認しました');
+          loadAllData();
+        } else {
+          Notification.error('承認に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * 依頼主却下
+     */
+    async function rejectClient(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (!reason) return;
+      
+      try {
+        const result = await API.post('reject', { type: 'client', id: id, reason: reason });
+        
+        if (result.success) {
+          Notification.success('依頼主を却下しました');
+          loadAllData();
+        } else {
+          Notification.error('却下に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * クエスト承認
+     */
+    async function approveQuest(id) {
+      if (!confirm(`クエスト ${id} を承認しますか？`)) return;
+      
+      try {
+        const result = await API.post('approve', { type: 'quest', id: id });
+        
+        if (result.success) {
+          Notification.success('クエストを承認しました');
+          loadAllData();
+        } else {
+          Notification.error('承認に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * クエスト却下
+     */
+    async function rejectQuest(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (!reason) return;
+      
+      try {
+        const result = await API.post('reject', { type: 'quest', id: id, reason: reason });
+        
+        if (result.success) {
+          Notification.success('クエストを却下しました');
+          loadAllData();
+        } else {
+          Notification.error('却下に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        Notification.error('エラーが発生しました');
+      }
+    }
+
+    /**
+     * タブ切り替え
+     */
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const tab = btn.dataset.tab;
+          
+          // タブボタンのアクティブ切り替え
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // タブコンテンツの表示切り替え
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+          });
+          const tabContent = document.getElementById(`${tab}Tab`);
+          if (tabContent) {
+            tabContent.style.display = 'block';
+          }
+        });
+      });
+    }
+  </script>
 </body>
 </html>
