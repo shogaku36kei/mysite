@@ -124,68 +124,72 @@
     <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
   </footer>
 
-  <script src="js/config.js"></script>
-  <script>
-    async function submitMemberForm(event) {
-      event.preventDefault();
-      
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送信中...';
-      
-      const formData = new FormData(event.target);
-      const skills = Array.from(formData.getAll('skills')).join(',');
-      
-      const memberData = {
-        name: formData.get('name'),
-        nickname: formData.get('nickname'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        address: formData.get('address'),
-        skills: skills,
-        bankName: formData.get('bankName'),
-        branchName: formData.get('branchName'),
-        accountType: formData.get('accountType'),
-        accountNumber: formData.get('accountNumber'),
-        accountHolder: formData.get('accountHolder')
-      };
+<script src="js/config.js"></script>
+<script>
+  async function submitMemberForm(event) {
+    event.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中...';
+    
+    const formData = new FormData(event.target);
+    const skills = Array.from(formData.getAll('skills')).join(',');
+    
+    const memberData = {
+      name: formData.get('name'),
+      nickname: formData.get('nickname'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      address: formData.get('address'),
+      skills: skills,
+      bankName: formData.get('bankName'),
+      branchName: formData.get('branchName'),
+      accountType: formData.get('accountType'),
+      accountNumber: formData.get('accountNumber'),
+      accountHolder: formData.get('accountHolder')
+    };
 
-      try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'registerMember',
-            data: memberData
-          })
-        });
+    try {
+      const response = await fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain', // ★ ここだけ変更
+        },
+        body: JSON.stringify({
+          action: 'registerMember',
+          data: memberData
+        })
+      });
 
-        const result = await response.json();
-        
-        if (result.success) {
-          alert(`✅ 登録申請を受け付けました！\n\nメンバーID: ${result.memberId}\n\n事務局の審査をお待ちください。\n審査結果はメールでお知らせします。\n\n※メンバーIDは大切に保管してください。`);
-          event.target.reset();
-        } else {
-          alert('❌ 登録に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
-        }
-      } catch (error) {
-        console.error('登録エラー:', error);
-        alert('❌ 登録処理中にエラーが発生しました\n\nネットワーク接続を確認して、もう一度お試しください。');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '登録申請する';
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    }
 
-    function showTerms() {
-      alert('【利用規約】\n\n1. 本サービスは総社市が運営するスキルマッチングプラットフォームです\n2. 登録情報は適切に管理されます\n3. クエストの受注後は責任を持って完了してください\n4. 不正行為が発覚した場合は登録を抹消します\n\n※詳細は後日Webページで公開予定');
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`✅ 登録申請を受け付けました！\n\nメンバーID: ${result.memberId}\n\n事務局の審査をお待ちください。\n審査結果はメールでお知らせします。\n\n※メンバーIDは大切に保管してください。`);
+        event.target.reset();
+      } else {
+        alert('❌ 登録に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+      }
+    } catch (error) {
+      console.error('登録エラー:', error);
+      alert('❌ 登録処理中にエラーが発生しました\n\n' + error.message + '\n\nネットワーク接続を確認して、もう一度お試しください。');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '登録申請する';
     }
+  }
 
-    function showPrivacy() {
-      alert('【プライバシーポリシー】\n\n1. 個人情報は本サービスの運営目的のみに使用します\n2. 第三者への提供は行いません（法令に基づく場合を除く）\n3. 情報の管理には万全を期します\n\n※詳細は後日Webページで公開予定');
-    }
-  </script>
+  function showTerms() {
+    alert('【利用規約】\n\n1. 本サービスは総社市が運営するスキルマッチングプラットフォームです\n2. 登録情報は適切に管理されます\n3. クエストの受注後は責任を持って完了してください\n4. 不正行為が発覚した場合は登録を抹消します\n\n※詳細は後日Webページで公開予定');
+  }
+
+  function showPrivacy() {
+    alert('【プライバシーポリシー】\n\n1. 個人情報は本サービスの運営目的のみに使用します\n2. 第三者への提供は行いません（法令に基づく場合を除く）\n3. 情報の管理には万全を期します\n\n※詳細は後日Webページで公開予定');
+  }
+</script>
 </body>
 </html>
