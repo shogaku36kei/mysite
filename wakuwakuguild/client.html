@@ -68,11 +68,11 @@
         <div class="form-group">
           <label>
             <input type="checkbox" name="agree" required>
-            <a href="#">利用規約</a>および<a href="#">プライバシーポリシー</a>に同意します
+            <a href="#" onclick="showTerms(); return false;">利用規約</a>および<a href="#" onclick="showPrivacy(); return false;">プライバシーポリシー</a>に同意します
           </label>
         </div>
 
-        <button type="submit" class="btn-primary">登録申請する</button>
+        <button type="submit" class="btn-primary" id="submitBtn">登録申請する</button>
       </form>
 
       <div class="info-box">
@@ -93,8 +93,12 @@
 
   <script src="js/config.js"></script>
   <script>
-    function submitClientForm(event) {
+    async function submitClientForm(event) {
       event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
       
       const formData = new FormData(event.target);
       
@@ -107,10 +111,41 @@
         remarks: formData.get('remarks')
       };
 
-      // GASへPOST送信（実装は省略）
-      console.log('送信データ:', clientData);
-      alert('登録申請を受け付けました。事務局の審査をお待ちください。\n審査結果はメールでお知らせします。');
-      event.target.reset();
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'registerClient',
+            data: clientData
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✅ 登録申請を受け付けました！\n\n依頼主ID: ${result.clientId}\n\n事務局の審査をお待ちください。\n審査結果はメールでお知らせします。\n\n※依頼主IDは大切に保管してください。`);
+          event.target.reset();
+        } else {
+          alert('❌ 登録に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+        }
+      } catch (error) {
+        console.error('登録エラー:', error);
+        alert('❌ 登録処理中にエラーが発生しました\n\nネットワーク接続を確認して、もう一度お試しください。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登録申請する';
+      }
+    }
+
+    function showTerms() {
+      alert('【利用規約】\n\n1. 本サービスは総社市が運営するスキルマッチングプラットフォームです\n2. 登録情報は適切に管理されます\n3. クエスト投稿時は正確な情報を記載してください\n4. 報酬は事前に事務局へお預けいただきます\n5. 不正行為が発覚した場合は登録を抹消します\n\n※詳細は後日Webページで公開予定');
+    }
+
+    function showPrivacy() {
+      alert('【プライバシーポリシー】\n\n1. 個人情報は本サービスの運営目的のみに使用します\n2. 第三者への提供は行いません（法令に基づく場合を除く）\n3. 情報の管理には万全を期します\n\n※詳細は後日Webページで公開予定');
     }
   </script>
 </body>
