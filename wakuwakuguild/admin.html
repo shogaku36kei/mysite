@@ -12,7 +12,8 @@
       <h1>⚔️ わくわくギルド - 事務局</h1>
       <nav>
         <a href="admin.html">ダッシュボード</a>
-        <a href="index.html">公開ページへ</a>
+        <a href="index.html" target="_blank">公開ページへ</a>
+        <a href="#" onclick="logout()">ログアウト</a>
       </nav>
     </div>
   </header>
@@ -21,41 +22,49 @@
     <section class="admin-section">
       <h2>🛡️ 事務局管理画面</h2>
       
+      <!-- ログイン画面 -->
       <div class="admin-login" id="adminLogin">
         <h3>管理者ログイン</h3>
         <form onsubmit="handleAdminLogin(event)">
           <div class="form-group">
             <label>管理者ID</label>
-            <input type="text" required>
+            <input type="text" id="adminId" required placeholder="admin">
           </div>
           <div class="form-group">
             <label>パスワード</label>
-            <input type="password" required>
+            <input type="password" id="adminPassword" required placeholder="password">
           </div>
           <button type="submit" class="btn-primary">ログイン</button>
         </form>
+        <p class="note">※デモ版: どんなID/パスワードでもログイン可能</p>
       </div>
 
+      <!-- ローディング -->
+      <div id="adminLoading" class="loading" style="display: none;">
+        <p>🔄 データを読み込んでいます...</p>
+      </div>
+
+      <!-- ダッシュボード -->
       <div class="admin-dashboard" id="adminDashboard" style="display: none;">
         <div class="dashboard-stats">
           <div class="stat-card">
             <h3>📋 審査待ち</h3>
-            <p class="stat-number">5件</p>
-            <small>メンバー: 2件 / 依頼主: 1件 / クエスト: 2件</small>
+            <p class="stat-number" id="statPending">0件</p>
+            <small id="statPendingDetail">メンバー: 0件 / 依頼主: 0件 / クエスト: 0件</small>
           </div>
           <div class="stat-card">
             <h3>🔄 進行中クエスト</h3>
-            <p class="stat-number">12件</p>
-            <small>今月の受注数</small>
+            <p class="stat-number" id="statInProgress">0件</p>
+            <small>受注済・進行中の案件</small>
           </div>
           <div class="stat-card">
             <h3>✅ 完了クエスト</h3>
-            <p class="stat-number">48件</p>
+            <p class="stat-number" id="statCompleted">0件</p>
             <small>今月の完了数</small>
           </div>
           <div class="stat-card">
             <h3>💰 預かり金</h3>
-            <p class="stat-number">¥180,000</p>
+            <p class="stat-number" id="statDeposit">¥0</p>
             <small>未払い報酬総額</small>
           </div>
         </div>
@@ -74,298 +83,93 @@
           <h3>📋 審査待ち一覧</h3>
           
           <h4>メンバー登録申請</h4>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>ニックネーム</th>
-                <th>氏名</th>
-                <th>連絡先</th>
-                <th>申請日</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>M0010</td>
-                <td>新人冒険者</td>
-                <td>田中一郎</td>
-                <td>tanaka@example.com</td>
-                <td>2026/02/25</td>
-                <td>
-                  <button onclick="approveMember('M0010')" class="btn-approve">承認</button>
-                  <button onclick="rejectMember('M0010')" class="btn-reject">却下</button>
-                  <button onclick="viewDetail('M0010')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="memberApprovalList">
+            <p class="loading">読み込み中...</p>
+          </div>
 
           <h4>依頼主登録申請</h4>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>依頼主名</th>
-                <th>種別</th>
-                <th>連絡先</th>
-                <th>申請日</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>C0005</td>
-                <td>○○自治会</td>
-                <td>自治会</td>
-                <td>jichikai@example.com</td>
-                <td>2026/02/24</td>
-                <td>
-                  <button onclick="approveClient('C0005')" class="btn-approve">承認</button>
-                  <button onclick="rejectClient('C0005')" class="btn-reject">却下</button>
-                  <button onclick="viewDetail('C0005')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="clientApprovalList">
+            <p class="loading">読み込み中...</p>
+          </div>
 
           <h4>クエスト投稿審査</h4>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>クエスト名</th>
-                <th>依頼主</th>
-                <th>報酬</th>
-                <th>投稿日</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Q0015</td>
-                <td>イベント会場設営</td>
-                <td>C0003</td>
-                <td>¥25,000</td>
-                <td>2026/02/25</td>
-                <td>
-                  <button onclick="approveQuest('Q0015')" class="btn-approve">承認</button>
-                  <button onclick="rejectQuest('Q0015')" class="btn-reject">却下</button>
-                  <button onclick="viewQuestDetail('Q0015')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Q0016</td>
-                <td>パソコン設定サポート</td>
-                <td>C0002</td>
-                <td>¥8,000</td>
-                <td>2026/02/26</td>
-                <td>
-                  <button onclick="approveQuest('Q0016')" class="btn-approve">承認</button>
-                  <button onclick="rejectQuest('Q0016')" class="btn-reject">却下</button>
-                  <button onclick="viewQuestDetail('Q0016')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="questApprovalList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
 
         <!-- クエスト管理タブ -->
         <div id="questsTab" class="tab-content" style="display: none;">
           <h3>🗺️ クエスト管理</h3>
           <div class="filter-bar">
-            <select>
-              <option>すべて</option>
-              <option>募集中</option>
-              <option>受注済</option>
-              <option>完了</option>
-              <option>キャンセル</option>
+            <select id="questStatusFilter">
+              <option value="">すべて</option>
+              <option value="募集中">募集中</option>
+              <option value="受注済">受注済</option>
+              <option value="完了">完了</option>
+              <option value="キャンセル">キャンセル</option>
             </select>
-            <input type="text" placeholder="検索...">
-            <button>絞り込み</button>
+            <input type="text" id="questSearchInput" placeholder="クエスト名で検索...">
+            <button onclick="filterQuests()">絞り込み</button>
+            <button onclick="resetQuestFilter()" class="btn-secondary">リセット</button>
           </div>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>クエスト名</th>
-                <th>依頼主</th>
-                <th>受注者</th>
-                <th>報酬</th>
-                <th>ステータス</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Q0001</td>
-                <td>店舗前の草刈り</td>
-                <td>山田商店</td>
-                <td>草刈りの達人</td>
-                <td>¥15,000</td>
-                <td><span class="status-badge status-progress">進行中</span></td>
-                <td>
-                  <button onclick="viewQuestDetail('Q0001')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="questManagementList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
 
         <!-- メンバー管理タブ -->
         <div id="membersTab" class="tab-content" style="display: none;">
           <h3>👥 メンバー管理</h3>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>ニックネーム</th>
-                <th>ランク</th>
-                <th>経験値</th>
-                <th>完了数</th>
-                <th>評価</th>
-                <th>ステータス</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>M0001</td>
-                <td>草刈りの達人</td>
-                <td>A</td>
-                <td>520</td>
-                <td>15</td>
-                <td>⭐4.8</td>
-                <td><span class="status-badge status-active">活動中</span></td>
-                <td>
-                  <button onclick="viewMemberDetail('M0001')" class="btn-secondary">詳細</button>
-                  <button onclick="suspendMember('M0001')" class="btn-warning">停止</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="filter-bar">
+            <select id="memberStatusFilter">
+              <option value="">すべて</option>
+              <option value="承認">活動中</option>
+              <option value="停止">停止中</option>
+            </select>
+            <input type="text" id="memberSearchInput" placeholder="ニックネームで検索...">
+            <button onclick="filterMembers()">絞り込み</button>
+            <button onclick="resetMemberFilter()" class="btn-secondary">リセット</button>
+          </div>
+          <div id="memberManagementList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
 
         <!-- 依頼主管理タブ -->
         <div id="clientsTab" class="tab-content" style="display: none;">
           <h3>📋 依頼主管理</h3>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>依頼主名</th>
-                <th>種別</th>
-                <th>投稿数</th>
-                <th>完了数</th>
-                <th>ステータス</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>C0001</td>
-                <td>山田商店</td>
-                <td>企業</td>
-                <td>8</td>
-                <td>7</td>
-                <td><span class="status-badge status-active">活動中</span></td>
-                <td>
-                  <button onclick="viewClientDetail('C0001')" class="btn-secondary">詳細</button>
-                  <button onclick="suspendClient('C0001')" class="btn-warning">停止</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="filter-bar">
+            <input type="text" id="clientSearchInput" placeholder="依頼主名で検索...">
+            <button onclick="filterClients()">絞り込み</button>
+            <button onclick="resetClientFilter()" class="btn-secondary">リセット</button>
+          </div>
+          <div id="clientManagementList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
 
         <!-- 報酬支払管理タブ -->
         <div id="paymentTab" class="tab-content" style="display: none;">
           <h3>💰 報酬支払管理</h3>
+          
           <h4>支払予定</h4>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>支払ID</th>
-                <th>クエストID</th>
-                <th>受注者</th>
-                <th>報酬総額</th>
-                <th>源泉徴収</th>
-                <th>差引支払額</th>
-                <th>支払予定日</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>P0001</td>
-                <td>Q0001</td>
-                <td>草刈りの達人</td>
-                <td>¥15,000</td>
-                <td>¥1,531</td>
-                <td>¥13,469</td>
-                <td>2026/03/12</td>
-                <td>
-                  <button onclick="processPayment('P0001')" class="btn-approve">支払実行</button>
-                  <button onclick="viewPaymentDetail('P0001')" class="btn-secondary">詳細</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="paymentPendingList">
+            <p class="loading">読み込み中...</p>
+          </div>
 
           <h4>支払完了</h4>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>支払ID</th>
-                <th>クエストID</th>
-                <th>受注者</th>
-                <th>差引支払額</th>
-                <th>支払完了日</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>P0000</td>
-                <td>Q0000</td>
-                <td>力持ちの勇者</td>
-                <td>¥7,183</td>
-                <td>2026/02/20</td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="paymentCompletedList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
 
         <!-- 報告・問題対応タブ -->
         <div id="reportsTab" class="tab-content" style="display: none;">
           <h3>⚠️ 報告・問題対応</h3>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>報告ID</th>
-                <th>クエストID</th>
-                <th>報告者</th>
-                <th>種別</th>
-                <th>内容</th>
-                <th>報告日</th>
-                <th>対応状況</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>R0005</td>
-                <td>Q0008</td>
-                <td>M0003</td>
-                <td>問題報告</td>
-                <td>依頼内容と実際の作業が異なる</td>
-                <td>2026/02/25 14:30</td>
-                <td><span class="status-badge status-warning">未対応</span></td>
-                <td>
-                  <button onclick="handleReport('R0005')" class="btn-primary">対応する</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="reportsList">
+            <p class="loading">読み込み中...</p>
+          </div>
         </div>
       </div>
     </section>
@@ -377,10 +181,407 @@
 
   <script src="js/config.js"></script>
   <script>
+    let adminData = {
+      members: [],
+      clients: [],
+      quests: [],
+      payments: [],
+      reports: []
+    };
+
     function handleAdminLogin(event) {
       event.preventDefault();
-      document.getElementById('adminLogin').style.display = 'none';
-      document.getElementById('adminDashboard').style.display = 'block';
+      
+      const adminId = document.getElementById('adminId').value;
+      const password = document.getElementById('adminPassword').value;
+      
+      // 簡易認証（デモ版）
+      if (adminId && password) {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminLoading').style.display = 'block';
+        
+        // データ読み込み
+        loadAdminData();
+      } else {
+        alert('IDとパスワードを入力してください');
+      }
+    }
+
+    async function loadAdminData() {
+      try {
+        // 統計情報の取得
+        const statsResponse = await fetch(`${GAS_WEB_APP_URL}?action=getAdminStats`);
+        const stats = await statsResponse.json();
+        
+        // 統計表示
+        document.getElementById('statPending').textContent = `${stats.pendingTotal}件`;
+        document.getElementById('statPendingDetail').textContent = 
+          `メンバー: ${stats.pendingMembers}件 / 依頼主: ${stats.pendingClients}件 / クエスト: ${stats.pendingQuests}件`;
+        document.getElementById('statInProgress').textContent = `${stats.inProgress}件`;
+        document.getElementById('statCompleted').textContent = `${stats.completed}件`;
+        document.getElementById('statDeposit').textContent = `¥${stats.deposit.toLocaleString()}`;
+
+        // 各種データの読み込み
+        await Promise.all([
+          loadApprovalData(),
+          loadQuestManagement(),
+          loadMemberManagement(),
+          loadClientManagement(),
+          loadPaymentManagement(),
+          loadReports()
+        ]);
+
+        document.getElementById('adminLoading').style.display = 'none';
+        document.getElementById('adminDashboard').style.display = 'block';
+      } catch (error) {
+        console.error('データ読み込みエラー:', error);
+        alert('データの読み込みに失敗しました');
+        document.getElementById('adminLoading').style.display = 'none';
+        document.getElementById('adminLogin').style.display = 'block';
+      }
+    }
+
+    async function loadApprovalData() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getApprovalData`);
+        const data = await response.json();
+
+        // メンバー申請
+        const memberList = document.getElementById('memberApprovalList');
+        if (data.members && data.members.length > 0) {
+          memberList.innerHTML = createApprovalTable(data.members, 'member');
+        } else {
+          memberList.innerHTML = '<p class="no-data">審査待ちのメンバー申請はありません</p>';
+        }
+
+        // 依頼主申請
+        const clientList = document.getElementById('clientApprovalList');
+        if (data.clients && data.clients.length > 0) {
+          clientList.innerHTML = createApprovalTable(data.clients, 'client');
+        } else {
+          clientList.innerHTML = '<p class="no-data">審査待ちの依頼主申請はありません</p>';
+        }
+
+        // クエスト申請
+        const questList = document.getElementById('questApprovalList');
+        if (data.quests && data.quests.length > 0) {
+          questList.innerHTML = createApprovalTable(data.quests, 'quest');
+        } else {
+          questList.innerHTML = '<p class="no-data">審査待ちのクエスト投稿はありません</p>';
+        }
+      } catch (error) {
+        console.error('審査データ読み込みエラー:', error);
+      }
+    }
+
+    function createApprovalTable(items, type) {
+      let html = '<table class="admin-table"><thead><tr>';
+      
+      if (type === 'member') {
+        html += '<th>ID</th><th>ニックネーム</th><th>氏名</th><th>連絡先</th><th>申請日</th><th>操作</th>';
+      } else if (type === 'client') {
+        html += '<th>ID</th><th>依頼主名</th><th>種別</th><th>連絡先</th><th>申請日</th><th>操作</th>';
+      } else if (type === 'quest') {
+        html += '<th>ID</th><th>クエスト名</th><th>依頼主</th><th>報酬</th><th>投稿日</th><th>操作</th>';
+      }
+      
+      html += '</tr></thead><tbody>';
+      
+      items.forEach(item => {
+        html += '<tr>';
+        if (type === 'member') {
+          html += `
+            <td>${item.id}</td>
+            <td>${escapeHtml(item.nickname)}</td>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.email)}</td>
+            <td>${formatDate(item.registeredDate)}</td>
+            <td>
+              <button onclick="approve('member', '${item.id}')" class="btn-approve">承認</button>
+              <button onclick="reject('member', '${item.id}')" class="btn-reject">却下</button>
+              <button onclick="viewDetail('member', '${item.id}')" class="btn-secondary">詳細</button>
+            </td>
+          `;
+        } else if (type === 'client') {
+          html += `
+            <td>${item.id}</td>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.type)}</td>
+            <td>${escapeHtml(item.email)}</td>
+            <td>${formatDate(item.registeredDate)}</td>
+            <td>
+              <button onclick="approve('client', '${item.id}')" class="btn-approve">承認</button>
+              <button onclick="reject('client', '${item.id}')" class="btn-reject">却下</button>
+              <button onclick="viewDetail('client', '${item.id}')" class="btn-secondary">詳細</button>
+            </td>
+          `;
+        } else if (type === 'quest') {
+          html += `
+            <td>${item.id}</td>
+            <td>${escapeHtml(item.title)}</td>
+            <td>${item.clientId}</td>
+            <td>¥${item.reward.toLocaleString()}</td>
+            <td>${formatDate(item.registeredDate)}</td>
+            <td>
+              <button onclick="approve('quest', '${item.id}')" class="btn-approve">承認</button>
+              <button onclick="reject('quest', '${item.id}')" class="btn-reject">却下</button>
+              <button onclick="viewDetail('quest', '${item.id}')" class="btn-secondary">詳細</button>
+            </td>
+          `;
+        }
+        html += '</tr>';
+      });
+      
+      html += '</tbody></table>';
+      return html;
+    }
+
+    async function loadQuestManagement() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getAllQuests`);
+        const quests = await response.json();
+        adminData.quests = quests;
+        displayQuests(quests);
+      } catch (error) {
+        console.error('クエスト管理データ読み込みエラー:', error);
+      }
+    }
+
+    function displayQuests(quests) {
+      const container = document.getElementById('questManagementList');
+      
+      if (!quests || quests.length === 0) {
+        container.innerHTML = '<p class="no-data">クエストがありません</p>';
+        return;
+      }
+
+      let html = '<table class="admin-table"><thead><tr>';
+      html += '<th>ID</th><th>クエスト名</th><th>依頼主</th><th>受注者</th><th>報酬</th><th>ステータス</th><th>操作</th>';
+      html += '</tr></thead><tbody>';
+
+      quests.forEach(quest => {
+        html += `
+          <tr>
+            <td>${quest.id}</td>
+            <td>${escapeHtml(quest.title)}</td>
+            <td>${quest.clientId}</td>
+            <td>${quest.acceptorId || '-'}</td>
+            <td>¥${quest.reward.toLocaleString()}</td>
+            <td><span class="status-badge status-${getStatusClass(quest.status)}">${quest.status}</span></td>
+            <td>
+              <button onclick="viewDetail('quest', '${quest.id}')" class="btn-secondary">詳細</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    async function loadMemberManagement() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getAllMembers`);
+        const members = await response.json();
+        adminData.members = members;
+        displayMembers(members);
+      } catch (error) {
+        console.error('メンバー管理データ読み込みエラー:', error);
+      }
+    }
+
+    function displayMembers(members) {
+      const container = document.getElementById('memberManagementList');
+      
+      if (!members || members.length === 0) {
+        container.innerHTML = '<p class="no-data">メンバーがいません</p>';
+        return;
+      }
+
+      let html = '<table class="admin-table"><thead><tr>';
+      html += '<th>ID</th><th>ニックネーム</th><th>ランク</th><th>経験値</th><th>完了数</th><th>評価</th><th>ステータス</th><th>操作</th>';
+      html += '</tr></thead><tbody>';
+
+      members.forEach(member => {
+        html += `
+          <tr>
+            <td>${member.id}</td>
+            <td>${escapeHtml(member.nickname)}</td>
+            <td><span class="rank-badge rank-${member.rank}">${member.rank}</span></td>
+            <td>${member.exp}</td>
+            <td>${member.completedQuests}</td>
+            <td>⭐${member.rating > 0 ? member.rating.toFixed(1) : '-'}</td>
+            <td><span class="status-badge status-${member.status === '承認' ? 'active' : 'warning'}">${member.status}</span></td>
+            <td>
+              <button onclick="viewDetail('member', '${member.id}')" class="btn-secondary">詳細</button>
+              ${member.status === '承認' ? 
+                `<button onclick="suspendMember('${member.id}')" class="btn-warning">停止</button>` :
+                `<button onclick="activateMember('${member.id}')" class="btn-approve">再開</button>`
+              }
+            </td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    async function loadClientManagement() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getAllClients`);
+        const clients = await response.json();
+        adminData.clients = clients;
+        displayClients(clients);
+      } catch (error) {
+        console.error('依頼主管理データ読み込みエラー:', error);
+      }
+    }
+
+    function displayClients(clients) {
+      const container = document.getElementById('clientManagementList');
+      
+      if (!clients || clients.length === 0) {
+        container.innerHTML = '<p class="no-data">依頼主がいません</p>';
+        return;
+      }
+
+      let html = '<table class="admin-table"><thead><tr>';
+      html += '<th>ID</th><th>依頼主名</th><th>種別</th><th>投稿数</th><th>完了数</th><th>ステータス</th><th>操作</th>';
+      html += '</tr></thead><tbody>';
+
+      clients.forEach(client => {
+        html += `
+          <tr>
+            <td>${client.id}</td>
+            <td>${escapeHtml(client.name)}</td>
+            <td>${escapeHtml(client.type)}</td>
+            <td>${client.totalQuests || 0}</td>
+            <td>${client.completedQuests || 0}</td>
+            <td><span class="status-badge status-${client.status === '承認' ? 'active' : 'warning'}">${client.status}</span></td>
+            <td>
+              <button onclick="viewDetail('client', '${client.id}')" class="btn-secondary">詳細</button>
+              ${client.status === '承認' ? 
+                `<button onclick="suspendClient('${client.id}')" class="btn-warning">停止</button>` :
+                `<button onclick="activateClient('${client.id}')" class="btn-approve">再開</button>`
+              }
+            </td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    async function loadPaymentManagement() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getPaymentData`);
+        const data = await response.json();
+        
+        // 支払予定
+        const pendingList = document.getElementById('paymentPendingList');
+        if (data.pending && data.pending.length > 0) {
+          pendingList.innerHTML = createPaymentTable(data.pending, 'pending');
+        } else {
+          pendingList.innerHTML = '<p class="no-data">支払予定はありません</p>';
+        }
+
+        // 支払完了
+        const completedList = document.getElementById('paymentCompletedList');
+        if (data.completed && data.completed.length > 0) {
+          completedList.innerHTML = createPaymentTable(data.completed, 'completed');
+        } else {
+          completedList.innerHTML = '<p class="no-data">支払完了データはありません</p>';
+        }
+      } catch (error) {
+        console.error('支払管理データ読み込みエラー:', error);
+      }
+    }
+
+    function createPaymentTable(items, type) {
+      let html = '<table class="admin-table"><thead><tr>';
+      html += '<th>支払ID</th><th>クエストID</th><th>受注者</th><th>報酬総額</th><th>源泉徴収</th><th>差引支払額</th>';
+      
+      if (type === 'pending') {
+        html += '<th>支払予定日</th><th>操作</th>';
+      } else {
+        html += '<th>支払完了日</th>';
+      }
+      
+      html += '</tr></thead><tbody>';
+
+      items.forEach(item => {
+        html += `
+          <tr>
+            <td>${item.paymentId}</td>
+            <td>${item.questId}</td>
+            <td>${escapeHtml(item.acceptorName)}</td>
+            <td>¥${item.totalAmount.toLocaleString()}</td>
+            <td>¥${item.taxAmount.toLocaleString()}</td>
+            <td>¥${item.netAmount.toLocaleString()}</td>
+        `;
+        
+        if (type === 'pending') {
+          html += `
+            <td>${formatDate(item.scheduledDate)}</td>
+            <td>
+              <button onclick="processPayment('${item.paymentId}')" class="btn-approve">支払実行</button>
+              <button onclick="viewPaymentDetail('${item.paymentId}')" class="btn-secondary">詳細</button>
+            </td>
+          `;
+        } else {
+          html += `<td>${formatDate(item.completedDate)}</td>`;
+        }
+        
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      return html;
+    }
+
+    async function loadReports() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getReports`);
+        const reports = await response.json();
+        
+        const container = document.getElementById('reportsList');
+        
+        if (!reports || reports.length === 0) {
+          container.innerHTML = '<p class="no-data">報告はありません</p>';
+          return;
+        }
+
+        let html = '<table class="admin-table"><thead><tr>';
+        html += '<th>報告ID</th><th>クエストID</th><th>報告者</th><th>種別</th><th>内容</th><th>報告日</th><th>対応状況</th><th>操作</th>';
+        html += '</tr></thead><tbody>';
+
+        reports.forEach(report => {
+          html += `
+            <tr>
+              <td>${report.id}</td>
+              <td>${report.questId}</td>
+              <td>${report.reporter}</td>
+              <td>${report.type}</td>
+              <td>${escapeHtml(report.content).substring(0, 30)}...</td>
+              <td>${formatDate(report.reportDate)}</td>
+              <td><span class="status-badge status-${report.status === '未対応' ? 'warning' : 'active'}">${report.status}</span></td>
+              <td>
+                ${report.status === '未対応' ? 
+                  `<button onclick="handleReport('${report.id}')" class="btn-primary">対応する</button>` :
+                  `<button onclick="viewReportDetail('${report.id}')" class="btn-secondary">詳細</button>`
+                }
+              </td>
+            </tr>
+          `;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('報告データ読み込みエラー:', error);
+      }
     }
 
     function showAdminTab(tabName) {
@@ -404,85 +605,282 @@
       event.target.classList.add('active');
     }
 
-    function approveMember(id) {
-      if (confirm(`メンバー${id}を承認しますか？`)) {
-        alert('承認しました。メンバーに通知メールを送信します。');
+    async function approve(type, id) {
+      if (!confirm(`${type === 'member' ? 'メンバー' : type === 'client' ? '依頼主' : 'クエスト'}${id}を承認しますか？`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'approve',
+            type: type,
+            id: id
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 承認しました。通知メールを送信します。');
+          await loadApprovalData();
+          await loadAdminData();
+        } else {
+          alert('❌ 承認に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('承認エラー:', error);
+        alert('❌ 承認処理中にエラーが発生しました');
       }
     }
 
-    function rejectMember(id) {
+    async function reject(type, id) {
       const reason = prompt('却下理由を入力してください:');
-      if (reason) {
-        alert(`メンバー${id}を却下しました。`);
+      if (!reason) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'reject',
+            type: type,
+            id: id,
+            reason: reason
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 却下しました。通知メールを送信します。');
+          await loadApprovalData();
+          await loadAdminData();
+        } else {
+          alert('❌ 却下に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('却下エラー:', error);
+        alert('❌ 却下処理中にエラーが発生しました');
       }
     }
 
-    function approveClient(id) {
-      if (confirm(`依頼主${id}を承認しますか？`)) {
-        alert('承認しました。依頼主に通知メールを送信します。');
+    function viewDetail(type, id) {
+      alert(`${type}の詳細情報表示機能は今後実装予定です\nID: ${id}`);
+    }
+
+    async function suspendMember(id) {
+      if (!confirm(`メンバー${id}を停止しますか？`)) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'suspendMember',
+            id: id
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ メンバーを停止しました');
+          await loadMemberManagement();
+        } else {
+          alert('❌ 停止に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('停止エラー:', error);
+        alert('❌ 停止処理中にエラーが発生しました');
       }
     }
 
-    function rejectClient(id) {
-      const reason = prompt('却下理由を入力してください:');
-      if (reason) {
-        alert(`依頼主${id}を却下しました。`);
+    async function activateMember(id) {
+      if (!confirm(`メンバー${id}を再開しますか？`)) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'activateMember',
+            id: id
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ メンバーを再開しました');
+          await loadMemberManagement();
+        } else {
+          alert('❌ 再開に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('再開エラー:', error);
+        alert('❌ 再開処理中にエラーが発生しました');
       }
     }
 
-    function approveQuest(id) {
-      if (confirm(`クエスト${id}を承認して掲示板に掲載しますか？`)) {
-        alert('承認しました。クエスト掲示板に掲載されます。');
+    async function suspendClient(id) {
+      if (!confirm(`依頼主${id}を停止しますか？`)) return;
+      alert('依頼主停止機能は今後実装予定です');
+    }
+
+    async function activateClient(id) {
+      if (!confirm(`依頼主${id}を再開しますか？`)) return;
+      alert('依頼主再開機能は今後実装予定です');
+    }
+
+    async function processPayment(paymentId) {
+      if (!confirm(`支払${paymentId}を実行しますか？`)) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'processPayment',
+            paymentId: paymentId
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 支払処理を実行しました。振込手続きを行ってください。');
+          await loadPaymentManagement();
+        } else {
+          alert('❌ 支払処理に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('支払処理エラー:', error);
+        alert('❌ 支払処理中にエラーが発生しました');
       }
     }
 
-    function rejectQuest(id) {
-      const reason = prompt('却下理由を入力してください:');
-      if (reason) {
-        alert(`クエスト${id}を却下しました。`);
+    function viewPaymentDetail(paymentId) {
+      alert(`支払詳細表示機能は今後実装予定です\n支払ID: ${paymentId}`);
+    }
+
+    async function handleReport(reportId) {
+      const action = prompt('対応内容を入力してください:');
+      if (!action) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'handleReport',
+            reportId: reportId,
+            actionTaken: action
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 報告を処理しました');
+          await loadReports();
+        } else {
+          alert('❌ 処理に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('報告処理エラー:', error);
+        alert('❌ 処理中にエラーが発生しました');
       }
     }
 
-    function viewDetail(id) {
-      alert(`${id}の詳細情報を表示（未実装）`);
+    function viewReportDetail(reportId) {
+      alert(`報告詳細表示機能は今後実装予定です\n報告ID: ${reportId}`);
     }
 
-    function viewQuestDetail(id) {
-      alert(`クエスト${id}の詳細情報を表示（未実装）`);
+    function filterQuests() {
+      const status = document.getElementById('questStatusFilter').value;
+      const search = document.getElementById('questSearchInput').value.toLowerCase();
+      
+      const filtered = adminData.quests.filter(quest => {
+        let match = true;
+        if (status && quest.status !== status) match = false;
+        if (search && !quest.title.toLowerCase().includes(search)) match = false;
+        return match;
+      });
+      
+      displayQuests(filtered);
     }
 
-    function viewMemberDetail(id) {
-      alert(`メンバー${id}の詳細情報を表示（未実装）`);
+    function resetQuestFilter() {
+      document.getElementById('questStatusFilter').value = '';
+      document.getElementById('questSearchInput').value = '';
+      displayQuests(adminData.quests);
     }
 
-    function viewClientDetail(id) {
-      alert(`依頼主${id}の詳細情報を表示（未実装）`);
+    function filterMembers() {
+      const status = document.getElementById('memberStatusFilter').value;
+      const search = document.getElementById('memberSearchInput').value.toLowerCase();
+      
+      const filtered = adminData.members.filter(member => {
+        let match = true;
+        if (status && member.status !== status) match = false;
+        if (search && !member.nickname.toLowerCase().includes(search)) match = false;
+        return match;
+      });
+      
+      displayMembers(filtered);
     }
 
-    function suspendMember(id) {
-      if (confirm(`メンバー${id}を停止しますか？`)) {
-        alert('メンバーを停止しました。');
+    function resetMemberFilter() {
+      document.getElementById('memberStatusFilter').value = '';
+      document.getElementById('memberSearchInput').value = '';
+      displayMembers(adminData.members);
+    }
+
+    function filterClients() {
+      const search = document.getElementById('clientSearchInput').value.toLowerCase();
+      
+      const filtered = adminData.clients.filter(client => {
+        return client.name.toLowerCase().includes(search);
+      });
+      
+      displayClients(filtered);
+    }
+
+    function resetClientFilter() {
+      document.getElementById('clientSearchInput').value = '';
+      displayClients(adminData.clients);
+    }
+
+    function logout() {
+      if (confirm('ログアウトしますか？')) {
+        location.reload();
       }
     }
 
-    function suspendClient(id) {
-      if (confirm(`依頼主${id}を停止しますか？`)) {
-        alert('依頼主を停止しました。');
-      }
+    function getStatusClass(status) {
+      const map = {
+        '募集中': 'active',
+        '受注済': 'progress',
+        '進行中': 'progress',
+        '完了': 'active',
+        'キャンセル': 'warning'
+      };
+      return map[status] || 'warning';
     }
 
-    function processPayment(id) {
-      if (confirm(`支払${id}を実行しますか？`)) {
-        alert('支払処理を実行しました。振込手続きを行ってください。');
-      }
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    function viewPaymentDetail(id) {
-      alert(`支払${id}の詳細情報を表示（未実装）`);
-    }
-
-    function handleReport(id) {
-      alert(`報告${id}の対応画面を表示（未実装）`);
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
     }
   </script>
 </body>
