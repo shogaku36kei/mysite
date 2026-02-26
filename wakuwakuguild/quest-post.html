@@ -25,6 +25,12 @@
       <h2>📝 クエスト投稿</h2>
       <p>ギルドメンバーに依頼したい仕事を投稿しましょう</p>
 
+      <div class="form-group">
+        <label for="clientId">依頼主ID <span class="required">*</span></label>
+        <input type="text" id="clientId" name="clientId" required placeholder="例: C0001">
+        <small>登録時に発行されたIDを入力してください</small>
+      </div>
+
       <form id="questForm" onsubmit="submitQuestForm(event)">
         <div class="form-group">
           <label for="questTitle">クエスト名 <span class="required">*</span></label>
@@ -123,7 +129,7 @@
           </label>
         </div>
 
-        <button type="submit" class="btn-primary">クエストを投稿する</button>
+        <button type="submit" class="btn-primary" id="submitBtn">クエストを投稿する</button>
       </form>
 
       <div class="info-box">
@@ -146,12 +152,23 @@
 
   <script src="js/config.js"></script>
   <script>
-    function submitQuestForm(event) {
+    async function submitQuestForm(event) {
       event.preventDefault();
+      
+      const clientId = document.getElementById('clientId').value;
+      if (!clientId) {
+        alert('依頼主IDを入力してください');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
       
       const formData = new FormData(event.target);
       
       const questData = {
+        clientId: clientId,
         questTitle: formData.get('questTitle'),
         category: formData.get('category'),
         difficulty: formData.get('difficulty'),
@@ -160,16 +177,40 @@
         location: formData.get('location'),
         desiredDate: formData.get('desiredDate'),
         estimatedHours: formData.get('estimatedHours'),
-        reward: formData.get('reward'),
-        requiredMembers: formData.get('requiredMembers'),
+        reward: parseInt(formData.get('reward')),
+        requiredMembers: parseInt(formData.get('requiredMembers')),
         equipment: formData.get('equipment'),
         notes: formData.get('notes')
       };
 
-      // GASへPOST送信（実装は省略）
-      console.log('送信データ:', questData);
-      alert('クエストを投稿しました。\n事務局の審査後、掲示板に掲載されます。\n審査結果はメールでお知らせします。');
-      event.target.reset();
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'registerQuest',
+            data: questData
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`✅ クエストを投稿しました！\n\nクエストID: ${result.questId}\n\n事務局の審査後、掲示板に掲載されます。\n審査結果はメールでお知らせします。`);
+          event.target.reset();
+          document.getElementById('clientId').value = clientId; // 依頼主IDは保持
+        } else {
+          alert('❌ 投稿に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+        }
+      } catch (error) {
+        console.error('投稿エラー:', error);
+        alert('❌ 投稿処理中にエラーが発生しました\n\nネットワーク接続を確認して、もう一度お試しください。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'クエストを投稿する';
+      }
     }
   </script>
 </body>
