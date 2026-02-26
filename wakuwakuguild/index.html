@@ -128,42 +128,45 @@
       }
     }
 
-    function displayQuests(quests) {
-      const container = document.getElementById('questList');
-      container.innerHTML = '';
+function displayQuests(quests) {
+  const questList = document.getElementById('questList');
+  questList.innerHTML = '';
 
-      if (quests.length === 0) {
-        document.getElementById('noQuests').style.display = 'block';
-        container.style.display = 'none';
-        return;
-      }
-
-      document.getElementById('noQuests').style.display = 'none';
-      container.style.display = 'grid';
-
-      quests.forEach(quest => {
-        const card = document.createElement('div');
-        card.className = 'quest-card';
-        card.innerHTML = `
-          <div class="quest-header">
-            <h3>${escapeHtml(quest.title)}</h3>
-            <span class="difficulty">${quest.difficulty}</span>
-          </div>
-          <div class="quest-body">
-            <p><strong>📍 場所:</strong> ${escapeHtml(quest.location)}</p>
-            <p><strong>📅 希望日:</strong> ${escapeHtml(quest.desiredDate)}</p>
-            <p><strong>👥 必要人数:</strong> ${quest.requiredMembers}名</p>
-            <p><strong>🏅 推奨ランク:</strong> ${quest.recommendRank}</p>
-            <p><strong>💰 報酬:</strong> ${quest.reward.toLocaleString()}円</p>
-          </div>
-          <div class="quest-footer">
-            <span class="category-tag">${escapeHtml(quest.category)}</span>
-            <button onclick="viewQuestDetail('${quest.id}')">詳細を見る</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+  quests.forEach(quest => {
+    const card = document.createElement('div');
+    card.className = 'quest-card';
+    card.innerHTML = `
+      <div class="quest-header">
+        <span class="quest-category">${escapeHtml(quest.category)}</span>
+        <span class="quest-difficulty">${quest.difficulty}</span>
+      </div>
+      <h3 class="quest-title">${escapeHtml(quest.title)}</h3>
+      <div class="quest-info">
+        <div class="info-item">
+          <span class="info-label">📍 場所</span>
+          <span class="info-value">${escapeHtml(quest.location)}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">📅 希望日時</span>
+          <span class="info-value">${formatDate(quest.desiredDate)}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">💰 報酬</span>
+          <span class="info-value reward">¥${quest.reward.toLocaleString()}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">👥 必要人数</span>
+          <span class="info-value">${quest.requiredMembers}名</span>
+        </div>
+      </div>
+      <div class="quest-footer">
+        <span class="rank-badge rank-${quest.recommendRank}">推奨ランク: ${quest.recommendRank}</span>
+        <button onclick="viewQuestDetail('${quest.id}')" class="btn-primary">詳細を見る</button>
+      </div>
+    `;
+    questList.appendChild(card);
+  });
+}
 
     function viewQuestDetail(questId) {
       window.location.href = `quest-detail.html?id=${questId}`;
