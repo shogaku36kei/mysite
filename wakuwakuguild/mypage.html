@@ -42,31 +42,36 @@
         <p class="note">※本格実装時は認証システムを導入します</p>
       </div>
 
+      <!-- ローディング表示 -->
+      <div id="loadingMypage" class="loading" style="display: none;">
+        <p>🔄 データを読み込んでいます...</p>
+      </div>
+
       <!-- ギルドメンバー用マイページ -->
       <div id="memberMypage" class="mypage-content" style="display: none;">
         <div class="profile-card">
           <div class="profile-header">
-            <h3 id="memberNickname">草刈りの達人</h3>
-            <span class="rank-badge rank-A" id="memberRank">ランクA</span>
+            <h3 id="memberNickname">-</h3>
+            <span class="rank-badge" id="memberRankBadge">ランクF</span>
           </div>
           <div class="profile-stats">
             <div class="stat-item">
               <span class="stat-label">経験値</span>
-              <span class="stat-value" id="memberExp">520 EXP</span>
+              <span class="stat-value" id="memberExp">0 EXP</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">完了クエスト</span>
-              <span class="stat-value" id="memberQuests">15件</span>
+              <span class="stat-value" id="memberQuests">0件</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">評価</span>
-              <span class="stat-value" id="memberRating">⭐4.8</span>
+              <span class="stat-value" id="memberRating">⭐0.0</span>
             </div>
           </div>
           <div class="exp-bar">
-            <div class="exp-progress" style="width: 52%"></div>
+            <div class="exp-progress" id="expProgress" style="width: 0%"></div>
           </div>
-          <p class="exp-text">次のランクまであと480 EXP</p>
+          <p class="exp-text" id="expText">次のランクまであと - EXP</p>
         </div>
 
         <div class="tabs">
@@ -77,70 +82,44 @@
 
         <div id="acceptedTab" class="tab-content">
           <h3>📋 受注中のクエスト</h3>
-          <div class="quest-list">
-            <div class="quest-item">
-              <div class="quest-info">
-                <h4>店舗前の草刈り</h4>
-                <p>📍 総社市中央1-1-1</p>
-                <p>📅 2026/03/05 09:00</p>
-                <p>💰 報酬: 15,000円</p>
-              </div>
-              <div class="quest-actions">
-                <button onclick="reportComplete('Q0001')">完了報告</button>
-                <button onclick="reportProblem('Q0001')" class="btn-secondary">問題報告</button>
-              </div>
-            </div>
+          <div id="acceptedQuestList" class="quest-list">
+            <!-- JavaScriptで動的に生成 -->
           </div>
         </div>
 
         <div id="completedTab" class="tab-content" style="display: none;">
           <h3>✅ 完了したクエスト</h3>
-          <div class="quest-list">
-            <div class="quest-item completed">
-              <div class="quest-info">
-                <h4>公民館の清掃</h4>
-                <p>📅 完了日: 2026/02/20</p>
-                <p>💰 報酬: 8,000円（支払済）</p>
-                <p>⭐ 評価: 5.0 - 「とても丁寧でした」</p>
-                <p>🎖️ 獲得経験値: +20 EXP</p>
-              </div>
-            </div>
-            <div class="quest-item completed">
-              <div class="quest-info">
-                <h4>農道の草刈り</h4>
-                <p>📅 完了日: 2026/02/15</p>
-                <p>💰 報酬: 12,000円（支払済）</p>
-                <p>⭐ 評価: 4.5 - 「助かりました」</p>
-                <p>🎖️ 獲得経験値: +40 EXP</p>
-              </div>
-            </div>
+          <div id="completedQuestList" class="quest-list">
+            <!-- JavaScriptで動的に生成 -->
           </div>
         </div>
 
         <div id="profileTab" class="tab-content" style="display: none;">
           <h3>✏️ プロフィール編集</h3>
-          <form id="profileEditForm">
+          <form id="profileEditForm" onsubmit="updateProfile(event)">
+            <div class="form-group">
+              <label>メンバーID</label>
+              <input type="text" id="profileMemberId" readonly>
+            </div>
+            <div class="form-group">
+              <label>氏名</label>
+              <input type="text" id="profileName" readonly>
+            </div>
             <div class="form-group">
               <label>ニックネーム</label>
-              <input type="text" value="草刈りの達人">
+              <input type="text" id="profileNickname">
             </div>
             <div class="form-group">
               <label>メールアドレス</label>
-              <input type="email" value="sato@example.com">
+              <input type="email" id="profileEmail">
             </div>
             <div class="form-group">
               <label>電話番号</label>
-              <input type="tel" value="090-1111-2222">
+              <input type="tel" id="profilePhone">
             </div>
             <div class="form-group">
               <label>スキルタグ</label>
-              <div class="checkbox-group">
-                <label><input type="checkbox" checked> 草刈り</label>
-                <label><input type="checkbox" checked> 力仕事</label>
-                <label><input type="checkbox"> IT支援</label>
-                <label><input type="checkbox"> 料理</label>
-                <label><input type="checkbox"> 清掃</label>
-              </div>
+              <input type="text" id="profileSkills">
             </div>
             <button type="submit" class="btn-primary">更新する</button>
           </form>
@@ -150,8 +129,9 @@
       <!-- 依頼主用マイページ -->
       <div id="clientMypage" class="mypage-content" style="display: none;">
         <div class="profile-card">
-          <h3 id="clientName">山田商店</h3>
-          <p>依頼主ID: <span id="clientId">C0001</span></p>
+          <h3 id="clientName">-</h3>
+          <p>依頼主ID: <span id="clientId">-</span></p>
+          <p>種別: <span id="clientType">-</span></p>
         </div>
 
         <div class="tabs">
@@ -163,58 +143,28 @@
 
         <div id="postingTab" class="tab-content">
           <h3>📢 募集中のクエスト</h3>
-          <div class="quest-list">
-            <div class="quest-item">
-              <div class="quest-info">
-                <h4>店舗前の草刈り</h4>
-                <p>📅 希望日: 2026/03/05 09:00</p>
-                <p>💰 報酬: 15,000円</p>
-                <p>👥 応募: 3名</p>
-              </div>
-              <div class="quest-actions">
-                <button onclick="viewApplicants('Q0001')">応募者を見る</button>
-                <button onclick="cancelQuest('Q0001')" class="btn-secondary">募集中止</button>
-              </div>
-            </div>
+          <div id="postingQuestList" class="quest-list">
+            <!-- JavaScriptで動的に生成 -->
           </div>
         </div>
 
         <div id="inProgressTab" class="tab-content" style="display: none;">
           <h3>🔄 進行中のクエスト</h3>
-          <div class="quest-list">
-            <div class="quest-item">
-              <div class="quest-info">
-                <h4>倉庫の整理整頓</h4>
-                <p>👤 受注者: 力持ちの勇者</p>
-                <p>📅 実施予定: 2026/03/01 10:00</p>
-                <p>💰 報酬: 10,000円（預け済）</p>
-              </div>
-              <div class="quest-actions">
-                <button onclick="confirmComplete('Q0002')">完了確認</button>
-                <button onclick="contactMember('M0003')">メッセージ</button>
-              </div>
-            </div>
+          <div id="inProgressQuestList" class="quest-list">
+            <!-- JavaScriptで動的に生成 -->
           </div>
         </div>
 
         <div id="historyTab" class="tab-content" style="display: none;">
           <h3>✅ 完了履歴</h3>
-          <div class="quest-list">
-            <div class="quest-item completed">
-              <div class="quest-info">
-                <h4>看板の取り付け</h4>
-                <p>👤 受注者: DIYマスター</p>
-                <p>📅 完了日: 2026/02/18</p>
-                <p>💰 報酬: 8,000円（支払済）</p>
-                <p>⭐ あなたの評価: 5.0</p>
-              </div>
-            </div>
+          <div id="historyQuestList" class="quest-list">
+            <!-- JavaScriptで動的に生成 -->
           </div>
         </div>
 
         <div id="newQuestTab" class="tab-content" style="display: none;">
           <h3>📝 新規クエスト投稿</h3>
-          <p><a href="quest-post.html" class="btn-primary">クエスト投稿ページへ</a></p>
+          <p><a href="quest-post.html" class="btn-primary" style="display: inline-block; text-decoration: none;">クエスト投稿ページへ</a></p>
         </div>
       </div>
     </section>
@@ -226,26 +176,272 @@
 
   <script src="js/config.js"></script>
   <script>
-    function handleLogin(event) {
+    let currentUser = null;
+    let currentUserType = null;
+
+    async function handleLogin(event) {
       event.preventDefault();
-      const loginId = document.getElementById('loginId').value;
       
-      // 簡易的なID判定（本格実装時は認証APIを使用）
-      if (loginId.startsWith('M')) {
-        // メンバーログイン
-        document.getElementById('loginPrompt').style.display = 'none';
-        document.getElementById('memberMypage').style.display = 'block';
-      } else if (loginId.startsWith('C')) {
-        // 依頼主ログイン
-        document.getElementById('loginPrompt').style.display = 'none';
-        document.getElementById('clientMypage').style.display = 'block';
-      } else {
-        alert('IDが見つかりません');
+      const loginId = document.getElementById('loginId').value;
+      const email = document.getElementById('email').value;
+      
+      const loading = document.getElementById('loadingMypage');
+      const loginPrompt = document.getElementById('loginPrompt');
+      
+      loading.style.display = 'block';
+      loginPrompt.style.display = 'none';
+
+      try {
+        // ID判定
+        if (loginId.startsWith('M')) {
+          // メンバーログイン
+          await loadMemberData(loginId, email);
+        } else if (loginId.startsWith('C')) {
+          // 依頼主ログイン
+          await loadClientData(loginId, email);
+        } else {
+          throw new Error('無効なIDです');
+        }
+      } catch (error) {
+        console.error('ログインエラー:', error);
+        alert('❌ ログインに失敗しました\n\n' + error.message);
+        loading.style.display = 'none';
+        loginPrompt.style.display = 'block';
       }
     }
 
+    async function loadMemberData(memberId, email) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberData&id=${memberId}&email=${email}`);
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.message || 'メンバー情報が見つかりません');
+        }
+
+        currentUser = data.member;
+        currentUserType = 'member';
+
+        // プロフィールカード表示
+        document.getElementById('memberNickname').textContent = data.member.nickname;
+        document.getElementById('memberRankBadge').textContent = `ランク${data.member.rank}`;
+        document.getElementById('memberRankBadge').className = `rank-badge rank-${data.member.rank}`;
+        document.getElementById('memberExp').textContent = `${data.member.exp} EXP`;
+        document.getElementById('memberQuests').textContent = `${data.member.completedQuests}件`;
+        document.getElementById('memberRating').textContent = `⭐${data.member.rating > 0 ? data.member.rating.toFixed(1) : '未評価'}`;
+
+        // 経験値バー
+        const expProgress = calculateExpProgress(data.member.rank, data.member.exp);
+        document.getElementById('expProgress').style.width = `${expProgress.percentage}%`;
+        document.getElementById('expText').textContent = `次のランクまであと${expProgress.remaining} EXP`;
+
+        // プロフィール編集フォーム
+        document.getElementById('profileMemberId').value = data.member.id;
+        document.getElementById('profileName').value = data.member.name;
+        document.getElementById('profileNickname').value = data.member.nickname;
+        document.getElementById('profileEmail').value = data.member.email;
+        document.getElementById('profilePhone').value = data.member.phone;
+        document.getElementById('profileSkills').value = data.member.skills;
+
+        // クエスト一覧を読み込み
+        await loadMemberQuests(memberId);
+
+        document.getElementById('loadingMypage').style.display = 'none';
+        document.getElementById('memberMypage').style.display = 'block';
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async function loadClientData(clientId, email) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientData&id=${clientId}&email=${email}`);
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.message || '依頼主情報が見つかりません');
+        }
+
+        currentUser = data.client;
+        currentUserType = 'client';
+
+        // プロフィール表示
+        document.getElementById('clientName').textContent = data.client.name;
+        document.getElementById('clientId').textContent = data.client.id;
+        document.getElementById('clientType').textContent = data.client.type || '-';
+
+        // クエスト一覧を読み込み
+        await loadClientQuests(clientId);
+
+        document.getElementById('loadingMypage').style.display = 'none';
+        document.getElementById('clientMypage').style.display = 'block';
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async function loadMemberQuests(memberId) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getMemberQuests&id=${memberId}`);
+        const data = await response.json();
+
+        // 受注中のクエスト
+        const acceptedList = document.getElementById('acceptedQuestList');
+        acceptedList.innerHTML = '';
+        
+        if (data.accepted && data.accepted.length > 0) {
+          data.accepted.forEach(quest => {
+            acceptedList.innerHTML += createQuestItemHTML(quest, 'accepted');
+          });
+        } else {
+          acceptedList.innerHTML = '<p class="no-data">受注中のクエストはありません</p>';
+        }
+
+        // 完了したクエスト
+        const completedList = document.getElementById('completedQuestList');
+        completedList.innerHTML = '';
+        
+        if (data.completed && data.completed.length > 0) {
+          data.completed.forEach(quest => {
+            completedList.innerHTML += createQuestItemHTML(quest, 'completed');
+          });
+        } else {
+          completedList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
+        }
+      } catch (error) {
+        console.error('クエスト取得エラー:', error);
+      }
+    }
+
+    async function loadClientQuests(clientId) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getClientQuests&id=${clientId}`);
+        const data = await response.json();
+
+        // 募集中のクエスト
+        const postingList = document.getElementById('postingQuestList');
+        postingList.innerHTML = '';
+        
+        if (data.posting && data.posting.length > 0) {
+          data.posting.forEach(quest => {
+            postingList.innerHTML += createClientQuestItemHTML(quest, 'posting');
+          });
+        } else {
+          postingList.innerHTML = '<p class="no-data">募集中のクエストはありません</p>';
+        }
+
+        // 進行中のクエスト
+        const inProgressList = document.getElementById('inProgressQuestList');
+        inProgressList.innerHTML = '';
+        
+        if (data.inProgress && data.inProgress.length > 0) {
+          data.inProgress.forEach(quest => {
+            inProgressList.innerHTML += createClientQuestItemHTML(quest, 'inProgress');
+          });
+        } else {
+          inProgressList.innerHTML = '<p class="no-data">進行中のクエストはありません</p>';
+        }
+
+        // 完了履歴
+        const historyList = document.getElementById('historyQuestList');
+        historyList.innerHTML = '';
+        
+        if (data.history && data.history.length > 0) {
+          data.history.forEach(quest => {
+            historyList.innerHTML += createClientQuestItemHTML(quest, 'history');
+          });
+        } else {
+          historyList.innerHTML = '<p class="no-data">完了したクエストはありません</p>';
+        }
+      } catch (error) {
+        console.error('クエスト取得エラー:', error);
+      }
+    }
+
+    function createQuestItemHTML(quest, status) {
+      const isCompleted = status === 'completed';
+      return `
+        <div class="quest-item ${isCompleted ? 'completed' : ''}">
+          <div class="quest-info">
+            <h4>${escapeHtml(quest.title)}</h4>
+            <p>📍 ${escapeHtml(quest.location)}</p>
+            <p>📅 ${escapeHtml(quest.desiredDate)}</p>
+            <p>💰 報酬: ${quest.reward.toLocaleString()}円</p>
+            ${isCompleted ? `
+              <p>⭐ 評価: ${quest.rating || '未評価'}</p>
+              <p>🎖️ 獲得経験値: +${quest.exp || 0} EXP</p>
+            ` : ''}
+          </div>
+          <div class="quest-actions">
+            ${!isCompleted ? `
+              <button onclick="reportComplete('${quest.id}')" class="btn-primary">完了報告</button>
+              <button onclick="reportProblem('${quest.id}')" class="btn-secondary">問題報告</button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function createClientQuestItemHTML(quest, status) {
+      let actions = '';
+      
+      if (status === 'posting') {
+        actions = `
+          <button onclick="viewApplicants('${quest.id}')" class="btn-primary">応募者を見る</button>
+          <button onclick="cancelQuest('${quest.id}')" class="btn-secondary">募集中止</button>
+        `;
+      } else if (status === 'inProgress') {
+        actions = `
+          <button onclick="confirmComplete('${quest.id}')" class="btn-primary">完了確認</button>
+          <button onclick="contactMember('${quest.acceptorId}')" class="btn-secondary">メッセージ</button>
+        `;
+      }
+
+      return `
+        <div class="quest-item ${status === 'history' ? 'completed' : ''}">
+          <div class="quest-info">
+            <h4>${escapeHtml(quest.title)}</h4>
+            ${quest.acceptorName ? `<p>👤 受注者: ${escapeHtml(quest.acceptorName)}</p>` : ''}
+            <p>📅 ${status === 'posting' ? '希望日' : status === 'inProgress' ? '実施予定' : '完了日'}: ${escapeHtml(quest.date)}</p>
+            <p>💰 報酬: ${quest.reward.toLocaleString()}円</p>
+            ${status === 'history' && quest.rating ? `<p>⭐ あなたの評価: ${quest.rating}</p>` : ''}
+          </div>
+          <div class="quest-actions">
+            ${actions}
+          </div>
+        </div>
+      `;
+    }
+
+    function calculateExpProgress(rank, exp) {
+      const rankThresholds = {
+        'F': 0,
+        'E': 10,
+        'D': 50,
+        'C': 150,
+        'B': 300,
+        'A': 500,
+        'S': 1000
+      };
+
+      const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S'];
+      const currentIndex = ranks.indexOf(rank);
+      
+      if (currentIndex === ranks.length - 1) {
+        return { percentage: 100, remaining: 0 };
+      }
+
+      const currentThreshold = rankThresholds[rank];
+      const nextThreshold = rankThresholds[ranks[currentIndex + 1]];
+      const range = nextThreshold - currentThreshold;
+      const progress = exp - currentThreshold;
+      const percentage = Math.min((progress / range) * 100, 100);
+      const remaining = Math.max(nextThreshold - exp, 0);
+
+      return { percentage, remaining };
+    }
+
     function showTab(tabName) {
-      // タブ切り替え処理
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.style.display = 'none';
       });
@@ -255,14 +451,13 @@
       
       if (tabName === 'accepted') {
         document.getElementById('acceptedTab').style.display = 'block';
-        event.target.classList.add('active');
       } else if (tabName === 'completed') {
         document.getElementById('completedTab').style.display = 'block';
-        event.target.classList.add('active');
       } else if (tabName === 'profile') {
         document.getElementById('profileTab').style.display = 'block';
-        event.target.classList.add('active');
       }
+      
+      event.target.classList.add('active');
     }
 
     function showClientTab(tabName) {
@@ -284,40 +479,128 @@
       event.target.classList.add('active');
     }
 
-    function reportComplete(questId) {
+    async function reportComplete(questId) {
       const comment = prompt('完了報告のコメントを入力してください:');
-      if (comment) {
-        alert(`クエスト${questId}の完了報告を送信しました。\n依頼主の確認をお待ちください。`);
+      if (!comment) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'reportComplete',
+            questId: questId,
+            memberId: currentUser.id,
+            comment: comment
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 完了報告を送信しました。\n依頼主の確認をお待ちください。');
+          await loadMemberQuests(currentUser.id);
+        } else {
+          alert('❌ 報告に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('報告エラー:', error);
+        alert('❌ 報告処理中にエラーが発生しました');
       }
     }
 
-    function reportProblem(questId) {
+    async function reportProblem(questId) {
       const problem = prompt('発生した問題を入力してください:');
-      if (problem) {
-        alert(`問題報告を事務局に送信しました。\n事務局から連絡があるまでお待ちください。`);
+      if (!problem) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'reportProblem',
+            questId: questId,
+            memberId: currentUser.id,
+            problem: problem
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ 問題報告を事務局に送信しました。\n事務局から連絡があるまでお待ちください。');
+        } else {
+          alert('❌ 報告に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('報告エラー:', error);
+        alert('❌ 報告処理中にエラーが発生しました');
       }
     }
 
-    function confirmComplete(questId) {
+    async function confirmComplete(questId) {
       const rating = prompt('評価を入力してください（1-5）:');
+      if (!rating || rating < 1 || rating > 5) {
+        alert('1から5の数字を入力してください');
+        return;
+      }
+
       const comment = prompt('コメントを入力してください:');
-      if (rating && comment) {
-        alert(`クエスト${questId}を完了確認しました。\n報酬の支払い処理を開始します。`);
+      if (!comment) return;
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'confirmComplete',
+            questId: questId,
+            clientId: currentUser.id,
+            rating: parseInt(rating),
+            comment: comment
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ クエストを完了確認しました。\n報酬の支払い処理を開始します。');
+          await loadClientQuests(currentUser.id);
+        } else {
+          alert('❌ 確認に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('確認エラー:', error);
+        alert('❌ 確認処理中にエラーが発生しました');
       }
     }
 
     function viewApplicants(questId) {
-      alert('応募者一覧ページへ遷移します（未実装）');
+      alert('応募者一覧機能は今後実装予定です');
     }
 
     function cancelQuest(questId) {
       if (confirm('本当に募集を中止しますか？')) {
-        alert(`クエスト${questId}の募集を中止しました。`);
+        alert('募集中止機能は今後実装予定です');
       }
     }
 
     function contactMember(memberId) {
       alert('メッセージ機能は今後実装予定です');
+    }
+
+    async function updateProfile(event) {
+      event.preventDefault();
+      alert('プロフィール更新機能は今後実装予定です');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.toString().replace(/[&<>"']/g, m => map[m]);
     }
   </script>
 </body>
