@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クエスト詳細 - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="quest-detail-section">
+      <div class="breadcrumb">
+        <a href="index.html">クエスト掲示板</a> &gt; <span>クエスト詳細</span>
+      </div>
+
+      <div id="questDetail" class="quest-detail-card">
+        <!-- JavaScriptで動的に生成 -->
+      </div>
+
+      <div class="action-section">
+        <h3>このクエストに挑戦する</h3>
+        <div class="accept-form">
+          <p>ログインしているメンバーIDを入力してください</p>
+          <div class="form-group">
+            <label for="memberId">メンバーID</label>
+            <input type="text" id="memberId" placeholder="例: M0001">
+          </div>
+          <div class="form-group">
+            <label for="acceptType">受注タイプ</label>
+            <select id="acceptType">
+              <option value="個人">個人で受注</option>
+              <option value="パーティ">パーティで受注</option>
+            </select>
+          </div>
+          <div class="form-group" id="partySelectGroup" style="display: none;">
+            <label for="partyId">パーティID</label>
+            <input type="text" id="partyId" placeholder="例: P0001">
+          </div>
+          <div class="form-group">
+            <label for="message">応募メッセージ</label>
+            <textarea id="message" rows="4" placeholder="意気込みや質問などをご記入ください"></textarea>
+          </div>
+          <button onclick="acceptQuest()" class="btn-primary">このクエストを受注する</button>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>⚠️ 受注前の確認事項</h3>
+        <ul>
+          <li>クエスト内容をよく確認してください</li>
+          <li>推奨ランク未満でも受注可能ですが、難易度を考慮してください</li>
+          <li>受注後のキャンセルはランクダウンの対象となります</li>
+          <li>作業完了後は速やかに完了報告を行ってください</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    // URLパラメータからクエストIDを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const questId = urlParams.get('id');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (questId) {
+        loadQuestDetail(questId);
+      } else {
+        document.getElementById('questDetail').innerHTML = 
+          '<p class="error">クエストIDが指定されていません</p>';
+      }
+    });
+
+    async function loadQuestDetail(id) {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getQuestDetail&id=${id}`);
+        const quest = await response.json();
+        displayQuestDetail(quest);
+      } catch (error) {
+        console.error('クエスト詳細取得エラー:', error);
+        document.getElementById('questDetail').innerHTML = 
+          '<p class="error">クエスト情報の読み込みに失敗しました</p>';
+      }
+    }
+
+    function displayQuestDetail(quest) {
+      const container = document.getElementById('questDetail');
+      
+      container.innerHTML = `
+        <div class="quest-detail-header">
+          <h2>${quest.title}</h2>
+          <div class="quest-meta">
+            <span class="difficulty-large">${quest.difficulty}</span>
+            <span class="recommend-rank">推奨ランク: ${quest.recommendRank}</span>
+          </div>
+        </div>
+
+        <div class="quest-detail-body">
+          <div class="detail-section">
+            <h3>📋 クエスト情報</h3>
+            <table class="detail-table">
+              <tr>
+                <th>カテゴリ</th>
+                <td><span class="category-tag">${quest.category}</span></td>
+              </tr>
+              <tr>
+                <th>実施場所</th>
+                <td>${quest.location}</td>
+              </tr>
+              <tr>
+                <th>希望日時</th>
+                <td>${quest.desiredDate}</td>
+              </tr>
+              <tr>
+                <th>所要時間</th>
+                <td>${quest.estimatedHours}</td>
+              </tr>
+              <tr>
+                <th>必要人数</th>
+                <td>${quest.requiredMembers}名</td>
+              </tr>
+              <tr>
+                <th>報酬</th>
+                <td class="reward-amount">💰 ${quest.reward.toLocaleString()}円（税込）</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="detail-section">
+            <h3>📝 内容詳細</h3>
+            <div class="description-box">
+              ${quest.description.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+
+          ${quest.equipment ? `
+          <div class="detail-section">
+            <h3>🛠️ 必要な道具・装備</h3>
+            <div class="equipment-box">
+              ${quest.equipment.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+          ` : ''}
+
+          ${quest.notes ? `
+          <div class="detail-section">
+            <h3>⚠️ 注意事項・備考</h3>
+            <div class="notes-box">
+              ${quest.notes.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+          ` : ''}
+
+          <div class="detail-section">
+            <h3>👤 依頼主情報</h3>
+            <p>依頼主: ${quest.clientName || '非公開'}</p>
+            <p class="note">※詳細な連絡先は受注後に開示されます</p>
+          </div>
+
+          <div class="detail-section">
+            <h3>🎖️ 獲得経験値</h3>
+            <p class="exp-info">このクエストを完了すると <strong>${getExpByDifficulty(quest.difficulty)} EXP</strong> を獲得できます</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function getExpByDifficulty(difficulty) {
+      const expTable = {
+        '★': 10,
+        '★★': 20,
+        '★★★': 40,
+        '★★★★': 70,
+        '★★★★★': 100
+      };
+      return expTable[difficulty] || 10;
+    }
+
+    // 受注タイプ変更時の処理
+    document.getElementById('acceptType')?.addEventListener('change', (e) => {
+      const partyGroup = document.getElementById('partySelectGroup');
+      if (e.target.value === 'パーティ') {
+        partyGroup.style.display = 'block';
+      } else {
+        partyGroup.style.display = 'none';
+      }
+    });
+
+    async function acceptQuest() {
+      const memberId = document.getElementById('memberId').value;
+      const acceptType = document.getElementById('acceptType').value;
+      const message = document.getElementById('message').value;
+      
+      if (!memberId) {
+        alert('メンバーIDを入力してください');
+        return;
+      }
+
+      let acceptorId = memberId;
+      if (acceptType === 'パーティ') {
+        const partyId = document.getElementById('partyId').value;
+        if (!partyId) {
+          alert('パーティIDを入力してください');
+          return;
+        }
+        acceptorId = partyId;
+      }
+
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'acceptQuest',
+            questId: questId,
+            acceptorId: acceptorId,
+            acceptorType: acceptType,
+            message: message
+          })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('クエストを受注しました！\nマイページから進捗を確認できます。');
+          window.location.href = 'mypage.html';
+        } else {
+          alert('受注に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('受注エラー:', error);
+        alert('受注処理中にエラーが発生しました');
+      }
+    }
+  </script>
+</body>
+</html>
