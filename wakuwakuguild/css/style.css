@@ -950,3 +950,33 @@ button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ランキングタブ */
+.ranking-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  flex-wrap: wrap;
+}
+
+.ranking-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  color: #666;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.ranking-tab-btn:hover {
+  color: #667eea;
+  background: #f8f9fa;
+}
+
+.ranking-tab-btn.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
