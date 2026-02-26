@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ギルドメンバー登録 - わくわくギルド</title>
+  <title>🛡️ ギルドメンバー登録 - わくわくギルド</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -20,65 +20,96 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="form-section">
-      <h2>🛡️ ギルドメンバー登録</h2>
-      <p>あなたもギルドの一員として、地域のクエストに挑戦しませんか？</p>
+  <main>
+    <div class="container form-section">
+      <div class="hero">
+        <h2>🛡️ ギルドメンバー登録</h2>
+        <p>あなたもギルドの一員として、地域のクエストに挑戦しませんか？</p>
+      </div>
 
-      <form id="memberForm" onsubmit="submitMemberForm(event)">
+      <form id="memberForm">
+        <!-- ユーザー種別（最初に選択） -->
         <div class="form-group">
-          <label for="name">氏名 <span class="required">*</span></label>
-          <input type="text" id="name" name="name" required>
+          <label>ユーザー種別 <span class="required">*</span></label>
+          <select id="userType" name="userType" required>
+            <option value="">選択してください</option>
+            <option value="個人">個人ユーザー（1名で受注）</option>
+            <option value="法人">法人ユーザー（複数名で受注可能）</option>
+          </select>
+          <small>
+            <strong>個人:</strong> 常に1名単位で応募します<br>
+            <strong>法人:</strong> 受注時に参加人数を指定できます（例: 3名で応募）
+          </small>
         </div>
 
+        <!-- 法人名（法人の場合のみ表示） -->
+        <div class="form-group" id="corporateNameGroup" style="display: none;">
+          <label>法人名・団体名 <span class="required">*</span></label>
+          <input type="text" id="corporateName" name="corporateName">
+          <small>正式な法人名または団体名を入力してください</small>
+        </div>
+
+        <!-- 氏名（担当者名） -->
         <div class="form-group">
-          <label for="nickname">ニックネーム（ギルド内表示名） <span class="required">*</span></label>
+          <label id="nameLabel">氏名 <span class="required">*</span></label>
+          <input type="text" id="name" name="name" required>
+          <small id="nameHelp">個人の方は本名、法人の方は担当者名を入力してください</small>
+        </div>
+
+        <!-- ニックネーム -->
+        <div class="form-group">
+          <label>ニックネーム（ギルド内表示名） <span class="required">*</span></label>
           <input type="text" id="nickname" name="nickname" required>
           <small>他のメンバーや依頼主に表示される名前です</small>
         </div>
 
+        <!-- メールアドレス -->
         <div class="form-group">
-          <label for="email">メールアドレス <span class="required">*</span></label>
+          <label>メールアドレス <span class="required">*</span></label>
           <input type="email" id="email" name="email" required>
         </div>
 
+        <!-- 電話番号 -->
         <div class="form-group">
-          <label for="phone">電話番号 <span class="required">*</span></label>
+          <label>電話番号 <span class="required">*</span></label>
           <input type="tel" id="phone" name="phone" required>
         </div>
 
+        <!-- 住所 -->
         <div class="form-group">
-          <label for="address">住所 <span class="required">*</span></label>
+          <label>住所 <span class="required">*</span></label>
           <input type="text" id="address" name="address" required>
         </div>
 
-        <div class="form-group">
-          <label for="skills">得意なスキル（複数選択可）</label>
+        <!-- 得意なスキル -->
+        <fieldset>
+          <legend>得意なスキル（複数選択可）</legend>
           <div class="checkbox-group">
-            <label><input type="checkbox" name="skills" value="草刈り"> 草刈り</label>
-            <label><input type="checkbox" name="skills" value="力仕事"> 力仕事</label>
-            <label><input type="checkbox" name="skills" value="IT支援"> IT支援</label>
-            <label><input type="checkbox" name="skills" value="料理"> 料理</label>
-            <label><input type="checkbox" name="skills" value="清掃"> 清掃</label>
-            <label><input type="checkbox" name="skills" value="その他"> その他</label>
+            <label><input type="checkbox" name="skills" value="草刈り"> 🌿 草刈り</label>
+            <label><input type="checkbox" name="skills" value="力仕事"> 💪 力仕事</label>
+            <label><input type="checkbox" name="skills" value="IT支援"> 💻 IT支援</label>
+            <label><input type="checkbox" name="skills" value="料理"> 🍳 料理</label>
+            <label><input type="checkbox" name="skills" value="清掃"> 🧹 清掃</label>
+            <label><input type="checkbox" name="skills" value="その他"> 📦 その他</label>
           </div>
-        </div>
+        </fieldset>
 
+        <!-- 報酬振込先情報 -->
         <fieldset>
           <legend>💳 報酬振込先情報</legend>
           
           <div class="form-group">
-            <label for="bankName">銀行名 <span class="required">*</span></label>
+            <label>銀行名 <span class="required">*</span></label>
             <input type="text" id="bankName" name="bankName" required>
           </div>
 
           <div class="form-group">
-            <label for="branchName">支店名 <span class="required">*</span></label>
+            <label>支店名 <span class="required">*</span></label>
             <input type="text" id="branchName" name="branchName" required>
           </div>
 
           <div class="form-group">
-            <label for="accountType">口座種別 <span class="required">*</span></label>
+            <label>口座種別 <span class="required">*</span></label>
             <select id="accountType" name="accountType" required>
               <option value="">選択してください</option>
               <option value="普通">普通</option>
@@ -87,27 +118,28 @@
           </div>
 
           <div class="form-group">
-            <label for="accountNumber">口座番号 <span class="required">*</span></label>
-            <input type="text" id="accountNumber" name="accountNumber" required pattern="[0-9]{7}" title="7桁の数字を入力してください">
+            <label>口座番号 <span class="required">*</span></label>
+            <input type="text" id="accountNumber" name="accountNumber" required>
           </div>
 
           <div class="form-group">
-            <label for="accountHolder">口座名義（カナ） <span class="required">*</span></label>
-            <input type="text" id="accountHolder" name="accountHolder" required pattern="[ァ-ヶー\s]+" title="全角カタカナで入力してください">
-            <small>例: ヤマダタロウ</small>
+            <label>口座名義（カナ） <span class="required">*</span></label>
+            <input type="text" id="accountHolder" name="accountHolder" required placeholder="例: ヤマダタロウ">
           </div>
         </fieldset>
 
+        <!-- 利用規約 -->
         <div class="form-group">
           <label>
-            <input type="checkbox" name="agree" required>
-            <a href="#" onclick="showTerms(); return false;">利用規約</a>および<a href="#" onclick="showPrivacy(); return false;">プライバシーポリシー</a>に同意します
+            <input type="checkbox" id="agree" name="agree" required>
+            利用規約およびプライバシーポリシーに同意します
           </label>
         </div>
 
-        <button type="submit" class="btn-primary" id="submitBtn">登録申請する</button>
+        <button type="submit" class="btn-primary">登録申請する</button>
       </form>
 
+      <!-- 登録について -->
       <div class="info-box">
         <h3>💡 メンバー登録について</h3>
         <ul>
@@ -115,152 +147,108 @@
           <li>承認後、クエストへの応募が可能になります</li>
           <li>初期ランクはFからスタートします</li>
           <li>クエストを完了すると経験値を獲得し、ランクアップできます</li>
+          <li><strong>法人ユーザー:</strong> 受注時に参加人数を指定できます（例: 5名募集のクエストに3名で応募）</li>
         </ul>
       </div>
-    </section>
+    </div>
   </main>
 
   <footer>
-    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+    <p>© 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
   </footer>
 
-<script src="js/config.js"></script>
-<script>
-  async function submitMemberForm(event) {
-    event.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = '送信中...';
-    
-    const formData = new FormData(event.target);
-    const skills = Array.from(formData.getAll('skills')).join(',');
-    
-    const memberData = {
-      name: formData.get('name'),
-      nickname: formData.get('nickname'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      address: formData.get('address'),
-      skills: skills,
-      bankName: formData.get('bankName'),
-      branchName: formData.get('branchName'),
-      accountType: formData.get('accountType'),
-      accountNumber: formData.get('accountNumber'),
-      accountHolder: formData.get('accountHolder')
-    };
-
-    try {
-      const response = await fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain', // ★ ここだけ変更
-        },
-        body: JSON.stringify({
-          action: 'registerMember',
-          data: memberData
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
+  <script src="js/config.js"></script>
+  <script>
+    // ユーザー種別の変更監視
+    document.getElementById('userType').addEventListener('change', (e) => {
+      const userType = e.target.value;
+      const corporateNameGroup = document.getElementById('corporateNameGroup');
+      const corporateNameInput = document.getElementById('corporateName');
+      const nameLabel = document.getElementById('nameLabel');
+      const nameHelp = document.getElementById('nameHelp');
       
-      if (result.success) {
-        alert(`✅ 登録申請を受け付けました！\n\nメンバーID: ${result.memberId}\n\n事務局の審査をお待ちください。\n審査結果はメールでお知らせします。\n\n※メンバーIDは大切に保管してください。`);
-        event.target.reset();
+      if (userType === '法人') {
+        // 法人の場合
+        corporateNameGroup.style.display = 'block';
+        corporateNameInput.required = true;
+        nameLabel.innerHTML = '担当者名 <span class="required">*</span>';
+        nameHelp.textContent = '法人の担当者名を入力してください';
       } else {
-        alert('❌ 登録に失敗しました\n\n' + (result.message || 'エラーが発生しました'));
+        // 個人の場合
+        corporateNameGroup.style.display = 'none';
+        corporateNameInput.required = false;
+        corporateNameInput.value = '';
+        nameLabel.innerHTML = '氏名 <span class="required">*</span>';
+        nameHelp.textContent = '本名を入力してください';
       }
-    } catch (error) {
-      console.error('登録エラー:', error);
-      alert('❌ 登録処理中にエラーが発生しました\n\n' + error.message + '\n\nネットワーク接続を確認して、もう一度お試しください。');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = '登録申請する';
-    }
-  }
+    });
 
-  function showTerms() {
-    alert('【利用規約】\n\n1. 本サービスは総社市が運営するスキルマッチングプラットフォームです\n2. 登録情報は適切に管理されます\n3. クエストの受注後は責任を持って完了してください\n4. 不正行為が発覚した場合は登録を抹消します\n\n※詳細は後日Webページで公開予定');
-  }
-
-  function showPrivacy() {
-    alert('【プライバシーポリシー】\n\n1. 個人情報は本サービスの運営目的のみに使用します\n2. 第三者への提供は行いません（法令に基づく場合を除く）\n3. 情報の管理には万全を期します\n\n※詳細は後日Webページで公開予定');
-  }
-  /**
- * 日付を日本語形式にフォーマット
- */
-function formatDate(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    
-    // 無効な日付チェック
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日 ${hour}:${minute}`;
-  } catch (error) {
-    return '-';
-  }
-}
-
-/**
- * 日付のみ表示（時刻なし）
- */
-function formatDateOnly(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}年${month}月${day}日`;
-  } catch (error) {
-    return '-';
-  }
-}
-
-/**
- * 相対時間表示（○日前、○時間前など）
- */
-function formatRelativeTime(dateString) {
-  if (!dateString) return '-';
-  
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '-';
-    
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
-    
-    if (diffSec < 60) return `${diffSec}秒前`;
-    if (diffMin < 60) return `${diffMin}分前`;
-    if (diffHour < 24) return `${diffHour}時間前`;
-    if (diffDay < 7) return `${diffDay}日前`;
-    
-    return formatDateOnly(dateString);
-  } catch (error) {
-    return '-';
-  }
-}
-</script>
+    // フォーム送信処理
+    document.getElementById('memberForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // スキルの取得
+      const skillCheckboxes = document.querySelectorAll('input[name="skills"]:checked');
+      const skills = Array.from(skillCheckboxes).map(cb => cb.value).join(', ');
+      
+      // フォームデータの収集
+      const formData = {
+        userType: document.getElementById('userType').value,
+        corporateName: document.getElementById('corporateName').value,
+        name: document.getElementById('name').value,
+        nickname: document.getElementById('nickname').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        skills: skills,
+        bankName: document.getElementById('bankName').value,
+        branchName: document.getElementById('branchName').value,
+        accountType: document.getElementById('accountType').value,
+        accountNumber: document.getElementById('accountNumber').value,
+        accountHolder: document.getElementById('accountHolder').value
+      };
+      
+      // バリデーション
+      if (!formData.userType) {
+        alert('ユーザー種別を選択してください');
+        return;
+      }
+      
+      if (formData.userType === '法人' && !formData.corporateName) {
+        alert('法人名を入力してください');
+        return;
+      }
+      
+      if (!formData.skills) {
+        alert('得意なスキルを少なくとも1つ選択してください');
+        return;
+      }
+      
+      // 送信ボタンを無効化
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中...';
+      
+      try {
+        const result = await API.post('registerMember', formData);
+        
+        if (result.success) {
+          alert(`✅ 登録申請が完了しました！\n\nメンバーID: ${result.memberId}\n\n審査完了後、登録されたメールアドレスに通知をお送りします。`);
+          
+          // フォームをリセット
+          e.target.reset();
+          document.getElementById('corporateNameGroup').style.display = 'none';
+        } else {
+          alert('❌ 登録に失敗しました: ' + result.message);
+        }
+      } catch (error) {
+        console.error('登録エラー:', error);
+        alert('❌ エラーが発生しました。しばらくしてから再度お試しください。');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登録申請する';
+      }
+    });
+  </script>
 </body>
 </html>
