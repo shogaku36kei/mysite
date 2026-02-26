@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ランキング - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2>🏆 ギルドメンバーランキング</h2>
+      <p>活躍しているメンバーたちをご紹介！</p>
+    </section>
+
+    <div id="rankingList" class="ranking-container">
+      <!-- ランキングが動的に生成される -->
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', loadRanking);
+
+    async function loadRanking() {
+      try {
+        const response = await fetch(`${GAS_WEB_APP_URL}?action=getMembers`);
+        const members = await response.json();
+        displayRanking(members);
+      } catch (error) {
+        console.error('ランキング取得エラー:', error);
+      }
+    }
+
+    function displayRanking(members) {
+      const container = document.getElementById('rankingList');
+      container.innerHTML = '';
+
+      members.forEach((member, index) => {
+        const rankClass = index < 3 ? 'top-rank' : '';
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+        
+        const card = document.createElement('div');
+        card.className = `ranking-card ${rankClass}`;
+        card.innerHTML = `
+          <div class="rank-number">${medal} ${index + 1}位</div>
+          <div class="member-info">
+            <h3>${member.nickname}</h3>
+            <p><strong>ランク:</strong> <span class="rank-badge rank-${member.rank}">${member.rank}</span></p>
+            <p><strong>経験値:</strong> ${member.exp} EXP</p>
+            <p><strong>完了クエスト:</strong> ${member.completedQuests}件</p>
+            <p><strong>評価:</strong> ⭐${member.rating}</p>
+            <p><strong>スキル:</strong> ${member.skills}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
