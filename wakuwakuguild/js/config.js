@@ -1,5 +1,5 @@
 // GAS Web App URL（新しくデプロイしたURLに変更）
-const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw6IRzmac7GOGiP5cYkwud4VldS_oApUbQ4S6C54O87DIDtVwVkolkrQtGC45lf2gtzlA/exec';
+const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx6OdU_iOb4yyJ8xBOdLsrnW7MI35C7wGjiAGrWls3pUFSb5RHCvRl8q4NEQuP1quCavw/exec';
 
 // その他の設定
 const CONFIG = {
