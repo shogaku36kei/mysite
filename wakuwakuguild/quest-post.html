@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クエスト投稿 - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="form-section">
+      <h2>📝 クエスト投稿</h2>
+      <p>ギルドメンバーに依頼したい仕事を投稿しましょう</p>
+
+      <form id="questForm" onsubmit="submitQuestForm(event)">
+        <div class="form-group">
+          <label for="questTitle">クエスト名 <span class="required">*</span></label>
+          <input type="text" id="questTitle" name="questTitle" required placeholder="例: 店舗前の草刈り">
+        </div>
+
+        <div class="form-group">
+          <label for="category">カテゴリ <span class="required">*</span></label>
+          <select id="category" name="category" required>
+            <option value="">選択してください</option>
+            <option value="草刈り">草刈り</option>
+            <option value="清掃">清掃</option>
+            <option value="力仕事">力仕事</option>
+            <option value="IT支援">IT支援</option>
+            <option value="料理・調理">料理・調理</option>
+            <option value="イベント手伝い">イベント手伝い</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="difficulty">難易度 <span class="required">*</span></label>
+          <select id="difficulty" name="difficulty" required>
+            <option value="">選択してください</option>
+            <option value="★">★（簡単・初心者OK）</option>
+            <option value="★★">★★（やや簡単）</option>
+            <option value="★★★">★★★（普通）</option>
+            <option value="★★★★">★★★★（やや難しい）</option>
+            <option value="★★★★★">★★★★★（高難度）</option>
+          </select>
+          <small>作業の難易度を選択してください。難易度が高いほどメンバーの獲得経験値が増えます。</small>
+        </div>
+
+        <div class="form-group">
+          <label for="recommendRank">推奨ランク <span class="required">*</span></label>
+          <select id="recommendRank" name="recommendRank" required>
+            <option value="">選択してください</option>
+            <option value="F">F（初心者）</option>
+            <option value="E">E</option>
+            <option value="D">D</option>
+            <option value="C">C</option>
+            <option value="B">B</option>
+            <option value="A">A</option>
+            <option value="S">S（ベテラン）</option>
+          </select>
+          <small>推奨ランク未満のメンバーも応募可能ですが、目安としてご設定ください。</small>
+        </div>
+
+        <div class="form-group">
+          <label for="description">内容詳細 <span class="required">*</span></label>
+          <textarea id="description" name="description" rows="6" required placeholder="作業内容を詳しく記載してください&#10;例: 店舗前の空き地（約100㎡）の草刈りをお願いします。草刈り機は当方で用意します。"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="location">実施場所 <span class="required">*</span></label>
+          <input type="text" id="location" name="location" required placeholder="総社市○○町1-2-3">
+          <small>詳細な住所を記載してください</small>
+        </div>
+
+        <div class="form-group">
+          <label for="desiredDate">希望日時 <span class="required">*</span></label>
+          <input type="datetime-local" id="desiredDate" name="desiredDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="estimatedHours">所要時間（予定） <span class="required">*</span></label>
+          <input type="text" id="estimatedHours" name="estimatedHours" required placeholder="例: 3時間">
+        </div>
+
+        <div class="form-group">
+          <label for="reward">報酬額（税込） <span class="required">*</span></label>
+          <input type="number" id="reward" name="reward" required min="1000" step="1000" placeholder="15000">
+          <small>報酬額は1,000円以上で設定してください。源泉徴収税（10.21%）は事務局が処理します。</small>
+        </div>
+
+        <div class="form-group">
+          <label for="requiredMembers">必要人数 <span class="required">*</span></label>
+          <input type="number" id="requiredMembers" name="requiredMembers" required min="1" max="10" value="1">
+          <small>複数人必要な場合は人数を指定してください</small>
+        </div>
+
+        <div class="form-group">
+          <label for="equipment">必要な道具・装備</label>
+          <textarea id="equipment" name="equipment" rows="3" placeholder="例: 草刈り機（当方で用意）、軍手、長靴"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">注意事項・備考</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="駐車場の有無、雨天時の対応など"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="agree" required>
+            クエスト承認時に報酬相当額を事務局に預けることに同意します
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary">クエストを投稿する</button>
+      </form>
+
+      <div class="info-box">
+        <h3>💡 クエスト投稿の流れ</h3>
+        <ol>
+          <li>クエスト内容を入力して投稿</li>
+          <li>事務局が内容を審査（1-2営業日）</li>
+          <li>承認されたクエストが掲示板に掲載</li>
+          <li>ギルドメンバーが受注</li>
+          <li>作業完了後、依頼主が確認</li>
+          <li>事務局からメンバーへ報酬支払</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    function submitQuestForm(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(event.target);
+      
+      const questData = {
+        questTitle: formData.get('questTitle'),
+        category: formData.get('category'),
+        difficulty: formData.get('difficulty'),
+        recommendRank: formData.get('recommendRank'),
+        description: formData.get('description'),
+        location: formData.get('location'),
+        desiredDate: formData.get('desiredDate'),
+        estimatedHours: formData.get('estimatedHours'),
+        reward: formData.get('reward'),
+        requiredMembers: formData.get('requiredMembers'),
+        equipment: formData.get('equipment'),
+        notes: formData.get('notes')
+      };
+
+      // GASへPOST送信（実装は省略）
+      console.log('送信データ:', questData);
+      alert('クエストを投稿しました。\n事務局の審査後、掲示板に掲載されます。\n審査結果はメールでお知らせします。');
+      event.target.reset();
+    }
+  </script>
+</body>
+</html>
