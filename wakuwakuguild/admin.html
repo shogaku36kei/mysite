@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事務局管理画面 - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド - 事務局</h1>
+      <nav>
+        <a href="admin.html">ダッシュボード</a>
+        <a href="index.html">公開ページへ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="admin-section">
+      <h2>🛡️ 事務局管理画面</h2>
+      
+      <div class="admin-login" id="adminLogin">
+        <h3>管理者ログイン</h3>
+        <form onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label>管理者ID</label>
+            <input type="text" required>
+          </div>
+          <div class="form-group">
+            <label>パスワード</label>
+            <input type="password" required>
+          </div>
+          <button type="submit" class="btn-primary">ログイン</button>
+        </form>
+      </div>
+
+      <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <h3>📋 審査待ち</h3>
+            <p class="stat-number">5件</p>
+            <small>メンバー: 2件 / 依頼主: 1件 / クエスト: 2件</small>
+          </div>
+          <div class="stat-card">
+            <h3>🔄 進行中クエスト</h3>
+            <p class="stat-number">12件</p>
+            <small>今月の受注数</small>
+          </div>
+          <div class="stat-card">
+            <h3>✅ 完了クエスト</h3>
+            <p class="stat-number">48件</p>
+            <small>今月の完了数</small>
+          </div>
+          <div class="stat-card">
+            <h3>💰 預かり金</h3>
+            <p class="stat-number">¥180,000</p>
+            <small>未払い報酬総額</small>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showAdminTab('approval')">審査待ち</button>
+          <button class="tab-btn" onclick="showAdminTab('quests')">クエスト管理</button>
+          <button class="tab-btn" onclick="showAdminTab('members')">メンバー管理</button>
+          <button class="tab-btn" onclick="showAdminTab('clients')">依頼主管理</button>
+          <button class="tab-btn" onclick="showAdminTab('payment')">報酬支払管理</button>
+          <button class="tab-btn" onclick="showAdminTab('reports')">報告・問題対応</button>
+        </div>
+
+        <!-- 審査待ちタブ -->
+        <div id="approvalTab" class="tab-content">
+          <h3>📋 審査待ち一覧</h3>
+          
+          <h4>メンバー登録申請</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ニックネーム</th>
+                <th>氏名</th>
+                <th>連絡先</th>
+                <th>申請日</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>M0010</td>
+                <td>新人冒険者</td>
+                <td>田中一郎</td>
+                <td>tanaka@example.com</td>
+                <td>2026/02/25</td>
+                <td>
+                  <button onclick="approveMember('M0010')" class="btn-approve">承認</button>
+                  <button onclick="rejectMember('M0010')" class="btn-reject">却下</button>
+                  <button onclick="viewDetail('M0010')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>依頼主登録申請</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>依頼主名</th>
+                <th>種別</th>
+                <th>連絡先</th>
+                <th>申請日</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>C0005</td>
+                <td>○○自治会</td>
+                <td>自治会</td>
+                <td>jichikai@example.com</td>
+                <td>2026/02/24</td>
+                <td>
+                  <button onclick="approveClient('C0005')" class="btn-approve">承認</button>
+                  <button onclick="rejectClient('C0005')" class="btn-reject">却下</button>
+                  <button onclick="viewDetail('C0005')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>クエスト投稿審査</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>クエスト名</th>
+                <th>依頼主</th>
+                <th>報酬</th>
+                <th>投稿日</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Q0015</td>
+                <td>イベント会場設営</td>
+                <td>C0003</td>
+                <td>¥25,000</td>
+                <td>2026/02/25</td>
+                <td>
+                  <button onclick="approveQuest('Q0015')" class="btn-approve">承認</button>
+                  <button onclick="rejectQuest('Q0015')" class="btn-reject">却下</button>
+                  <button onclick="viewQuestDetail('Q0015')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Q0016</td>
+                <td>パソコン設定サポート</td>
+                <td>C0002</td>
+                <td>¥8,000</td>
+                <td>2026/02/26</td>
+                <td>
+                  <button onclick="approveQuest('Q0016')" class="btn-approve">承認</button>
+                  <button onclick="rejectQuest('Q0016')" class="btn-reject">却下</button>
+                  <button onclick="viewQuestDetail('Q0016')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- クエスト管理タブ -->
+        <div id="questsTab" class="tab-content" style="display: none;">
+          <h3>🗺️ クエスト管理</h3>
+          <div class="filter-bar">
+            <select>
+              <option>すべて</option>
+              <option>募集中</option>
+              <option>受注済</option>
+              <option>完了</option>
+              <option>キャンセル</option>
+            </select>
+            <input type="text" placeholder="検索...">
+            <button>絞り込み</button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>クエスト名</th>
+                <th>依頼主</th>
+                <th>受注者</th>
+                <th>報酬</th>
+                <th>ステータス</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Q0001</td>
+                <td>店舗前の草刈り</td>
+                <td>山田商店</td>
+                <td>草刈りの達人</td>
+                <td>¥15,000</td>
+                <td><span class="status-badge status-progress">進行中</span></td>
+                <td>
+                  <button onclick="viewQuestDetail('Q0001')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- メンバー管理タブ -->
+        <div id="membersTab" class="tab-content" style="display: none;">
+          <h3>👥 メンバー管理</h3>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ニックネーム</th>
+                <th>ランク</th>
+                <th>経験値</th>
+                <th>完了数</th>
+                <th>評価</th>
+                <th>ステータス</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>M0001</td>
+                <td>草刈りの達人</td>
+                <td>A</td>
+                <td>520</td>
+                <td>15</td>
+                <td>⭐4.8</td>
+                <td><span class="status-badge status-active">活動中</span></td>
+                <td>
+                  <button onclick="viewMemberDetail('M0001')" class="btn-secondary">詳細</button>
+                  <button onclick="suspendMember('M0001')" class="btn-warning">停止</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 依頼主管理タブ -->
+        <div id="clientsTab" class="tab-content" style="display: none;">
+          <h3>📋 依頼主管理</h3>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>依頼主名</th>
+                <th>種別</th>
+                <th>投稿数</th>
+                <th>完了数</th>
+                <th>ステータス</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>C0001</td>
+                <td>山田商店</td>
+                <td>企業</td>
+                <td>8</td>
+                <td>7</td>
+                <td><span class="status-badge status-active">活動中</span></td>
+                <td>
+                  <button onclick="viewClientDetail('C0001')" class="btn-secondary">詳細</button>
+                  <button onclick="suspendClient('C0001')" class="btn-warning">停止</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 報酬支払管理タブ -->
+        <div id="paymentTab" class="tab-content" style="display: none;">
+          <h3>💰 報酬支払管理</h3>
+          <h4>支払予定</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>支払ID</th>
+                <th>クエストID</th>
+                <th>受注者</th>
+                <th>報酬総額</th>
+                <th>源泉徴収</th>
+                <th>差引支払額</th>
+                <th>支払予定日</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>P0001</td>
+                <td>Q0001</td>
+                <td>草刈りの達人</td>
+                <td>¥15,000</td>
+                <td>¥1,531</td>
+                <td>¥13,469</td>
+                <td>2026/03/12</td>
+                <td>
+                  <button onclick="processPayment('P0001')" class="btn-approve">支払実行</button>
+                  <button onclick="viewPaymentDetail('P0001')" class="btn-secondary">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>支払完了</h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>支払ID</th>
+                <th>クエストID</th>
+                <th>受注者</th>
+                <th>差引支払額</th>
+                <th>支払完了日</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>P0000</td>
+                <td>Q0000</td>
+                <td>力持ちの勇者</td>
+                <td>¥7,183</td>
+                <td>2026/02/20</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 報告・問題対応タブ -->
+        <div id="reportsTab" class="tab-content" style="display: none;">
+          <h3>⚠️ 報告・問題対応</h3>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>報告ID</th>
+                <th>クエストID</th>
+                <th>報告者</th>
+                <th>種別</th>
+                <th>内容</th>
+                <th>報告日</th>
+                <th>対応状況</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>R0005</td>
+                <td>Q0008</td>
+                <td>M0003</td>
+                <td>問題報告</td>
+                <td>依頼内容と実際の作業が異なる</td>
+                <td>2026/02/25 14:30</td>
+                <td><span class="status-badge status-warning">未対応</span></td>
+                <td>
+                  <button onclick="handleReport('R0005')" class="btn-primary">対応する</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    function handleAdminLogin(event) {
+      event.preventDefault();
+      document.getElementById('adminLogin').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+    }
+
+    function showAdminTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const tabMap = {
+        'approval': 'approvalTab',
+        'quests': 'questsTab',
+        'members': 'membersTab',
+        'clients': 'clientsTab',
+        'payment': 'paymentTab',
+        'reports': 'reportsTab'
+      };
+
+      document.getElementById(tabMap[tabName]).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    function approveMember(id) {
+      if (confirm(`メンバー${id}を承認しますか？`)) {
+        alert('承認しました。メンバーに通知メールを送信します。');
+      }
+    }
+
+    function rejectMember(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (reason) {
+        alert(`メンバー${id}を却下しました。`);
+      }
+    }
+
+    function approveClient(id) {
+      if (confirm(`依頼主${id}を承認しますか？`)) {
+        alert('承認しました。依頼主に通知メールを送信します。');
+      }
+    }
+
+    function rejectClient(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (reason) {
+        alert(`依頼主${id}を却下しました。`);
+      }
+    }
+
+    function approveQuest(id) {
+      if (confirm(`クエスト${id}を承認して掲示板に掲載しますか？`)) {
+        alert('承認しました。クエスト掲示板に掲載されます。');
+      }
+    }
+
+    function rejectQuest(id) {
+      const reason = prompt('却下理由を入力してください:');
+      if (reason) {
+        alert(`クエスト${id}を却下しました。`);
+      }
+    }
+
+    function viewDetail(id) {
+      alert(`${id}の詳細情報を表示（未実装）`);
+    }
+
+    function viewQuestDetail(id) {
+      alert(`クエスト${id}の詳細情報を表示（未実装）`);
+    }
+
+    function viewMemberDetail(id) {
+      alert(`メンバー${id}の詳細情報を表示（未実装）`);
+    }
+
+    function viewClientDetail(id) {
+      alert(`依頼主${id}の詳細情報を表示（未実装）`);
+    }
+
+    function suspendMember(id) {
+      if (confirm(`メンバー${id}を停止しますか？`)) {
+        alert('メンバーを停止しました。');
+      }
+    }
+
+    function suspendClient(id) {
+      if (confirm(`依頼主${id}を停止しますか？`)) {
+        alert('依頼主を停止しました。');
+      }
+    }
+
+    function processPayment(id) {
+      if (confirm(`支払${id}を実行しますか？`)) {
+        alert('支払処理を実行しました。振込手続きを行ってください。');
+      }
+    }
+
+    function viewPaymentDetail(id) {
+      alert(`支払${id}の詳細情報を表示（未実装）`);
+    }
+
+    function handleReport(id) {
+      alert(`報告${id}の対応画面を表示（未実装）`);
+    }
+  </script>
+</body>
+</html>
