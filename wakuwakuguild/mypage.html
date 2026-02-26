@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>マイページ - わくわくギルド</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>⚔️ わくわくギルド</h1>
+      <nav>
+        <a href="index.html">クエスト掲示板</a>
+        <a href="ranking.html">ランキング</a>
+        <a href="member.html">メンバー登録</a>
+        <a href="client.html">依頼主登録</a>
+        <a href="mypage.html">マイページ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="mypage-section">
+      <h2>👤 マイページ</h2>
+      
+      <!-- ログイン前の表示 -->
+      <div id="loginPrompt" class="login-box">
+        <h3>ログインしてください</h3>
+        <p>マイページを表示するにはログインが必要です</p>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="loginId">メンバーID または 依頼主ID</label>
+            <input type="text" id="loginId" name="loginId" required placeholder="例: M0001 または C0001">
+          </div>
+          <div class="form-group">
+            <label for="email">登録メールアドレス</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <button type="submit" class="btn-primary">ログイン</button>
+        </form>
+        <p class="note">※本格実装時は認証システムを導入します</p>
+      </div>
+
+      <!-- ギルドメンバー用マイページ -->
+      <div id="memberMypage" class="mypage-content" style="display: none;">
+        <div class="profile-card">
+          <div class="profile-header">
+            <h3 id="memberNickname">草刈りの達人</h3>
+            <span class="rank-badge rank-A" id="memberRank">ランクA</span>
+          </div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span class="stat-label">経験値</span>
+              <span class="stat-value" id="memberExp">520 EXP</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">完了クエスト</span>
+              <span class="stat-value" id="memberQuests">15件</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">評価</span>
+              <span class="stat-value" id="memberRating">⭐4.8</span>
+            </div>
+          </div>
+          <div class="exp-bar">
+            <div class="exp-progress" style="width: 52%"></div>
+          </div>
+          <p class="exp-text">次のランクまであと480 EXP</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showTab('accepted')">受注中のクエスト</button>
+          <button class="tab-btn" onclick="showTab('completed')">完了したクエスト</button>
+          <button class="tab-btn" onclick="showTab('profile')">プロフィール編集</button>
+        </div>
+
+        <div id="acceptedTab" class="tab-content">
+          <h3>📋 受注中のクエスト</h3>
+          <div class="quest-list">
+            <div class="quest-item">
+              <div class="quest-info">
+                <h4>店舗前の草刈り</h4>
+                <p>📍 総社市中央1-1-1</p>
+                <p>📅 2026/03/05 09:00</p>
+                <p>💰 報酬: 15,000円</p>
+              </div>
+              <div class="quest-actions">
+                <button onclick="reportComplete('Q0001')">完了報告</button>
+                <button onclick="reportProblem('Q0001')" class="btn-secondary">問題報告</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="completedTab" class="tab-content" style="display: none;">
+          <h3>✅ 完了したクエスト</h3>
+          <div class="quest-list">
+            <div class="quest-item completed">
+              <div class="quest-info">
+                <h4>公民館の清掃</h4>
+                <p>📅 完了日: 2026/02/20</p>
+                <p>💰 報酬: 8,000円（支払済）</p>
+                <p>⭐ 評価: 5.0 - 「とても丁寧でした」</p>
+                <p>🎖️ 獲得経験値: +20 EXP</p>
+              </div>
+            </div>
+            <div class="quest-item completed">
+              <div class="quest-info">
+                <h4>農道の草刈り</h4>
+                <p>📅 完了日: 2026/02/15</p>
+                <p>💰 報酬: 12,000円（支払済）</p>
+                <p>⭐ 評価: 4.5 - 「助かりました」</p>
+                <p>🎖️ 獲得経験値: +40 EXP</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="profileTab" class="tab-content" style="display: none;">
+          <h3>✏️ プロフィール編集</h3>
+          <form id="profileEditForm">
+            <div class="form-group">
+              <label>ニックネーム</label>
+              <input type="text" value="草刈りの達人">
+            </div>
+            <div class="form-group">
+              <label>メールアドレス</label>
+              <input type="email" value="sato@example.com">
+            </div>
+            <div class="form-group">
+              <label>電話番号</label>
+              <input type="tel" value="090-1111-2222">
+            </div>
+            <div class="form-group">
+              <label>スキルタグ</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" checked> 草刈り</label>
+                <label><input type="checkbox" checked> 力仕事</label>
+                <label><input type="checkbox"> IT支援</label>
+                <label><input type="checkbox"> 料理</label>
+                <label><input type="checkbox"> 清掃</label>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">更新する</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 依頼主用マイページ -->
+      <div id="clientMypage" class="mypage-content" style="display: none;">
+        <div class="profile-card">
+          <h3 id="clientName">山田商店</h3>
+          <p>依頼主ID: <span id="clientId">C0001</span></p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showClientTab('posting')">募集中のクエスト</button>
+          <button class="tab-btn" onclick="showClientTab('inProgress')">進行中のクエスト</button>
+          <button class="tab-btn" onclick="showClientTab('history')">完了履歴</button>
+          <button class="tab-btn" onclick="showClientTab('newQuest')">新規クエスト投稿</button>
+        </div>
+
+        <div id="postingTab" class="tab-content">
+          <h3>📢 募集中のクエスト</h3>
+          <div class="quest-list">
+            <div class="quest-item">
+              <div class="quest-info">
+                <h4>店舗前の草刈り</h4>
+                <p>📅 希望日: 2026/03/05 09:00</p>
+                <p>💰 報酬: 15,000円</p>
+                <p>👥 応募: 3名</p>
+              </div>
+              <div class="quest-actions">
+                <button onclick="viewApplicants('Q0001')">応募者を見る</button>
+                <button onclick="cancelQuest('Q0001')" class="btn-secondary">募集中止</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="inProgressTab" class="tab-content" style="display: none;">
+          <h3>🔄 進行中のクエスト</h3>
+          <div class="quest-list">
+            <div class="quest-item">
+              <div class="quest-info">
+                <h4>倉庫の整理整頓</h4>
+                <p>👤 受注者: 力持ちの勇者</p>
+                <p>📅 実施予定: 2026/03/01 10:00</p>
+                <p>💰 報酬: 10,000円（預け済）</p>
+              </div>
+              <div class="quest-actions">
+                <button onclick="confirmComplete('Q0002')">完了確認</button>
+                <button onclick="contactMember('M0003')">メッセージ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="historyTab" class="tab-content" style="display: none;">
+          <h3>✅ 完了履歴</h3>
+          <div class="quest-list">
+            <div class="quest-item completed">
+              <div class="quest-info">
+                <h4>看板の取り付け</h4>
+                <p>👤 受注者: DIYマスター</p>
+                <p>📅 完了日: 2026/02/18</p>
+                <p>💰 報酬: 8,000円（支払済）</p>
+                <p>⭐ あなたの評価: 5.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="newQuestTab" class="tab-content" style="display: none;">
+          <h3>📝 新規クエスト投稿</h3>
+          <p><a href="quest-post.html" class="btn-primary">クエスト投稿ページへ</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 総社市ギルド事務局 | わくわくギルドプロジェクト</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      const loginId = document.getElementById('loginId').value;
+      
+      // 簡易的なID判定（本格実装時は認証APIを使用）
+      if (loginId.startsWith('M')) {
+        // メンバーログイン
+        document.getElementById('loginPrompt').style.display = 'none';
+        document.getElementById('memberMypage').style.display = 'block';
+      } else if (loginId.startsWith('C')) {
+        // 依頼主ログイン
+        document.getElementById('loginPrompt').style.display = 'none';
+        document.getElementById('clientMypage').style.display = 'block';
+      } else {
+        alert('IDが見つかりません');
+      }
+    }
+
+    function showTab(tabName) {
+      // タブ切り替え処理
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      if (tabName === 'accepted') {
+        document.getElementById('acceptedTab').style.display = 'block';
+        event.target.classList.add('active');
+      } else if (tabName === 'completed') {
+        document.getElementById('completedTab').style.display = 'block';
+        event.target.classList.add('active');
+      } else if (tabName === 'profile') {
+        document.getElementById('profileTab').style.display = 'block';
+        event.target.classList.add('active');
+      }
+    }
+
+    function showClientTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      const tabMap = {
+        'posting': 'postingTab',
+        'inProgress': 'inProgressTab',
+        'history': 'historyTab',
+        'newQuest': 'newQuestTab'
+      };
+      
+      document.getElementById(tabMap[tabName]).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    function reportComplete(questId) {
+      const comment = prompt('完了報告のコメントを入力してください:');
+      if (comment) {
+        alert(`クエスト${questId}の完了報告を送信しました。\n依頼主の確認をお待ちください。`);
+      }
+    }
+
+    function reportProblem(questId) {
+      const problem = prompt('発生した問題を入力してください:');
+      if (problem) {
+        alert(`問題報告を事務局に送信しました。\n事務局から連絡があるまでお待ちください。`);
+      }
+    }
+
+    function confirmComplete(questId) {
+      const rating = prompt('評価を入力してください（1-5）:');
+      const comment = prompt('コメントを入力してください:');
+      if (rating && comment) {
+        alert(`クエスト${questId}を完了確認しました。\n報酬の支払い処理を開始します。`);
+      }
+    }
+
+    function viewApplicants(questId) {
+      alert('応募者一覧ページへ遷移します（未実装）');
+    }
+
+    function cancelQuest(questId) {
+      if (confirm('本当に募集を中止しますか？')) {
+        alert(`クエスト${questId}の募集を中止しました。`);
+      }
+    }
+
+    function contactMember(memberId) {
+      alert('メッセージ機能は今後実装予定です');
+    }
+  </script>
+</body>
+</html>
