@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 HTML Master Editor 拡張版 - 操作マニュアル</title>
+<style>
+  :root {
+    --bg:       #1E1E2E;
+    --bg-panel: #181825;
+    --bg-line:  #313244;
+    --fg:       #CDD6F4;
+    --fg-sub:   #6C7086;
+    --accent:   #89B4FA;
+    --accent2:  #A6E3A1;
+    --warning:  #F9E2AF;
+    --error:    #F38BA8;
+    --border:   #45475A;
+    --string:   #FAB387;
+    --keyword:  #CBA6F7;
+    --css-prop: #89DCEB;
+    --entity:   #F9E2AF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Segoe UI', 'Meiryo', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* サイドバー */
+  #sidebar {
+    width: 270px;
+    min-width: 270px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 100;
+  }
+
+  #sidebar-title {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 14px;
+    padding: 0 16px 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  #sidebar a {
+    display: block;
+    color: var(--fg);
+    text-decoration: none;
+    padding: 5px 16px;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  #sidebar a:hover {
+    background: var(--bg-line);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  #sidebar a.section-title {
+    color: var(--accent2);
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  #sidebar a.indent {
+    padding-left: 28px;
+    font-size: 12px;
+    color: var(--fg-sub);
+  }
+
+  #sidebar a.indent:hover { color: var(--accent); }
+
+  /* メインコンテンツ */
+  #content {
+    margin-left: 270px;
+    padding: 40px 48px;
+    max-width: 960px;
+    flex: 1;
+  }
+
+  h1 {
+    color: var(--accent);
+    font-size: 28px;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  h1 .version {
+    font-size: 14px;
+    color: var(--fg-sub);
+    font-weight: normal;
+    margin-left: 12px;
+  }
+
+  h2 {
+    color: var(--accent);
+    font-size: 20px;
+    margin: 48px 0 16px;
+    padding: 8px 0 8px 12px;
+    border-left: 4px solid var(--accent);
+  }
+
+  h3 {
+    color: var(--accent2);
+    font-size: 16px;
+    margin: 28px 0 10px;
+    padding-left: 8px;
+    border-left: 3px solid var(--accent2);
+  }
+
+  h4 {
+    color: var(--warning);
+    font-size: 14px;
+    margin: 20px 0 8px;
+  }
+
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 8px 0 16px 24px; }
+  li { margin-bottom: 4px; }
+
+  /* テーブル */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--bg-line);
+    color: var(--accent);
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-weight: bold;
+  }
+
+  td {
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: var(--bg-panel); }
+  tr:hover td { background: var(--bg-line); }
+
+  /* コード */
+  code {
+    background: var(--bg-line);
+    color: var(--string);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+  }
+
+  pre {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 12px 0 20px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  pre code { background: none; padding: 0; color: var(--fg); }
+
+  /* カード・ノート */
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+  }
+
+  .note {
+    background: rgba(137,180,250,0.08);
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0 20px;
+    font-size: 13px;
+  }
+
+  .warning {
+    background: rgba(249,226,175,0.08);
+    border-left: 4px solid var(--warning);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0 20px;
+    font-size: 13px;
+    color: var(--warning);
+  }
+
+  .tip {
+    background: rgba(166,227,161,0.08);
+    border-left: 4px solid var(--accent2);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0 20px;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  /* キーボード */
+  kbd {
+    background: var(--bg-line);
+    border: 1px solid var(--border);
+    border-bottom: 3px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* 色見本 */
+  .cs {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* バッジ */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 3px;
+    vertical-align: middle;
+  }
+
+  .b-ext  { background: var(--accent2); color: var(--bg); }
+  .b-desk { background: var(--keyword); color: var(--bg); }
+  .b-lang { background: var(--accent);  color: var(--bg); }
+
+  /* 言語バッジ行 */
+  .lang-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 16px; }
+  .lang-tag {
+    background: var(--bg-line);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-family: 'Consolas', monospace;
+    color: var(--accent);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-panel); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-sub);
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- サイドバー -->
+<nav id="sidebar">
+  <div id="sidebar-title">📖 HTML Master Editor<br>拡張版マニュアル<br>
+    <span style="font-size:11px;color:var(--fg-sub);">12言語対応デスクトップ版</span>
+  </div>
+
+  <a href="#overview"       class="section-title">🔍 概要・特徴</a>
+  <a href="#start"          class="section-title">🚀 起動方法</a>
+  <a href="#languages"      class="section-title">🌐 対応言語</a>
+  <a href="#layout"         class="section-title">🖥 画面構成</a>
+  <a href="#layout-menu"    class="indent">└ メニューバー</a>
+  <a href="#layout-tb"      class="indent">└ ツールバー</a>
+  <a href="#layout-nav"     class="indent">└ ナビゲーター</a>
+  <a href="#layout-editor"  class="indent">└ エディタ</a>
+  <a href="#layout-error"   class="indent">└ エラーパネル</a>
+  <a href="#layout-preview" class="indent">└ プレビュー</a>
+  <a href="#layout-status"  class="indent">└ ステータスバー</a>
+  <a href="#highlight"      class="section-title">🎨 シンタックスハイライト</a>
+  <a href="#hl-html"        class="indent">└ HTML</a>
+  <a href="#hl-css"         class="indent">└ CSS</a>
+  <a href="#hl-js"          class="indent">└ JavaScript</a>
+  <a href="#hl-json"        class="indent">└ JSON</a>
+  <a href="#hl-xml"         class="indent">└ XML</a>
+  <a href="#hl-python"      class="indent">└ Python</a>
+  <a href="#hl-batch"       class="indent">└ Batch</a>
+  <a href="#hl-ps"          class="indent">└ PowerShell</a>
+  <a href="#hl-vbs"         class="indent">└ VBScript</a>
+  <a href="#hl-vba"         class="indent">└ VBA</a>
+  <a href="#hl-csv"         class="indent">└ CSV</a>
+  <a href="#edit"           class="section-title">✏️ 編集機能</a>
+  <a href="#edit-auto"      class="indent">└ 自動入力支援</a>
+  <a href="#edit-complete"  class="indent">└ コード補完</a>
+  <a href="#edit-indent"    class="indent">└ インデント操作</a>
+  <a href="#edit-font"      class="indent">└ 文字サイズ変更</a>
+  <a href="#edit-shortcut"  class="indent">└ ショートカット</a>
+  <a href="#preview"        class="section-title">👁 プレビュー機能</a>
+  <a href="#preview-html"   class="indent">└ HTMLプレビュー</a>
+  <a href="#preview-other"  class="indent">└ その他言語の表示</a>
+  <a href="#preview-popout" class="indent">└ 別ウィンドウ</a>
+  <a href="#preview-jump"   class="indent">└ ソースジャンプ</a>
+  <a href="#check"          class="section-title">🔍 構文チェック</a>
+  <a href="#check-html"     class="indent">└ HTML</a>
+  <a href="#check-js"       class="indent">└ JavaScript / CSS</a>
+  <a href="#check-json"     class="indent">└ JSON / XML</a>
+  <a href="#check-python"   class="indent">└ Python</a>
+  <a href="#check-vba"      class="indent">└ VBA</a>
+  <a href="#check-batch"    class="indent">└ Batch / PowerShell</a>
+  <a href="#check-csv"      class="indent">└ CSV</a>
+  <a href="#navigator"      class="section-title">📁 構造ナビゲーター</a>
+  <a href="#file"           class="section-title">💾 ファイル操作</a>
+  <a href="#decouple"       class="section-title">🔗 外部ファイル化</a>
+  <a href="#format"         class="section-title">✨ フォーマット</a>
+  <a href="#diff"           class="section-title">🆚 HTML専用版との違い</a>
+  <a href="#trouble"        class="section-title">🛠 トラブル対応</a>
+</nav>
+
+<!-- メインコンテンツ -->
+<main id="content">
+
+  <h1>⚡ HTML Master Editor
+    <span class="version">拡張版マニュアル</span>
+  </h1>
+
+  <div class="card">
+    <span class="badge b-desk">🖥 デスクトップアプリ</span>
+    <span class="badge b-ext">12言語対応拡張版</span>
+    <span style="margin-left:8px;font-size:13px;color:var(--fg-sub);">
+      PyQt6 ベース・オフライン完全動作
+    </span>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="overview">🔍 概要・特徴</h2>
+
+  <p>HTML Master Editor 拡張版は、HTMLをはじめとする12種類のファイルを
+  編集できるデスクトップアプリケーションです。
+  Python と PyQt6 で動作し、インターネット接続・サーバー不要で
+  単体起動できます。</p>
+
+  <div class="card">
+    <h4>主な特徴</h4>
+    <ul>
+      <li>✅ <strong>12言語対応</strong>シンタックスハイライト</li>
+      <li>✅ <strong>言語自動判別</strong>（ファイル拡張子で自動切り替え）</li>
+      <li>✅ <strong>リアルタイムプレビュー</strong>
+          （HTML はレンダリング、その他はテキスト表示）</li>
+      <li>✅ <strong>12言語対応構文チェック</strong></li>
+      <li>✅ <strong>HTMLコード補完</strong>
+          （Ctrl+Space / 2文字入力で自動表示）</li>
+      <li>✅ <strong>自動閉じタグ・オートインデント</strong>
+          （HTML / XML）</li>
+      <li>✅ <strong>12言語対応ドキュメント構造ナビゲーター</strong></li>
+      <li>✅ <strong>外部ファイル化（疎結合化）</strong>
+          （HTMLのCSS/JSを別ファイルに切り出し）</li>
+      <li>✅ <strong>プレビュー右クリック→ソースジャンプ</strong></li>
+      <li>✅ <strong>別ウィンドウプレビュー</strong></li>
+      <li>✅ <strong>Ctrl+ホイールでフォントサイズ変更</strong></li>
+      <li>✅ <strong>完全オフライン動作</strong></li>
+    </ul>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="start">🚀 起動方法</h2>
+
+  <h3>必要な環境</h3>
+  <table>
+    <tr><th>項目</th><th>内容</th></tr>
+    <tr><td>Python</td><td>3.10 以上</td></tr>
+    <tr><td>PyQt6</td><td><code>pip install PyQt6 PyQt6-WebEngine</code></td></tr>
+    <tr><td>lxml</td><td><code>pip install lxml</code></td></tr>
+    <tr><td>pygments</td><td><code>pip install pygments</code></td></tr>
+  </table>
+
+  <h3>起動コマンド</h3>
+  <pre><code>python html_master_editor_ext.py</code></pre>
+
+  <div class="note">
+    💡 起動すると自動的にサンプルHTMLが読み込まれた状態で開きます。<br>
+    ステータスバー右側に現在の言語モード（<strong>HTML</strong>）が表示されます。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="languages">🌐 対応言語</h2>
+
+  <div class="lang-row">
+    <span class="lang-tag">.html / .htm</span>
+    <span class="lang-tag">.css</span>
+    <span class="lang-tag">.js</span>
+    <span class="lang-tag">.json</span>
+    <span class="lang-tag">.xml</span>
+    <span class="lang-tag">.py</span>
+    <span class="lang-tag">.bat</span>
+    <span class="lang-tag">.ps1</span>
+    <span class="lang-tag">.vbs</span>
+    <span class="lang-tag">.vba</span>
+    <span class="lang-tag">.csv</span>
+  </div>
+
+  <table>
+    <tr><th>拡張子</th><th>言語</th><th>ハイライト</th><th>構文チェック</th><th>ナビゲーター</th></tr>
+    <tr><td><code>.html / .htm</code></td><td>HTML</td>
+        <td>✅ HTML+CSS+JS混在</td><td>✅</td><td>✅ 見出し/リンク/画像等</td></tr>
+    <tr><td><code>.css</code></td><td>CSS</td>
+        <td>✅</td><td>✅</td><td>✅ セレクタ/メディアクエリ</td></tr>
+    <tr><td><code>.js</code></td><td>JavaScript</td>
+        <td>✅</td><td>✅</td><td>✅ 関数/クラス/インポート</td></tr>
+    <tr><td><code>.json</code></td><td>JSON</td>
+        <td>✅</td><td>✅</td><td>✅ トップレベルキー</td></tr>
+    <tr><td><code>.xml</code></td><td>XML</td>
+        <td>✅</td><td>✅</td><td>✅ 要素一覧</td></tr>
+    <tr><td><code>.py</code></td><td>Python</td>
+        <td>✅</td><td>✅</td><td>✅ クラス/関数/インポート</td></tr>
+    <tr><td><code>.bat</code></td><td>Batch</td>
+        <td>✅</td><td>✅</td><td>✅ ラベル/主要コマンド</td></tr>
+    <tr><td><code>.ps1</code></td><td>PowerShell</td>
+        <td>✅</td><td>✅</td><td>✅ 関数</td></tr>
+    <tr><td><code>.vbs</code></td><td>VBScript</td>
+        <td>✅</td><td>✅</td><td>✅ Sub/Function</td></tr>
+    <tr><td><code>.vba</code></td><td>VBA</td>
+        <td>✅ Excel対応強化</td><td>✅</td><td>✅ Sub/Function/Property/定数/変数</td></tr>
+    <tr><td><code>.csv</code></td><td>CSV</td>
+        <td>✅ ヘッダー/列交互色</td><td>✅</td><td>✅ ヘッダー/統計</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="layout">🖥 画面構成</h2>
+
+  <p>画面は上から メニューバー → ツールバー → メインエリア → ステータスバー
+  の順に並んでいます。メインエリアは3つのパネルに分かれており、
+  境界線をドラッグしてサイズを自由に変更できます。</p>
+
+  <h3 id="layout-menu">メニューバー</h3>
+  <table>
+    <tr><th>メニュー</th><th>主な項目</th></tr>
+    <tr>
+      <td>ファイル(F)</td>
+      <td>新規 / 開く / 保存 / 名前を付けて保存 / 終了</td>
+    </tr>
+    <tr>
+      <td>編集(E)</td>
+      <td>元に戻す / やり直し / 検索 / 行へジャンプ</td>
+    </tr>
+    <tr>
+      <td>表示(V)</td>
+      <td>プレビュー更新(F5) / 構文チェック(F6) / 別ウィンドウ(F7) / レイアウトリセット(F8)</td>
+    </tr>
+    <tr>
+      <td>ツール(T)</td>
+      <td>外部ファイル化 / HTMLフォーマット整形</td>
+    </tr>
+  </table>
+
+  <h3 id="layout-tb">ツールバー</h3>
+  <table>
+    <tr><th>ボタン</th><th>機能</th><th>ショートカット</th></tr>
+    <tr><td><code>📄 新規</code></td><td>新規ファイルを開始（HTMLモードに戻る）</td><td><kbd>Ctrl</kbd>+<kbd>N</kbd></td></tr>
+    <tr><td><code>📂 開く</code></td><td>12種類のファイルを開く</td><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td></tr>
+    <tr><td><code>💾 保存</code></td><td>上書き保存</td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td></tr>
+    <tr><td><code>🔄 プレビュー</code></td><td>プレビューを手動更新</td><td><kbd>F5</kbd></td></tr>
+    <tr><td><code>🔍 構文チェック</code></td><td>構文チェックを手動実行</td><td><kbd>F6</kbd></td></tr>
+    <tr><td><code>🔗 外部ファイル化</code></td><td>CSS/JSを別ファイルに切り出し（HTMLのみ）</td><td>—</td></tr>
+    <tr><td><code>✨ フォーマット</code></td><td>HTMLを自動整形（HTMLのみ）</td><td>—</td></tr>
+    <tr><td><code>🔡 文字サイズ</code></td><td>エディタのフォントサイズ変更</td><td>—</td></tr>
+  </table>
+
+  <h3 id="layout-nav">📁 ナビゲーター（左パネル）</h3>
+  <p>編集中のファイルの構造をツリー表示します。
+  言語に応じて表示内容が自動的に切り替わります。
+  項目をクリックするとエディタの該当行にジャンプします。</p>
+
+  <h3 id="layout-editor">✏️ コードエディタ（中央上）</h3>
+  <ul>
+    <li><strong>行番号表示：</strong>現在行は青くハイライト</li>
+    <li><strong>現在行ハイライト：</strong>カーソル行が薄く強調</li>
+    <li><strong>言語別シンタックスハイライト：</strong>
+        ファイルを開くと自動で切り替わる</li>
+    <li><strong>折り返しなし：</strong>横スクロールで長い行を確認</li>
+  </ul>
+
+  <h3 id="layout-error">🔍 エラーパネル（中央下）</h3>
+  <p>構文チェックの結果を表示します。
+  項目をクリックすると該当行にジャンプします。</p>
+  <ul>
+    <li><span style="color:#F38BA8;">❌ エラー</span>：修正が必要な問題</li>
+    <li><span style="color:#F9E2AF;">⚠️ 警告</span>：推奨されない記述</li>
+    <li><span style="color:#A6E3A1;">ℹ️ 情報</span>：改善の提案</li>
+  </ul>
+
+  <h3 id="layout-preview">👁 プレビュー（右パネル）</h3>
+  <p>HTMLファイルはリアルタイムでレンダリング表示します。
+  それ以外のファイルはダークテーマのテキストビューで表示します。
+  右上に言語バッジが表示されます。</p>
+
+  <h3 id="layout-status">ステータスバー（最下部）</h3>
+  <table>
+    <tr><th>表示</th><th>内容</th></tr>
+    <tr><td style="color:#89B4FA;">ファイル名</td><td>現在開いているファイル名（左端）</td></tr>
+    <tr><td style="color:#CBA6F7;font-weight:bold;">HTML</td><td>現在の言語モード（右側）</td></tr>
+    <tr><td style="color:#A6E3A1;">✅ OK</td><td>構文エラーなし</td></tr>
+    <tr><td style="color:#F38BA8;">❌ 2エラー 1警告</td><td>エラーあり</td></tr>
+    <tr><td>行: 1  列: 1</td><td>現在のカーソル位置（右端）</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="highlight">🎨 シンタックスハイライト</h2>
+
+  <p>ファイルを開くと拡張子に応じて自動的にハイライターが切り替わります。
+  以下に各言語のハイライト内容を示します。</p>
+
+  <h3 id="hl-html">HTML</h3>
+  <p>HTML・埋め込みCSS（&lt;style&gt;内）・埋め込みJS（&lt;script&gt;内）を
+  同時にハイライトします。</p>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>DOCTYPE宣言</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>コメント</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>タグ名・&lt;&gt;記号</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>属性名</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>属性値（"）</td>
+        <td><span class="cs" style="background:#F38BA8;"></span>赤</td></tr>
+    <tr><td>属性値（'）</td>
+        <td><span class="cs" style="background:#FAB387;"></span>オレンジ</td></tr>
+    <tr><td>エンティティ（&amp;amp;等）</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>CSSプロパティ（style内）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色</td></tr>
+    <tr><td>CSS値（style内）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>JSキーワード（script内）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>JS関数名（script内）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青</td></tr>
+  </table>
+
+  <h3 id="hl-css">CSS</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（/* */）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>セレクタ（div / .class / #id）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>プロパティ名（color / margin等）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色</td></tr>
+    <tr><td>プロパティ値</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>文字列（"" / ''）</td>
+        <td><span class="cs" style="background:#FAB387;"></span>オレンジ</td></tr>
+    <tr><td>数値・単位（16px / 1.5em等）</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>!important</td>
+        <td><span class="cs" style="background:#F38BA8;"></span>赤・太字</td></tr>
+    <tr><td>@ルール（@media / @keyframes等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+  </table>
+
+  <h3 id="hl-js">JavaScript</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（// / /* */）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>テンプレートリテラル（`...`）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>文字列（"" / ''）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>キーワード（const / let / function等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>関数名（呼び出し前の識別子）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青</td></tr>
+    <tr><td>数値・16進数</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+  </table>
+
+  <h3 id="hl-json">JSON</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>キー（"key":）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑・太字</td></tr>
+    <tr><td>文字列値</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>数値</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>true / false / null</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>括弧（{ } [ ]）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青</td></tr>
+  </table>
+
+  <h3 id="hl-xml">XML</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（&lt;!-- --&gt;）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>CDATA</td>
+        <td><span class="cs" style="background:#FAB387;"></span>オレンジ</td></tr>
+    <tr><td>処理命令・DOCTYPE</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>タグ名</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>属性名</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>属性値</td>
+        <td><span class="cs" style="background:#F38BA8;"></span>赤</td></tr>
+    <tr><td>エンティティ</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+  </table>
+
+  <h3 id="hl-python">Python</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>docstring（"""...""" / '''...'''）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>コメント（#）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>f文字列</td>
+        <td><span class="cs" style="background:#FAB387;"></span>オレンジ</td></tr>
+    <tr><td>文字列</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>キーワード（def / class / if等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>組み込み関数（print / len / range等）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色</td></tr>
+    <tr><td>デコレータ（@staticmethod等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>関数名（def の直後）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>クラス名（class の直後）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>数値</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+  </table>
+
+  <h3 id="hl-batch">Batch（.bat）</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（REM / ::）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>ラベル（:label）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>変数（%VAR% / !VAR!）</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>コマンド（echo / set / if / goto等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>文字列（""）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>パイプ・リダイレクト（| &lt; &gt;）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青</td></tr>
+  </table>
+
+  <h3 id="hl-ps">PowerShell（.ps1）</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（#）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>ヒアストリング（@"..."@）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>文字列</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>変数（$var）</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>コマンドレット（Get-Item / Write-Host等）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色・太字</td></tr>
+    <tr><td>キーワード（if / foreach / function等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>パラメータ（-Path / -Name等）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>パイプ（|）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+  </table>
+
+  <h3 id="hl-vbs">VBScript（.vbs）</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（' / Rem）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>文字列（""）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>キーワード（Dim / If / Sub / Function等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>組み込み関数（MsgBox / CStr / Len等）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色</td></tr>
+    <tr><td>数値</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+  </table>
+
+  <h3 id="hl-vba">VBA（.vba）</h3>
+  <p>Excel / Access / Word の VBA に対応した強化ハイライトです。</p>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>コメント（' / Rem）</td>
+        <td><span class="cs" style="background:#6C7086;"></span>グレー・斜体</td></tr>
+    <tr><td>文字列（""）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>Excelオブジェクト（Range / Cells / Worksheets等）</td>
+        <td><span class="cs" style="background:#89B4FA;"></span>青・太字</td></tr>
+    <tr><td>VBAキーワード（Dim / Sub / Function / If等）</td>
+        <td><span class="cs" style="background:#CBA6F7;"></span>紫・太字</td></tr>
+    <tr><td>組み込み関数（MsgBox / CStr / Len等）</td>
+        <td><span class="cs" style="background:#89DCEB;"></span>水色</td></tr>
+    <tr><td>数値</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+    <tr><td>プロパティアクセス（.Value / .Name等）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+  </table>
+
+  <div class="tip">
+    💡 VBAハイライトは xlUp / xlDown / vbYes / vbCrLf などの
+    Excel定数にも対応しています。
+  </div>
+
+  <h3 id="hl-csv">CSV（.csv）</h3>
+  <table>
+    <tr><th>要素</th><th>色</th></tr>
+    <tr><td>1行目（ヘッダー行）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑・太字（全体）</td></tr>
+    <tr><td>奇数列</td>
+        <td><span class="cs" style="background:#CDD6F4;"></span>白（デフォルト）</td></tr>
+    <tr><td>偶数列</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑（交互色）</td></tr>
+    <tr><td>クォートされた文字列（""）</td>
+        <td><span class="cs" style="background:#A6E3A1;"></span>緑</td></tr>
+    <tr><td>数値</td>
+        <td><span class="cs" style="background:#F9E2AF;"></span>黄</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="edit">✏️ 編集機能</h2>
+
+  <h3 id="edit-auto">自動入力支援</h3>
+
+  <h4>自動閉じタグ（HTML / XML のみ）</h4>
+  <p><code>&gt;</code> を入力すると対応する閉じタグが自動挿入されます。</p>
+  <table>
+    <tr><th>入力</th><th>自動補完後</th></tr>
+    <tr>
+      <td><code>&lt;div&gt;</code> と入力</td>
+      <td><code>&lt;div&gt;│&lt;/div&gt;</code>（│はカーソル位置）</td>
+    </tr>
+    <tr>
+      <td><code>&lt;br&gt;</code> と入力</td>
+      <td>閉じタグなし（void要素は対象外）</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    💡 自動閉じタグは <code>.html</code> / <code>.htm</code> / <code>.xml</code>
+    ファイルのみ動作します。
+  </div>
+
+  <h4>オートインデント</h4>
+  <p>Enterキーを押すと現在行のインデントを引き継いで改行します。
+  ブロック要素の開きタグ後は自動的にインデントが1段深くなります。</p>
+
+  <h4>ダブルクォートの自動ペア</h4>
+  <p><code>"</code> を入力すると <code>""</code> が挿入され、
+  カーソルが中央に移動します。</p>
+
+  <h3 id="edit-complete">コード補完（HTMLのみ）</h3>
+  <p>HTMLタグのスニペット補完機能です。
+  <strong>HTMLファイル編集時のみ</strong>動作します。</p>
+
+  <h4>起動方法</h4>
+  <ul>
+    <li><kbd>Ctrl</kbd>+<kbd>Space</kbd>：補完候補を強制表示</li>
+    <li><code>&lt;</code> に続けて2文字以上入力すると自動表示</li>
+  </ul>
+
+  <h4>補完の操作</h4>
+  <table>
+    <tr><th>キー</th><th>動作</th></tr>
+    <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>候補を選択</td></tr>
+    <tr><td><kbd>Enter</kbd></td><td>選択した候補を確定・挿入</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>補完リストを閉じる</td></tr>
+    <tr><td>その他のキー</td><td>補完リストを閉じて通常入力</td></tr>
+  </table>
+
+  <div class="note">
+    💡 補完スニペットの種類はHTML専用版と同じです。
+    html / div / a / img / ul / table / form / section / header / footer 等
+    25種類のスニペットが利用できます。
+  </div>
+
+  <h3 id="edit-indent">インデント操作</h3>
+  <table>
+    <tr><th>操作</th><th>動作</th></tr>
+    <tr>
+      <td><kbd>Tab</kbd>（選択なし）</td>
+      <td>カーソル位置にスペース4つを挿入</td>
+    </tr>
+    <tr>
+      <td><kbd>Tab</kbd>（複数行選択中）</td>
+      <td>選択した全行を1段インデント</td>
+    </tr>
+    <tr>
+      <td><kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+      <td>選択した全行を1段アンインデント</td>
+    </tr>
+  </table>
+
+  <h3 id="edit-font">文字サイズ変更</h3>
+  <ul>
+    <li><strong>ツールバー：</strong>
+        <code>🔡 文字サイズ</code> ボタン → ダイアログで入力（6〜32pt）</li>
+    <li><strong>マウスホイール：</strong>
+        <kbd>Ctrl</kbd>を押しながらホイールを回転（1ptずつ変更）</li>
+  </ul>
+
+  <h3 id="edit-shortcut">キーボードショートカット</h3>
+  <table>
+    <tr><th>操作</th><th>ショートカット</th></tr>
+    <tr><td>新規ファイル</td><td><kbd>Ctrl</kbd>+<kbd>N</kbd></td></tr>
+    <tr><td>ファイルを開く</td><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td></tr>
+    <tr><td>上書き保存</td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td></tr>
+    <tr><td>名前を付けて保存</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td></tr>
+    <tr><td>プレビュー更新</td><td><kbd>F5</kbd></td></tr>
+    <tr><td>構文チェック</td><td><kbd>F6</kbd></td></tr>
+    <tr><td>別ウィンドウプレビュー</td><td><kbd>F7</kbd></td></tr>
+    <tr><td>レイアウトリセット</td><td><kbd>F8</kbd></td></tr>
+    <tr><td>コード補完（HTMLのみ）</td><td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td></tr>
+    <tr><td>元に戻す</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td></tr>
+    <tr><td>やり直し</td><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td></tr>
+    <tr><td>検索</td><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td></tr>
+    <tr><td>行へジャンプ</td><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td></tr>
+    <tr><td>終了</td><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td></tr>
+    <tr><td>フォントサイズ拡大</td><td><kbd>Ctrl</kbd>+ホイール上</td></tr>
+    <tr><td>フォントサイズ縮小</td><td><kbd>Ctrl</kbd>+ホイール下</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="preview">👁 プレビュー機能</h2>
+
+  <h3 id="preview-html">HTMLプレビュー</h3>
+  <p>HTMLファイルを編集中は右パネルにリアルタイムでレンダリング結果が表示されます。
+  コードを編集すると約1.2秒後に自動更新されます。
+  ローカルファイルを開いている場合は同じフォルダの画像・CSSも正しく参照されます。</p>
+
+  <h3 id="preview-other">その他言語のプレビュー</h3>
+  <p>HTML以外のファイルはダークテーマのテキストビューで表示されます。
+  右上に言語バッジ（例：<code>Python</code>）が表示されます。
+  コードの変更は約1.2秒後に自動反映されます。</p>
+
+  <h3 id="preview-popout">別ウィンドウプレビュー</h3>
+  <p><code>🗗 別ウィンドウ</code> ボタンまたは <kbd>F7</kbd> で
+  独立ウィンドウが開きます。</p>
+  <ul>
+    <li>コードを編集すると別ウィンドウも自動更新されます</li>
+    <li>別ウィンドウ内でも 🖥 📱 📟 ボタンで表示幅を変更できます</li>
+    <li>別ウィンドウを閉じると埋め込みプレビューに自動で戻ります</li>
+    <li><code>🗗 埋め込みに戻す</code> ボタンでも戻せます</li>
+  </ul>
+
+  <h3 id="preview-jump">プレビュー右クリック→ソースジャンプ</h3>
+  <p>プレビュー内の要素を<strong>右クリック</strong>して
+  <code>🔍 View Page Source</code> を選ぶと、
+  エディタの該当行にカーソルが移動します。</p>
+
+  <h4>操作手順</h4>
+  <ol>
+    <li>プレビュー画面内の編集したい要素を<strong>右クリック</strong></li>
+    <li>コンテキストメニューから <code>🔍 View Page Source</code> を選択</li>
+    <li>エディタが該当行にジャンプする</li>
+    <li>ステータスバーに
+        <code>ジャンプ: &lt;タグ名&gt; → Line XX (score=XX)</code> と表示される</li>
+  </ol>
+
+  <div class="note">
+    💡 <strong>ジャンプの精度：</strong>
+    id属性・class属性・src/href属性・テキスト内容をスコアリングして
+    最も一致度の高い行を特定します。
+    score の値が高いほど精度が高くなります。
+  </div>
+
+  <div class="warning">
+    ⚠️ ソースジャンプは <strong>HTMLファイルのみ</strong>対応しています。
+    その他の言語ファイルでは動作しません。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="check">🔍 構文チェック</h2>
+
+  <p>コードを編集すると約0.8秒後に自動実行されます。
+  <kbd>F6</kbd> または <code>🔍 構文チェック</code> ボタンで手動実行もできます。
+  言語に応じて自動的にチェック内容が切り替わります。</p>
+
+  <h3 id="check-html">HTML</h3>
+  <table>
+    <tr><th>種別</th><th>チェック内容</th></tr>
+    <tr>
+      <td>❌ エラー</td>
+      <td>タグの対応・不正なタグ名・HTML基本構造（lxmlによる本格解析）</td>
+    </tr>
+    <tr>
+      <td>⚠️ 警告</td>
+      <td>&lt;img&gt;のalt属性なし / &lt;a&gt;のhref属性なし / DOCTYPE宣言なし</td>
+    </tr>
+    <tr>
+      <td>ℹ️ 情報</td>
+      <td>文字コード宣言（&lt;meta charset&gt;）なし</td>
+    </tr>
+  </table>
+
+  <h3 id="check-js">JavaScript / CSS</h3>
+  <table>
+    <tr><th>言語</th><th>チェック内容</th></tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>
+        <ul>
+          <li>❌ 括弧 () の数の不一致</li>
+          <li>❌ 波括弧 {} の数の不一致</li>
+          <li>ℹ️ var の使用（const / let を推奨）</li>
+          <li>ℹ️ == の使用（=== を推奨）</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>CSS</td>
+      <td>
+        <ul>
+          <li>❌ 波括弧 {} の数の不一致</li>
+          <li>⚠️ セミコロンの不足</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <h3 id="check-json">JSON / XML</h3>
+  <table>
+    <tr><th>言語</th><th>チェック内容</th></tr>
+    <tr>
+      <td>JSON</td>
+      <td>❌ JSON構文エラー（カンマ・括弧・クォートの過不足）</td>
+    </tr>
+    <tr>
+      <td>XML</td>
+      <td>❌ XML構文エラー（タグの対応・属性のクォート・エンコーディング）</td>
+    </tr>
+  </table>
+
+  <h3 id="check-python">Python</h3>
+  <table>
+    <tr><th>種別</th><th>チェック内容</th></tr>
+    <tr><td>❌ エラー</td><td>Python構文エラー（ast.parseによる解析）</td></tr>
+    <tr><td>⚠️ 警告</td>
+        <td>Python2スタイルの print 文 / タブとスペースの混在</td></tr>
+  </table>
+
+  <h3 id="check-vba">VBA</h3>
+  <table>
+    <tr><th>種別</th><th>チェック内容</th></tr>
+    <tr>
+      <td>❌ エラー</td>
+      <td>
+        <ul>
+          <li>End Sub のない Sub</li>
+          <li>End Function のない Function</li>
+          <li>対応する Sub / Function のない End Sub / End Function</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>⚠️ 警告</td>
+      <td>
+        <ul>
+          <li>Option Explicit の未宣言</li>
+          <li>On Error Resume Next の使用</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>ℹ️ 情報</td>
+      <td>
+        <ul>
+          <li>Select Case ブロックの開始</li>
+          <li>MsgBox の使用（デバッグ残りの確認）</li>
+          <li>ActiveSheet / ActiveWorkbook の直接使用</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <h3 id="check-batch">Batch / PowerShell</h3>
+  <table>
+    <tr><th>言語</th><th>チェック内容</th></tr>
+    <tr>
+      <td>Batch</td>
+      <td>
+        <ul>
+          <li>⚠️ goto 先のラベルが存在しない</li>
+          <li>ℹ️ exit の前に pause がない</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>PowerShell</td>
+      <td>
+        <ul>
+          <li>❌ 波括弧 {} の数の不一致</li>
+          <li>⚠️ Invoke-Expression (iex) の使用（セキュリティリスク）</li>
+          <li>ℹ️ Write-Host の使用（Write-Output を推奨）</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <h3 id="check-csv">CSV</h3>
+  <table>
+    <tr><th>種別</th><th>チェック内容</th></tr>
+    <tr><td>⚠️ 警告</td><td>ヘッダー行と列数が異なる行</td></tr>
+    <tr><td>ℹ️ 情報</td><td>ヘッダーが空の列</td></tr>
+    <tr><td>❌ エラー</td><td>CSV解析エラー</td></tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="navigator">📁 構造ナビゲーター</h2>
+
+  <p>左パネルに編集中ファイルの構造がツリー表示されます。
+  ファイルを開くと言語に応じて自動的に切り替わります。
+  項目をクリックするとエディタの該当行にジャンプします。</p>
+
+  <table>
+    <tr><th>言語</th><th>表示される構造</th></tr>
+    <tr>
+      <td>HTML</td>
+      <td>🔧&lt;head&gt; / 🎨&lt;style&gt; / ⚡&lt;script&gt; / 📄&lt;body&gt; /
+          📝見出し(h1〜h6) / 🔗リンク / 🖼画像 / 📋フォーム</td>
+    </tr>
+    <tr>
+      <td>Python</td>
+      <td>🏛クラス / 🔧関数 / 📦インポート</td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>🔧関数（function / アロー関数） / 🏛クラス / 📦インポート</td>
+    </tr>
+    <tr>
+      <td>JSON</td>
+      <td>🔑トップレベルキー（型名付き）/ 配列の件数</td>
+    </tr>
+    <tr>
+      <td>XML</td>
+      <td>🏷要素一覧（最大50件）</td>
+    </tr>
+    <tr>
+      <td>CSS</td>
+      <td>🎨セレクタ / 📱メディアクエリ</td>
+    </tr>
+    <tr>
+      <td>Batch</td>
+      <td>🏷ラベル（:label） / ⚡主要コマンド（call / goto / if / for）</td>
+    </tr>
+    <tr>
+      <td>PowerShell</td>
+      <td>🔧関数</td>
+    </tr>
+    <tr>
+      <td>VBScript</td>
+      <td>🔧Sub / Function</td>
+    </tr>
+    <tr>
+      <td>VBA</td>
+      <td>🔧Sub（スコープ付き） / ⚙Function（スコープ付き） /
+          📌Property（Get/Let/Set） / 🔒定数(Const) / 📦モジュール変数</td>
+    </tr>
+    <tr>
+      <td>CSV</td>
+      <td>📋ヘッダー列一覧 / 📊データ行数・列数</td>
+    </tr>
+  </table>
+
+  <div class="tip">
+    💡 VBAナビゲーターはスコープ（Public / Private / Friend）も
+    表示するため、大規模なVBAモジュールの管理に役立ちます。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="file">💾 ファイル操作</h2>
+
+  <h3>ファイルを開く</h3>
+  <ol>
+    <li><code>📂 開く</code> ボタンまたは <kbd>Ctrl</kbd>+<kbd>O</kbd></li>
+    <li>ファイル選択ダイアログから対象ファイルを選択</li>
+    <li>拡張子に応じて自動的に言語モードが切り替わる</li>
+  </ol>
+
+  <div class="note">
+    💡 ファイルダイアログでは「すべての対応ファイル」を選択すると
+    12種類すべての拡張子が表示されます。
+    言語別にフィルタリングすることも可能です。
+  </div>
+
+  <h3>上書き保存</h3>
+  <ol>
+    <li><code>💾 保存</code> ボタンまたは <kbd>Ctrl</kbd>+<kbd>S</kbd></li>
+    <li>既存ファイルを開いている場合は上書き保存</li>
+    <li>新規ファイルの場合は「名前を付けて保存」ダイアログが開く</li>
+  </ol>
+
+  <div class="note">
+    💡 保存時のエンコーディングは <strong>UTF-8</strong> 固定です。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="decouple">🔗 外部ファイル化（疎結合化）</h2>
+
+  <p>HTMLファイル内の <code>&lt;style&gt;</code> ブロックや
+  <code>&lt;script&gt;</code> ブロックを外部ファイルとして切り出す機能です。
+  <strong>HTMLファイルのみ対応</strong>しています。</p>
+
+  <h3>操作手順</h3>
+  <ol>
+    <li>対象のHTMLファイルを<strong>保存済みの状態</strong>にする</li>
+    <li><code>🔗 外部ファイル化</code> ボタンをクリック</li>
+    <li>ダイアログで切り出す対象と出力ファイル名を選択</li>
+    <li>OK をクリック</li>
+    <li>HTMLファイルと同じフォルダに <code>.css</code> / <code>.js</code> が生成される</li>
+    <li>HTMLは自動的に <code>&lt;link&gt;</code> / <code>&lt;script src&gt;</code> に書き換えられる</li>
+  </ol>
+
+  <div class="warning">
+    ⚠️ HTML以外のファイルを開いているときは
+    「外部ファイル化はHTMLファイルのみ対応しています」と表示されます。<br>
+    ⚠️ 未保存の状態では実行できません。先に保存してください。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="format">✨ HTMLフォーマット</h2>
+
+  <p>メニュー「ツール」→「HTMLフォーマット整形」または
+  ツールバーの <code>✨ フォーマット</code> ボタンで
+  HTMLコードを自動整形します。
+  <strong>HTMLファイルのみ対応</strong>しています。</p>
+
+  <div class="warning">
+    ⚠️ HTML以外のファイルを開いているときは
+    「HTMLフォーマットはHTMLファイルのみ対応しています」と表示されます。
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="diff">🆚 HTML専用版との違い</h2>
+
+  <table>
+    <tr><th>機能</th><th>HTML専用版</th><th>拡張版（本版）</th></tr>
+    <tr>
+      <td>対応言語</td>
+      <td>HTMLのみ</td>
+      <td><strong>12言語対応</strong></td>
+    </tr>
+    <tr>
+      <td>シンタックスハイライター</td>
+      <td>1種類（HTML固定）</td>
+      <td><strong>12種類（ファイルごとに自動切替）</strong></td>
+    </tr>
+    <tr>
+      <td>構文チェック</td>
+      <td>HTMLのみ</td>
+      <td><strong>12言語対応</strong></td>
+    </tr>
+    <tr>
+      <td>ナビゲーター</td>
+      <td>HTML構造のみ</td>
+      <td><strong>12言語対応（VBA強化版含む）</strong></td>
+    </tr>
+    <tr>
+      <td>メニューバー</td>
+      <td>自作ダークテーマメニュー</td>
+      <td>OS標準メニューバー（スタイル適用）</td>
+    </tr>
+    <tr>
+      <td>プレビュー（HTML以外）</td>
+      <td>なし</td>
+      <td><strong>テキストビュー（言語バッジ付き）</strong></td>
+    </tr>
+    <tr>
+      <td>ステータスバー</td>
+      <td>ファイル名・エラー・カーソル</td>
+      <td><strong>言語モード表示を追加</strong></td>
+    </tr>
+    <tr>
+      <td>外部ファイル化</td>
+      <td>✅（HTMLのみ）</td>
+      <td>✅（HTMLのみ・同じ機能）</td>
+    </tr>
+    <tr>
+      <td>コード補完</td>
+      <td>HTMLスニペット</td>
+      <td>HTMLスニペット（HTML編集時のみ）</td>
+    </tr>
+    <tr>
+      <td>動作の重さ</td>
+      <td>やや軽い</td>
+      <td>やや重い（ハイライターが多い分）</td>
+    </tr>
+  </table>
+
+  <!-- ============================================================ -->
+  <h2 id="trouble">🛠 トラブル対応</h2>
+
+  <table>
+    <tr><th>症状</th><th>対処方法</th></tr>
+    <tr>
+      <td>起動しない</td>
+      <td>
+        <ul>
+          <li>Python 3.10以上がインストールされているか確認</li>
+          <li><code>pip install PyQt6 PyQt6-WebEngine lxml pygments</code> を実行</li>
+          <li>コマンドプロンプトで直接実行してエラーメッセージを確認</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>色分けが切り替わらない</td>
+      <td>
+        <ul>
+          <li>ファイルを「開く」で読み込んでいるか確認
+              （コピー貼り付けでは言語が切り替わりません）</li>
+          <li>拡張子が対応リストにあるか確認</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>VBAファイルの色分けが効かない</td>
+      <td>
+        <ul>
+          <li>拡張子が <code>.vba</code> になっているか確認
+              （<code>.bas</code> 等は非対応）</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>CSVが文字化けする</td>
+      <td>
+        <ul>
+          <li>ファイルが UTF-8 で保存されているか確認</li>
+          <li>Shift-JIS のCSVは一度UTF-8に変換してから開いてください</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>外部ファイル化ができない</td>
+      <td>
+        <ul>
+          <li>HTMLファイルを開いているか確認</li>
+          <li>先にファイルを保存（<kbd>Ctrl</kbd>+<kbd>S</kbd>）してから実行</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>プレビューが表示されない</td>
+      <td>
+        <ul>
+          <li><code>PyQt6-WebEngine</code> がインストールされているか確認</li>
+          <li><kbd>F5</kbd> で手動更新を試みる</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>右クリックジャンプが効かない</td>
+      <td>
+        <ul>
+          <li>HTMLファイルを開いているか確認（他の言語では動作しません）</li>
+          <li>プレビューを <kbd>F5</kbd> で更新してから再試行</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>画面レイアウトが崩れた</td>
+      <td>
+        <ul>
+          <li>メニュー「表示」→「レイアウトをリセット」または <kbd>F8</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>JSONナビゲーターに何も表示されない</td>
+      <td>
+        <ul>
+          <li>JSONが配列（[ ]）の場合は件数のみ表示されます</li>
+          <li>JSONにエラーがある場合はナビゲーターに
+              「❌ JSON解析エラー」と表示されます</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <footer>
+    ⚡ HTML Master Editor - 拡張版（12言語対応）&nbsp;|&nbsp;
+    PyQt6 ベース デスクトップアプリケーション
+  </footer>
+
+</main>
+</body>
+</html>
