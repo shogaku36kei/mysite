@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古文チート問題集 — 公立高校受験対策</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&family=Zen+Old+Mincho:wght@400;700;900&family=M+PLUS+1p:wght@400;700&display=swap');
+
+  :root {
+    --ink: #1a0e08;
+    --paper: #f5efe3;
+    --aged: #e8dcc8;
+    --vermillion: #c0392b;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --sage: #5a6e4e;
+    --indigo: #2c3e6b;
+    --shadow: rgba(26,14,8,0.15);
+    --glow: rgba(184,134,11,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 20% 80%, rgba(184,134,11,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(192,57,43,0.05) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(26,14,8,0.04)'/%3E%3C/svg%3E");
+    font-family: 'M PLUS 1p', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    text-align: center;
+    padding: 52px 20px 36px;
+    position: relative;
+    border-bottom: 3px double var(--gold);
+    background: linear-gradient(180deg, rgba(26,14,8,0.04) 0%, transparent 100%);
+  }
+  header::before, header::after {
+    content: '◈';
+    color: var(--gold);
+    font-size: 1.2rem;
+    position: absolute;
+    top: 20px;
+  }
+  header::before { left: 24px; }
+  header::after { right: 24px; }
+
+  .title-badge {
+    display: inline-block;
+    background: var(--vermillion);
+    color: #fff;
+    font-family: 'Zen Old Mincho', serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    padding: 4px 16px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    font-family: 'Zen Old Mincho', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-shadow: 2px 3px 0 rgba(26,14,8,0.08);
+  }
+  h1 span.accent { color: var(--vermillion); }
+
+  .subtitle {
+    font-family: 'Noto Serif JP', serif;
+    color: var(--gold);
+    font-size: 0.92rem;
+    letter-spacing: 0.3em;
+    margin-top: 10px;
+  }
+
+  /* ===== SCORE BAR ===== */
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 18px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+  }
+  .score-item { text-align: center; }
+  .score-num {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .score-label { font-size: 0.7rem; color: #aaa; letter-spacing: 0.15em; }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    background: var(--ink);
+    padding: 0 16px;
+    gap: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.85rem;
+    padding: 13px 18px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+  .tab-btn:hover { color: var(--gold-light); }
+  .tab-btn.active {
+    color: var(--gold-light);
+    border-bottom-color: var(--vermillion);
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  main { max-width: 820px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  .section-title {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--ink);
+    border-left: 5px solid var(--vermillion);
+    padding: 4px 0 4px 14px;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .section-desc {
+    font-size: 0.82rem;
+    color: #6b5d52;
+    margin-bottom: 22px;
+    padding-left: 20px;
+    font-style: italic;
+  }
+
+  /* ===== CHEAT NOTE CARD ===== */
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .cheat-card {
+    background: #fff;
+    border: 1px solid var(--aged);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 3px 4px 0 rgba(26,14,8,0.08);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .cheat-card:hover { transform: translateY(-3px); box-shadow: 4px 8px 0 rgba(26,14,8,0.12); }
+  .cheat-card-head {
+    background: var(--indigo);
+    color: #fff;
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    letter-spacing: 0.1em;
+  }
+  .cheat-card-body { padding: 14px; }
+  .cheat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--aged);
+    font-size: 0.88rem;
+    gap: 8px;
+  }
+  .cheat-row:last-child { border-bottom: none; }
+  .cheat-jp { font-family: 'Noto Serif JP', serif; font-weight: 600; color: var(--ink); }
+  .cheat-en { color: var(--vermillion); font-weight: 700; font-size: 0.82rem; flex-shrink: 0; }
+  .cheat-note { color: #888; font-size: 0.75rem; font-style: italic; }
+
+  /* ===== QUIZ CARD ===== */
+  .quiz-list { display: flex; flex-direction: column; gap: 20px; }
+
+  .quiz-card {
+    background: #fff;
+    border: 1px solid var(--aged);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 3px 4px 0 rgba(26,14,8,0.08);
+  }
+  .quiz-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: linear-gradient(90deg, var(--paper) 0%, #fff 100%);
+    border-bottom: 1px solid var(--aged);
+  }
+  .quiz-num {
+    width: 30px; height: 30px;
+    background: var(--vermillion);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 0.85rem; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .quiz-type-badge {
+    background: var(--indigo);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+  }
+  .quiz-question {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.7;
+    padding: 16px 18px 10px;
+  }
+  .quiz-question .mono {
+    font-size: 1.05rem;
+    color: var(--indigo);
+    font-weight: 900;
+    background: rgba(44,62,107,0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 18px 16px;
+  }
+  .option-btn {
+    border: 2px solid var(--aged);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    background: rgba(184,134,11,0.08);
+  }
+  .option-btn.correct {
+    border-color: var(--sage);
+    background: rgba(90,110,78,0.12);
+    color: var(--sage);
+    font-weight: 700;
+  }
+  .option-btn.wrong {
+    border-color: var(--vermillion);
+    background: rgba(192,57,43,0.08);
+    color: var(--vermillion);
+    text-decoration: line-through;
+  }
+  .option-btn:disabled { cursor: default; }
+
+  .quiz-result {
+    display: none;
+    padding: 12px 18px 16px;
+    border-top: 1px dashed var(--aged);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .quiz-result.show { display: block; }
+  .quiz-result.ok { color: var(--sage); }
+  .quiz-result.ng { color: var(--vermillion); }
+  .result-icon { font-size: 1.1rem; margin-right: 6px; }
+  .result-exp {
+    margin-top: 8px;
+    color: #555;
+    font-size: 0.83rem;
+    background: var(--paper);
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 0 3px 3px 0;
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  /* ===== CONJUGATION TABLE ===== */
+  .conj-table-wrap { overflow-x: auto; margin-bottom: 28px; }
+  table { border-collapse: collapse; width: 100%; min-width: 480px; font-size: 0.88rem; }
+  th {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    padding: 9px 12px;
+    text-align: center;
+    font-weight: 700;
+  }
+  td {
+    padding: 8px 12px;
+    text-align: center;
+    border: 1px solid var(--aged);
+    font-family: 'Noto Serif JP', serif;
+    color: var(--ink);
+  }
+  tr:nth-child(even) td { background: rgba(26,14,8,0.03); }
+  td.highlight { color: var(--vermillion); font-weight: 700; background: rgba(192,57,43,0.06); }
+  td.label { background: var(--paper); font-weight: 700; color: var(--indigo); text-align: left; }
+
+  /* ===== FINISH BANNER ===== */
+  .finish-banner {
+    display: none;
+    text-align: center;
+    padding: 32px 20px;
+    background: linear-gradient(135deg, var(--ink) 0%, #2c1a10 100%);
+    border-radius: 6px;
+    color: var(--gold-light);
+    margin-top: 32px;
+    box-shadow: 0 8px 24px rgba(26,14,8,0.2);
+  }
+  .finish-banner.show { display: block; }
+  .finish-banner h2 {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .finish-banner p { color: #ccc; font-size: 0.9rem; }
+  .finish-score { font-size: 3rem; font-weight: 900; color: #fff; display: block; margin: 8px 0; }
+
+  /* ===== PAGE SECTIONS ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== RESET BTN ===== */
+  .reset-btn {
+    display: block;
+    margin: 24px auto 0;
+    background: var(--vermillion);
+    color: #fff;
+    border: none;
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1rem;
+    padding: 12px 36px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    box-shadow: 3px 4px 0 rgba(0,0,0,0.2);
+    transition: transform 0.15s;
+  }
+  .reset-btn:hover { transform: translateY(-2px); }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--paper); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+  /* ===== ANIMATION ===== */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .quiz-card { animation: fadeIn 0.35s ease both; }
+  .quiz-card:nth-child(2) { animation-delay: 0.05s; }
+  .quiz-card:nth-child(3) { animation-delay: 0.10s; }
+  .quiz-card:nth-child(4) { animation-delay: 0.15s; }
+  .quiz-card:nth-child(5) { animation-delay: 0.20s; }
+  .quiz-card:nth-child(6) { animation-delay: 0.25s; }
+  .quiz-card:nth-child(7) { animation-delay: 0.30s; }
+  .quiz-card:nth-child(8) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-badge">公立高校受験 完全対策</div>
+  <h1>古文 <span class="accent">チート</span>問題集</h1>
+  <p class="subtitle">〜 合格に必要なエッセンスだけ、全部抜き出した〜</p>
+</header>
+
+<div class="score-bar">
+  <div class="score-item">
+    <span class="score-num" id="score-correct">0</span>
+    <span class="score-label">正解</span>
+  </div>
+  <div class="score-item">
+    <span class="score-num" id="score-total">0</span>
+    <span class="score-label">回答済み</span>
+  </div>
+  <div class="score-item">
+    <span class="score-num" id="score-pct">—</span>
+    <span class="score-label">正答率</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('vocab')">①重要単語</button>
+  <button class="tab-btn" onclick="switchTab('conj')">②活用チート表</button>
+  <button class="tab-btn" onclick="switchTab('quiz1')">③単語確認クイズ</button>
+  <button class="tab-btn" onclick="switchTab('quiz2')">④文法・助動詞クイズ</button>
+  <button class="tab-btn" onclick="switchTab('quiz3')">⑤読解クイズ</button>
+  <button class="tab-btn" onclick="switchTab('tips')">⑥攻略メモ</button>
+</div>
+
+<main>
+
+<!-- ===== ① 重要単語 ===== -->
+<div class="page active" id="page-vocab">
+  <p class="section-title">頻出単語チート帳</p>
+  <p class="section-desc">試験に出やすい「現代語と意味が違う」罠単語を中心に厳選。</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="cheat-card-head">⚠️ 意味が全然違う「罠単語」</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">あはれ</span><span class="cheat-en">しみじみ感動・感慨</span></div>
+        <div class="cheat-row"><span class="cheat-jp">うつくし</span><span class="cheat-en">かわいい・愛らしい</span></div>
+        <div class="cheat-row"><span class="cheat-jp">をかし</span><span class="cheat-en">趣がある・おもしろい</span></div>
+        <div class="cheat-row"><span class="cheat-jp">やさし</span><span class="cheat-en">恥ずかしい・肩身が狭い</span></div>
+        <div class="cheat-row"><span class="cheat-jp">くちをし</span><span class="cheat-en">残念だ・物足りない</span></div>
+        <div class="cheat-row"><span class="cheat-jp">いみじ</span><span class="cheat-en">甚だしい（良くも悪くも）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">ありがたし</span><span class="cheat-en">めったにない・珍しい</span></div>
+        <div class="cheat-row"><span class="cheat-jp">おとなし</span><span class="cheat-en">大人びている・分別がある</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">💡 感情・心情を表す語</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">つれなし</span><span class="cheat-en">冷淡だ・素知らぬ顔</span></div>
+        <div class="cheat-row"><span class="cheat-jp">こころもとなし</span><span class="cheat-en">不安・待ち遠しい</span></div>
+        <div class="cheat-row"><span class="cheat-jp">なほ</span><span class="cheat-en">やはり・それでも</span></div>
+        <div class="cheat-row"><span class="cheat-jp">めでたし</span><span class="cheat-en">すばらしい・立派だ</span></div>
+        <div class="cheat-row"><span class="cheat-jp">あいなし</span><span class="cheat-en">わけもなく・つまらない</span></div>
+        <div class="cheat-row"><span class="cheat-jp">わびし</span><span class="cheat-en">つらい・みすぼらしい</span></div>
+        <div class="cheat-row"><span class="cheat-jp">はづかし</span><span class="cheat-en">こちらが恥ずかしい→立派だ</span></div>
+        <div class="cheat-row"><span class="cheat-jp">すごし</span><span class="cheat-en">ぞっとする・もの寂しい</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">🏛️ 人物・身分を表す語</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">翁（おきな）</span><span class="cheat-en">老いた男性</span></div>
+        <div class="cheat-row"><span class="cheat-jp">嫗（おうな）</span><span class="cheat-en">老いた女性</span></div>
+        <div class="cheat-row"><span class="cheat-jp">公達（きんだち）</span><span class="cheat-en">貴族の子弟</span></div>
+        <div class="cheat-row"><span class="cheat-jp">御曹司（おんぞうし）</span><span class="cheat-en">貴人の部屋・息子</span></div>
+        <div class="cheat-row"><span class="cheat-jp">女房（にょうぼう）</span><span class="cheat-en">宮中・貴族に仕える女性</span></div>
+        <div class="cheat-row"><span class="cheat-jp">殿（との）</span><span class="cheat-en">貴人の屋敷・主人への敬称</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">🌸 頻出の「動詞」</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">おはす・おはします</span><span class="cheat-en">いらっしゃる（尊敬）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">まゐる・まゐらす</span><span class="cheat-en">参る・差し上げる</span></div>
+        <div class="cheat-row"><span class="cheat-jp">たまふ</span><span class="cheat-en">〜なさる（尊敬）／〜ください</span></div>
+        <div class="cheat-row"><span class="cheat-jp">はべり・さぶらふ</span><span class="cheat-en">おります（丁寧・謙譲）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">きこゆ</span><span class="cheat-en">申し上げる（謙譲）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">のたまふ</span><span class="cheat-en">おっしゃる（尊敬）</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">📅 時間・時期を表す語</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">つとめて</span><span class="cheat-en">早朝・翌朝</span></div>
+        <div class="cheat-row"><span class="cheat-jp">よひ</span><span class="cheat-en">夕方〜夜の始め頃</span></div>
+        <div class="cheat-row"><span class="cheat-jp">あかつき</span><span class="cheat-en">夜明け前</span></div>
+        <div class="cheat-row"><span class="cheat-jp">いたく</span><span class="cheat-en">ひどく・非常に</span></div>
+        <div class="cheat-row"><span class="cheat-jp">このごろ</span><span class="cheat-en">最近・このところ</span></div>
+        <div class="cheat-row"><span class="cheat-jp">ながら</span><span class="cheat-en">〜のままで（逆接）</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">🔑 超頻出の副詞・接続詞</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">いかで</span><span class="cheat-en">なんとかして・どうして（反語）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">さらに〜ず</span><span class="cheat-en">全然〜ない（強い否定）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">よに〜ず</span><span class="cheat-en">全く〜ない</span></div>
+        <div class="cheat-row"><span class="cheat-jp">をさをさ〜ず</span><span class="cheat-en">ほとんど〜ない</span></div>
+        <div class="cheat-row"><span class="cheat-jp">え〜ず</span><span class="cheat-en">〜できない（不可能）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">な〜そ</span><span class="cheat-en">〜するな（禁止）</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ② 活用チート表 ===== -->
+<div class="page" id="page-conj">
+  <p class="section-title">助動詞 活用チート表</p>
+  <p class="section-desc">入試最頻出の助動詞だけ厳選。意味の識別が最重要！</p>
+
+  <div class="conj-table-wrap">
+    <table>
+      <tr>
+        <th>助動詞</th><th>意味</th><th>接続</th>
+        <th>未然形</th><th>連用形</th><th>終止形</th><th>連体形</th><th>已然形</th><th>命令形</th>
+      </tr>
+      <tr>
+        <td class="label">る・らる</td><td>受身・尊敬<br>自発・可能</td><td>未然形</td>
+        <td class="highlight">れ</td><td>れ</td><td>る</td><td>るる</td><td>るれ</td><td>れよ</td>
+      </tr>
+      <tr>
+        <td class="label">す・さす・しむ</td><td>使役・尊敬</td><td>未然形</td>
+        <td class="highlight">せ</td><td>せ</td><td>す</td><td>する</td><td>すれ</td><td>せよ</td>
+      </tr>
+      <tr>
+        <td class="label">ず</td><td>打消（〜ない）</td><td>未然形</td>
+        <td class="highlight">ざら</td><td>ず/ざり</td><td>ず</td><td>ぬ/ざる</td><td>ね/ざれ</td><td>ざれ</td>
+      </tr>
+      <tr>
+        <td class="label">む（ん）</td><td>推量・意志<br>勧誘・仮定</td><td>未然形</td>
+        <td>—</td><td>—</td><td class="highlight">む</td><td>む</td><td>め</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">むず（んず）</td><td>推量・意志</td><td>未然形</td>
+        <td>—</td><td>—</td><td class="highlight">むず</td><td>むずる</td><td>むずれ</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">き</td><td>過去（体験）</td><td>連用形</td>
+        <td class="highlight">せ</td><td>—</td><td>き</td><td>し</td><td>しか</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">けり</td><td>過去（伝聞）<br>詠嘆</td><td>連用形</td>
+        <td>—</td><td>—</td><td class="highlight">けり</td><td>ける</td><td>けれ</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">つ</td><td>完了・強意</td><td>連用形</td>
+        <td class="highlight">て</td><td>て</td><td>つ</td><td>つる</td><td>つれ</td><td>てよ</td>
+      </tr>
+      <tr>
+        <td class="label">ぬ</td><td>完了・強意</td><td>連用形</td>
+        <td class="highlight">な</td><td>に</td><td>ぬ</td><td>ぬる</td><td>ぬれ</td><td>ね</td>
+      </tr>
+      <tr>
+        <td class="label">たり（完了）</td><td>完了・存続</td><td>連用形</td>
+        <td class="highlight">たら</td><td>たり</td><td>たり</td><td>たる</td><td>たれ</td><td>たれ</td>
+      </tr>
+      <tr>
+        <td class="label">なり（断定）</td><td>断定・存在</td><td>体言・連体形</td>
+        <td>なら</td><td>なり/に</td><td class="highlight">なり</td><td>なる</td><td>なれ</td><td>なれ</td>
+      </tr>
+      <tr>
+        <td class="label">なり（推定）</td><td>伝聞・推定</td><td>終止形</td>
+        <td>—</td><td>—</td><td class="highlight">なり</td><td>なる</td><td>なれ</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">べし</td><td>推量・意志<br>当然・命令・可能</td><td>終止形</td>
+        <td>べから</td><td>べく/べかり</td><td class="highlight">べし</td><td>べき/べかる</td><td>べけれ</td><td>—</td>
+      </tr>
+      <tr>
+        <td class="label">まし</td><td>反実仮想<br>（もし〜なら）</td><td>未然形</td>
+        <td>ましか</td><td>—</td><td class="highlight">まし</td><td>まし</td><td>ましか</td><td>—</td>
+      </tr>
+    </table>
+  </div>
+
+  <p class="section-title" style="margin-top:32px;">動詞の活用種類 判定フロー</p>
+  <p class="section-desc">「ず」を付けた形で一瞬で判断！</p>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="cheat-card-head">活用の種類 見分け方</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">〜aず → 四段</span><span class="cheat-en">書かず・読まず</span></div>
+        <div class="cheat-row"><span class="cheat-jp">〜iず → 上二段</span><span class="cheat-en">起きず・落ちず</span></div>
+        <div class="cheat-row"><span class="cheat-jp">〜eず → 下二段</span><span class="cheat-en">受けず・捨てず</span></div>
+        <div class="cheat-row"><span class="cheat-jp">〜iず（一段）</span><span class="cheat-en">着る・見る（上一段）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">〜eず（一段）</span><span class="cheat-en">蹴る（下一段）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">変格活用</span><span class="cheat-en">カ変：来　サ変：す・おはす</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head">形容詞・形容動詞の活用語尾</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">形容詞ク活用</span><span class="cheat-en">なく/なき/なし</span></div>
+        <div class="cheat-row"><span class="cheat-jp">形容詞シク活用</span><span class="cheat-en">うつくしく/うつくしき</span></div>
+        <div class="cheat-row"><span class="cheat-jp">形容動詞ナリ活用</span><span class="cheat-en">静かなり/静かなる</span></div>
+        <div class="cheat-row"><span class="cheat-jp">形容動詞タリ活用</span><span class="cheat-en">堂々たり/堂々たる</span></div>
+        <div class="cheat-row"><span class="cheat-jp">係り結びの法則</span><span class="cheat-en">ぞ・なむ・や・か → 連体形</span></div>
+        <div class="cheat-row"><span class="cheat-jp">こそ → 已然形</span><span class="cheat-en">「こそあれ」など</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ③ 単語確認クイズ ===== -->
+<div class="page" id="page-quiz1">
+  <p class="section-title">単語確認クイズ</p>
+  <p class="section-desc">罠単語・頻出単語を実際に問題形式で確認しよう！</p>
+  <div class="quiz-list" id="quiz-vocab">
+  </div>
+  <button class="reset-btn" onclick="resetQuiz('quiz-vocab')">🔄 もう一度挑戦</button>
+  <div class="finish-banner" id="finish-vocab">
+    <h2>🎉 語彙クリア！</h2>
+    <span class="finish-score" id="fscore-vocab"></span>
+    <p>チート単語帳に戻って復習しよう</p>
+  </div>
+</div>
+
+<!-- ===== ④ 文法・助動詞クイズ ===== -->
+<div class="page" id="page-quiz2">
+  <p class="section-title">文法・助動詞クイズ</p>
+  <p class="section-desc">識別問題は入試の定番！助動詞の意味を確実に押さえよう。</p>
+  <div class="quiz-list" id="quiz-grammar">
+  </div>
+  <button class="reset-btn" onclick="resetQuiz('quiz-grammar')">🔄 もう一度挑戦</button>
+  <div class="finish-banner" id="finish-grammar">
+    <h2>🎉 文法クリア！</h2>
+    <span class="finish-score" id="fscore-grammar"></span>
+    <p>活用チート表でもう一度確認しよう</p>
+  </div>
+</div>
+
+<!-- ===== ⑤ 読解クイズ ===== -->
+<div class="page" id="page-quiz3">
+  <p class="section-title">読解・現代語訳クイズ</p>
+  <p class="section-desc">頻出作品の一節を現代語訳・内容把握する練習！</p>
+  <div class="quiz-list" id="quiz-read">
+  </div>
+  <button class="reset-btn" onclick="resetQuiz('quiz-read')">🔄 もう一度挑戦</button>
+  <div class="finish-banner" id="finish-read">
+    <h2>🎉 読解クリア！</h2>
+    <span class="finish-score" id="fscore-read"></span>
+    <p>全問正解を目指してリトライしよう！</p>
+  </div>
+</div>
+
+<!-- ===== ⑥ 攻略メモ ===== -->
+<div class="page" id="page-tips">
+  <p class="section-title">公立高校入試 古文 攻略メモ</p>
+  <p class="section-desc">点数に直結する「試験テクニック」集</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="cheat-card-head">🎯 読解の手順（3ステップ）</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">① 注釈を先に読む</span><span class="cheat-en">登場人物・注意語句を把握</span></div>
+        <div class="cheat-row"><span class="cheat-jp">② 問いを先読み</span><span class="cheat-en">何を聞かれているか確認</span></div>
+        <div class="cheat-row"><span class="cheat-jp">③ 主語を意識</span><span class="cheat-en">誰が・誰に・どうした？を常に</span></div>
+        <div class="cheat-row"><span class="cheat-jp">④ 和歌は感情表現</span><span class="cheat-en">掛詞・枕詞は問われやすい</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">⚡ 主語特定の鉄則</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">尊敬語が付いている</span><span class="cheat-en">→ 主語は身分が高い人</span></div>
+        <div class="cheat-row"><span class="cheat-jp">謙譲語が付いている</span><span class="cheat-en">→ 主語は話し手（身分低い）</span></div>
+        <div class="cheat-row"><span class="cheat-jp">「に」「て」で文が続く</span><span class="cheat-en">→ 主語は変わらないことが多い</span></div>
+        <div class="cheat-row"><span class="cheat-jp">「、」「が」「ば」など</span><span class="cheat-en">→ 主語が変わることが多い</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">📚 頻出作品と特徴</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">竹取物語</span><span class="cheat-en">最古の物語・かぐや姫</span></div>
+        <div class="cheat-row"><span class="cheat-jp">枕草子</span><span class="cheat-en">清少納言・「をかし」の美</span></div>
+        <div class="cheat-row"><span class="cheat-jp">源氏物語</span><span class="cheat-en">紫式部・「あはれ」の美</span></div>
+        <div class="cheat-row"><span class="cheat-jp">徒然草</span><span class="cheat-en">兼好法師・随筆</span></div>
+        <div class="cheat-row"><span class="cheat-jp">平家物語</span><span class="cheat-en">「祇園精舎〜」軍記物</span></div>
+        <div class="cheat-row"><span class="cheat-jp">伊勢物語</span><span class="cheat-en">在原業平・歌物語</span></div>
+      </div>
+    </div>
+
+    <div class="cheat-card">
+      <div class="cheat-card-head">🏆 得点アップの最終兵器</div>
+      <div class="cheat-card-body">
+        <div class="cheat-row"><span class="cheat-jp">「ぞ・なむ・や・か〜体言形」</span><span class="cheat-en">係り結びはほぼ必出</span></div>
+        <div class="cheat-row"><span class="cheat-jp">否定の副詞セット</span><span class="cheat-en">さらに・え・よに・をさをさ〜ず</span></div>
+        <div class="cheat-row"><span class="cheat-jp">「なり」の識別</span><span class="cheat-en">体言接続→断定　終止形接続→伝聞</span></div>
+        <div class="cheat-row"><span class="cheat-jp">「に」の識別</span><span class="cheat-en">断定・完了・格助詞・接続助詞</span></div>
+        <div class="cheat-row"><span class="cheat-jp">現代語訳は意訳でOK</span><span class="cheat-en">単語+文脈で大意をつかむ</span></div>
+        <div class="cheat-row"><span class="cheat-jp">和歌は前後の地の文で理解</span><span class="cheat-en">単独解釈より文脈優先</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== QUIZ DATA =====
+const vocabQuizzes = [
+  {
+    q: '「うつくし」の古文での意味として正しいものはどれか。',
+    mono: 'うつくし',
+    options: ['美しい', 'かわいらしい・愛らしい', '賢い', '素晴らしい'],
+    answer: 1,
+    exp: '「うつくし」は現代語の「美しい」とは異なり、「かわいらしい・愛らしい」という意味。小さいもの・幼いものへの愛着を表す。'
+  },
+  {
+    q: '「をかし」の意味として最も適切なものを選べ。',
+    mono: 'をかし',
+    options: ['怖い・不気味だ', '悲しい・切ない', '趣がある・おもしろい', '恥ずかしい'],
+    answer: 2,
+    exp: '「をかし」は枕草子の美意識のキーワード。「趣がある・おもしろい・心ひかれる」という意味で、主に清少納言が多用した。'
+  },
+  {
+    q: '「あはれ」の意味として正しいものはどれか。',
+    mono: 'あはれ',
+    options: ['かわいそう（憐れみ）', 'しみじみとした感動・感慨', 'おかしい・滑稽だ', '恐ろしい'],
+    answer: 1,
+    exp: '「あはれ」は源氏物語の美意識「もののあはれ」のキーワード。「しみじみとした感動・情趣」という意味で、単に憐れみではない。'
+  },
+  {
+    q: '次の「やさし」の意味として正しいものはどれか。',
+    mono: 'やさし',
+    options: ['やさしい・親切だ', '恥ずかしい・肩身が狭い', '静かだ・おとなしい', '喜ばしい'],
+    answer: 1,
+    exp: '「やさし」は現代語の「優しい」とは全く異なり、「恥ずかしい・肩身が狭い・みっともない」という意味。語源は「痩（や）せる」から。'
+  },
+  {
+    q: '「ありがたし」の古語での意味はどれか。',
+    mono: 'ありがたし',
+    options: ['感謝している', 'めったにない・稀だ', 'すばらしい', '難しい'],
+    answer: 1,
+    exp: '「ありがたし」=「有り難し」で「存在することが難しい」→「めったにない・珍しい・稀だ」という意味。現代の「ありがとう」の語源。'
+  },
+  {
+    q: '「つとめて」の意味として正しいものはどれか。',
+    mono: 'つとめて',
+    options: ['努力して', '早朝・翌朝', '夜遅く', '急いで'],
+    answer: 1,
+    exp: '「つとめて」は「早朝」または「（逢瀬の）翌朝」を意味する時間を表す語。特に男女の逢瀬の後の「翌朝」として使われることが多い。'
+  },
+  {
+    q: '「いみじ」の説明として最も正しいものを選べ。',
+    mono: 'いみじ',
+    options: ['美しい様子を表す', '甚だしい（良いにも悪いにも使う）', '悲しい・切ない', '怒っている'],
+    answer: 1,
+    exp: '「いみじ」は「程度が甚だしい」という意味で、良い意味（非常に素晴らしい）にも悪い意味（ひどい・恐ろしい）にも使われる。文脈判断が重要。'
+  },
+  {
+    q: '「え〜ず」の意味として正しいものはどれか。',
+    mono: 'え〜ず',
+    options: ['〜しないでいる', '〜することができない', '〜してはいけない', '〜するはずがない'],
+    answer: 1,
+    exp: '「え」は打消と呼応する副詞で「え〜ず」で「〜することができない（不可能）」という意味。「え起きず」＝「起きることができない」。'
+  },
+];
+
+const grammarQuizzes = [
+  {
+    q: '「山高くして雲なし」の「して」の品詞は何か。',
+    mono: 'して',
+    options: ['接続助詞', '動詞', '助動詞', '格助詞'],
+    answer: 0,
+    exp: '「して」は接続助詞で「〜であって・〜で」という意味。形容詞・形容動詞の連用形や体言につく「にして」の形でよく出る。'
+  },
+  {
+    q: '「花咲きぬ」の「ぬ」の意味として正しいものはどれか。',
+    mono: 'ぬ',
+    options: ['打消（〜ない）', '完了（〜した）', '推量', '強意'],
+    answer: 1,
+    exp: '連用形「咲き」に接続する「ぬ」は完了の助動詞「ぬ」。未然形に接続する「ぬ」（打消の「ず」の連体形）と区別が必要。接続で判断！'
+  },
+  {
+    q: '「月こそ出でたれ」の「こそ〜たれ」は係り結びで、「たれ」の活用形は何か。',
+    mono: 'こそ〜たれ',
+    options: ['終止形', '連体形', '已然形', '命令形'],
+    answer: 2,
+    exp: '係助詞「こそ」は文末を已然形で結ぶ。「ぞ・なむ・や・か」→連体形、「こそ」→已然形。これは入試頻出の係り結びの法則。'
+  },
+  {
+    q: '「都にはあらずなりにけり」の「けり」の意味として最も適切なものは？',
+    mono: 'なりにけり',
+    options: ['過去（体験）', '過去（伝聞）・詠嘆', '完了', '推量'],
+    answer: 1,
+    exp: '「けり」は「過去（伝聞）」または「詠嘆」の助動詞。話者が直接体験していない過去や、気づきの詠嘆に使われる。「き」（体験過去）との識別が重要。'
+  },
+  {
+    q: '「来（き）たる人なり」の「なり」の意味として正しいものはどれか。',
+    mono: '来たる人なり',
+    options: ['断定（〜だ・〜である）', '伝聞（〜ということだ）', '存在（〜にある）', '推定（〜ようだ）'],
+    answer: 0,
+    exp: '「なり」が体言（名詞）や連体形に接続している場合は断定の助動詞。「なり」が終止形に接続している場合は伝聞・推定の助動詞。接続で見分ける！'
+  },
+  {
+    q: '「行かむ」の「む」の意味として文脈上最も自然なものは？（一人称の動作）',
+    mono: '我、行かむ',
+    options: ['推量（〜だろう）', '意志（〜しよう）', '勧誘（〜しませんか）', '仮定（〜としたら）'],
+    answer: 1,
+    exp: '「む」の意味は主語によって変わる。一人称（私）が主語の場合→意志「〜しよう」。二人称（あなた）→勧誘。三人称→推量が基本。'
+  },
+  {
+    q: '「見るべき人」の「べき」の意味として正しいものはどれか。',
+    mono: '見るべき人',
+    options: ['見たい人（願望）', '見るはずの人（当然）', '見ることができる人（可能）', '見ているような人（様態）'],
+    answer: 1,
+    exp: '「べし」は推量・意志・当然・命令・可能・適当の6つの意味を持つ。「〜べき人」の形では「当然・適当（〜するはずの・〜すべき）」の意味が最も多い。'
+  },
+  {
+    q: '「いかで都へ帰らまし」の「まし」はどんな意味か。',
+    mono: '帰らまし',
+    options: ['過去の推量', '反実仮想（もし〜なら〜だろうに）', '希望（〜したい）', '強い意志'],
+    answer: 1,
+    exp: '「まし」は反実仮想の助動詞で「もし〜であったなら〜だろうに」という現実と反対の仮定を表す。「ましかば〜まし」の構文でよく出る。'
+  },
+];
+
+const readQuizzes = [
+  {
+    q: '「今は昔、竹取の翁といふものありけり」とある。この文章で「けり」はどの意味か。',
+    mono: 'ありけり',
+    options: ['体験した過去', '伝聞・昔話の雰囲気を出す詠嘆', '完了', '存在'],
+    answer: 1,
+    exp: '物語の書き出しでの「けり」は「昔話・伝聞の過去」の意。「今は昔〜けり」のパターンは竹取・伊勢・今昔物語など多くの物語の定型表現。'
+  },
+  {
+    q: '「春はあけぼの。やうやう白くなりゆく山ぎは」から作品と作者を選べ。',
+    mono: '春はあけぼの',
+    options: ['源氏物語・紫式部', '枕草子・清少納言', '徒然草・兼好法師', '更級日記・菅原孝標女'],
+    answer: 1,
+    exp: '「春はあけぼの」は枕草子の冒頭。作者は清少納言。「をかし」の美意識を持つ随筆。同時期の源氏物語（紫式部）との比較も頻出。'
+  },
+  {
+    q: '「祇園精舎の鐘の声、諸行無常の響きあり」の作品名は何か。',
+    mono: '祇園精舎〜',
+    options: ['源氏物語', '方丈記', '平家物語', '太平記'],
+    answer: 2,
+    exp: '平家物語の有名な冒頭。「諸行無常・盛者必衰」の無常観が主題の軍記物語。琵琶法師によって語り継がれた。'
+  },
+  {
+    q: '「つれづれなるままに、日暮らし硯に向かひて」から始まる作品の作者は誰か。',
+    mono: 'つれづれなるままに',
+    options: ['鴨長明', '兼好法師', '西行法師', '松尾芭蕉'],
+    answer: 1,
+    exp: '徒然草の冒頭。作者は兼好法師（吉田兼好）。鎌倉時代末期の随筆で、人生観・処世術など多彩な内容。「つれづれ」は「することがなく所在ない」という意味。'
+  },
+  {
+    q: '古文で「御（お）曹司にまゐる」の「まゐる」の意味として正しいものはどれか。',
+    mono: 'まゐる',
+    options: ['行く（一般）', '参上する・差し上げる（謙譲）', 'いらっしゃる（尊敬）', '申し上げる（謙譲）'],
+    answer: 1,
+    exp: '「まゐる（参る）」は謙譲語で「参上する（行く）」または「差し上げる（食べる・飲む）」という意味。主語（話し手）が身分の低い人で、行き先が尊い人物の場所。'
+  },
+  {
+    q: '「男もすなる日記といふものを、女もしてみむとてするなり」（土佐日記冒頭）の作者は？',
+    mono: '土佐日記',
+    options: ['紫式部', '清少納言', '紀貫之', '菅原孝標女'],
+    answer: 2,
+    exp: '土佐日記の作者は紀貫之（男性）。男性でありながら女性のふりをして書いた、仮名で書かれた最初の日記文学。「女もしてみむ」は女性に仮託した表現。'
+  },
+  {
+    q: '「をりふしの移り変はるこそ、ものごとに哀れはあれ」の意味として最も近いものは？',
+    mono: 'をりふしの移り変はる',
+    options: ['季節が変わることは困ったことだ', '折々に変わる季節にこそ、しみじみとした情趣がある', '変化するものは美しくない', '季節の変わり目は危険だ'],
+    answer: 1,
+    exp: '「をりふし」＝折節・折々の時。「あはれはあれ」＝情趣がある。四季の移り変わりにしみじみとした感動を見出す、日本古典文学の根本的な美意識。'
+  },
+  {
+    q: '係り結びの法則で「や・か」に対応する文末の活用形はどれか。',
+    mono: 'や・か → ？',
+    options: ['終止形', '連体形', '已然形', '命令形'],
+    answer: 1,
+    exp: '係り結びの法則：「ぞ・なむ・や・か」は文末を連体形に結ぶ。「こそ」のみ已然形。「や・か」は疑問・反語を表し、文末が連体形で終わるのが特徴。'
+  },
+];
+
+// ===== SCORE TRACKING =====
+let totalCorrect = 0;
+let totalAnswered = 0;
+const answeredMap = {};
+
+function updateScoreBar() {
+  document.getElementById('score-correct').textContent = totalCorrect;
+  document.getElementById('score-total').textContent = totalAnswered;
+  document.getElementById('score-pct').textContent = totalAnswered > 0
+    ? Math.round(totalCorrect / totalAnswered * 100) + '%' : '—';
+}
+
+// ===== BUILD QUIZ =====
+function buildQuiz(quizData, containerId, finishId, fscoreId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const quizState = { correct: 0, answered: 0, total: quizData.length };
+
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.innerHTML = `
+      <div class="quiz-head">
+        <div class="quiz-num">${i + 1}</div>
+        <span class="quiz-type-badge">四択</span>
+      </div>
+      <div class="quiz-question">
+        ${q.q.replace(new RegExp(q.mono.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'), `<span class="mono">${q.mono}</span>`)}
+      </div>
+      <div class="options" id="opts-${containerId}-${i}">
+        ${q.options.map((opt, oi) =>
+          `<button class="option-btn" onclick="answer('${containerId}',${i},${oi})">${opt}</button>`
+        ).join('')}
+      </div>
+      <div class="quiz-result" id="result-${containerId}-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+
+  // store state
+  answeredMap[containerId] = { state: quizState, data: quizData, finishId, fscoreId };
+}
+
+function answer(containerId, qIdx, optIdx) {
+  const { state, data, finishId, fscoreId } = answeredMap[containerId];
+  const q = data[qIdx];
+  const optsEl = document.getElementById(`opts-${containerId}-${qIdx}`);
+  const resultEl = document.getElementById(`result-${containerId}-${qIdx}`);
+
+  // disable all
+  optsEl.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === optIdx && optIdx !== q.answer) btn.classList.add('wrong');
+  });
+
+  const isCorrect = optIdx === q.answer;
+  resultEl.className = 'quiz-result show ' + (isCorrect ? 'ok' : 'ng');
+  resultEl.innerHTML = `
+    <span class="result-icon">${isCorrect ? '⭕' : '❌'}</span>
+    <strong>${isCorrect ? '正解！' : '不正解'}</strong>
+    <div class="result-exp">${q.exp}</div>
+  `;
+
+  state.answered++;
+  if (isCorrect) { state.correct++; totalCorrect++; }
+  totalAnswered++;
+  updateScoreBar();
+
+  if (state.answered === state.total) {
+    const banner = document.getElementById(finishId);
+    document.getElementById(fscoreId).textContent = `${state.correct} / ${state.total} 問正解`;
+    banner.classList.add('show');
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function resetQuiz(containerId) {
+  const { data, finishId, fscoreId } = answeredMap[containerId];
+
+  // subtract from totals
+  const oldState = answeredMap[containerId].state;
+  totalCorrect -= oldState.correct;
+  totalAnswered -= oldState.answered;
+  updateScoreBar();
+
+  document.getElementById(finishId).classList.remove('show');
+  buildQuiz(data, containerId, finishId, fscoreId);
+}
+
+// ===== TAB SWITCH =====
+function switchTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== INIT =====
+buildQuiz(vocabQuizzes, 'quiz-vocab', 'finish-vocab', 'fscore-vocab');
+buildQuiz(grammarQuizzes, 'quiz-grammar', 'finish-grammar', 'fscore-grammar');
+buildQuiz(readQuizzes, 'quiz-read', 'finish-read', 'fscore-read');
+updateScoreBar();
+</script>
+</body>
+</html>
