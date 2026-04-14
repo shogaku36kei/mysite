@@ -10,7 +10,7 @@
    RESET & ROOT
 ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
 :root {
   --bg:       #f7f3ec;
   --paper:    #ffffff;
@@ -25,9 +25,9 @@
   --radius:   0px;
   --shadow:   3px 3px 0 var(--ink);
 }
-
+ 
 html { scroll-behavior: smooth; }
-
+ 
 body {
   background: var(--bg);
   color: var(--ink);
@@ -44,9 +44,9 @@ body {
       var(--rule) 28px
     );
 }
-
+ 
 .page { max-width: 860px; margin: 0 auto; }
-
+ 
 /* ============================================================
    HEADER
 ============================================================ */
@@ -91,7 +91,7 @@ body {
   color: #90aac8;
   position: relative; z-index: 1;
 }
-
+ 
 /* ============================================================
    PROGRESS STRIP
 ============================================================ */
@@ -140,7 +140,7 @@ body {
   color: var(--mist);
   white-space: nowrap;
 }
-
+ 
 /* ============================================================
    SECTION HEADER
 ============================================================ */
@@ -160,7 +160,7 @@ body {
   padding-bottom: 6px;
   margin-bottom: 18px;
 }
-
+ 
 /* ============================================================
    DREAM BLOCK
 ============================================================ */
@@ -174,7 +174,7 @@ body {
 }
 .dream-block .section-eyebrow { color: #6a8fbf; }
 .dream-block .section-title { color: var(--accent2); border-color: #3a4e70; }
-
+ 
 .field-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -182,7 +182,7 @@ body {
 }
 @media (max-width: 560px) { .field-group { grid-template-columns: 1fr; } }
 .field-group .span2 { grid-column: 1 / -1; }
-
+ 
 .field-label {
   display: block;
   font-size: 10px;
@@ -192,7 +192,7 @@ body {
   margin-bottom: 4px;
 }
 .dream-block .field-label { color: #6a8fbf; }
-
+ 
 .f-input, .f-textarea {
   width: 100%;
   background: rgba(255,255,255,.07);
@@ -214,7 +214,7 @@ body {
 }
 .f-textarea { min-height: 72px; border: 1px solid #3a5070; padding: 8px 10px; }
 .f-textarea:focus { border-color: var(--accent2); }
-
+ 
 /* ============================================================
    MONTH CARD
 ============================================================ */
@@ -238,10 +238,10 @@ body {
 .month-block:nth-child(7){ animation-delay:.35s }
 .month-block:nth-child(8){ animation-delay:.40s }
 .month-block:nth-child(9){ animation-delay:.45s }
-
+ 
 .month-block.is-done { opacity: .6; }
 .month-block.is-done .month-hd { background: #888 !important; }
-
+ 
 /* header band */
 .month-hd {
   display: flex;
@@ -255,7 +255,7 @@ body {
 .hd-ink   { background: var(--navy);   color: #fff; }
 .hd-red   { background: var(--accent); color: #fff; }
 .hd-amber { background: var(--accent2); color: var(--ink); }
-
+ 
 .month-num {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28px;
@@ -277,7 +277,7 @@ body {
   flex-shrink: 0;
 }
 .month-block.open .month-toggle-btn { transform: rotate(180deg); }
-
+ 
 .done-wrap {
   display: flex;
   align-items: center;
@@ -293,7 +293,7 @@ body {
   cursor: pointer;
   accent-color: var(--success);
 }
-
+ 
 /* body */
 .month-body {
   display: none;
@@ -301,7 +301,7 @@ body {
   border-top: 2px solid var(--ink);
 }
 .month-block.open .month-body { display: block; }
-
+ 
 /* -------- TASK ITEM -------- */
 .task-section-title {
   font-size: 10px;
@@ -313,7 +313,7 @@ body {
   margin: 16px 0 10px;
 }
 .task-section-title:first-of-type { margin-top: 0; }
-
+ 
 .task-item {
   border: 1.5px solid var(--rule);
   margin-bottom: 10px;
@@ -322,7 +322,7 @@ body {
 .task-item:focus-within { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(28,43,74,.12); }
 .task-item.checked { border-color: var(--success); background: #f0faf4; }
 .task-item.checked .task-note-area { background: #f0faf4; }
-
+ 
 .task-head {
   display: flex;
   align-items: flex-start;
@@ -347,7 +347,7 @@ body {
   text-decoration: line-through;
   text-decoration-color: var(--success);
 }
-
+ 
 /* 自分メモエリア（マルチライン） */
 .task-note-wrap {
   border-top: 1px dashed var(--rule);
@@ -377,7 +377,7 @@ body {
   padding: 4px 0 8px;
 }
 .task-note::placeholder { color: #c8c3bb; }
-
+ 
 /* -------- MONTH MEMO -------- */
 .month-memo-wrap {
   margin-top: 20px;
@@ -406,7 +406,7 @@ body {
   min-height: 72px;
 }
 .month-memo::placeholder { color: #bbc8e0; }
-
+ 
 /* ============================================================
    PLEDGE
 ============================================================ */
@@ -418,7 +418,7 @@ body {
   margin-bottom: 28px;
 }
 .pledge-block .section-title { color: var(--accent); border-color: var(--accent); }
-
+ 
 .pledge-statement {
   border-left: 4px solid var(--accent);
   padding: 12px 16px;
@@ -432,7 +432,7 @@ body {
   border-bottom: 1.5px solid var(--accent);
   padding-bottom: 1px;
 }
-
+ 
 .pledge-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -440,7 +440,7 @@ body {
 }
 @media (max-width: 560px) { .pledge-grid { grid-template-columns: 1fr; } }
 .pledge-grid .span2 { grid-column: 1 / -1; }
-
+ 
 .p-label {
   display: block;
   font-size: 10px;
@@ -477,7 +477,7 @@ body {
   border-radius: 0;
 }
 .p-textarea:focus { border-color: var(--accent); border-bottom-width: 2px; }
-
+ 
 /* ============================================================
    ACTIONS
 ============================================================ */
@@ -501,12 +501,101 @@ body {
 .btn:hover { background: var(--accent); border-color: var(--accent); transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--ink); }
 .btn.ghost { background: #fff; color: var(--ink); }
 .btn.ghost:hover { background: var(--accent2); border-color: var(--accent2); color: var(--ink); }
-
+ 
 /* ============================================================
    AUTO-RESIZE helper
 ============================================================ */
 textarea { overflow: hidden; }
-
+ 
+/* ============================================================
+   ACTIONS WRAP
+============================================================ */
+.actions-wrap {
+  margin-bottom: 48px;
+}
+.actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.btn.danger { border-color: #999; color: #999; background: #fff; }
+.btn.danger:hover { background: #c0392b; border-color: #c0392b; color: #fff; }
+ 
+.io-panel {
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+}
+.io-panel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  color: var(--navy);
+}
+.io-desc {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 16px;
+}
+.io-desc strong { color: var(--accent); }
+ 
+.io-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 560px) { .io-row { grid-template-columns: 1fr; } }
+ 
+.io-card {
+  border: 1.5px solid var(--rule);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fafaf8;
+}
+.io-card-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--navy);
+}
+.io-card-desc {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--mist);
+  flex: 1;
+}
+.io-card-desc strong { color: var(--accent); }
+.io-btn {
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 9px 16px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+ 
+.io-status {
+  margin-top: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: 'Share Tech Mono', monospace;
+  border-left: 4px solid var(--success);
+  background: #f0faf4;
+  color: #1a6b3a;
+}
+.io-status.error {
+  border-color: var(--accent);
+  background: #fff5f5;
+  color: var(--accent);
+}
+ 
 /* ============================================================
    PRINT
 ============================================================ */
@@ -522,7 +611,7 @@ textarea { overflow: hidden; }
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .actions, .progress-strip { display: none !important; }
+  .actions-wrap, .progress-strip { display: none !important; }
   .month-block { break-inside: avoid; box-shadow: none; }
   .month-body { display: block !important; }
   .month-block.open .month-toggle-btn { display: none; }
@@ -537,14 +626,14 @@ textarea { overflow: hidden; }
 </head>
 <body>
 <div class="page">
-
+ 
 <!-- ===== HEADER ===== -->
 <header class="site-header">
   <div class="header-eyebrow">中学3年生 · 2025–2026 · 自分専用ノート</div>
   <h1 class="header-title">俺の<em>高校進学</em><br>完全攻略MAP</h1>
   <p class="header-sub">書いた分だけ、道が見える。動いた分だけ、未来が変わる。</p>
 </header>
-
+ 
 <!-- ===== PROGRESS ===== -->
 <div class="progress-strip">
   <span class="progress-label">達成率</span>
@@ -553,7 +642,7 @@ textarea { overflow: hidden; }
   </div>
   <span class="progress-count" id="pCount">0 / 0 タスク</span>
 </div>
-
+ 
 <!-- ===== DREAM ===== -->
 <div class="dream-block">
   <div class="section-eyebrow">// STEP 01 — まず、ここに書く</div>
@@ -585,12 +674,12 @@ textarea { overflow: hidden; }
     </div>
   </div>
 </div>
-
+ 
 <!-- ===== TIMELINE ===== -->
 <div>
   <div class="section-eyebrow">// STEP 02 — スケジュールを制す</div>
   <h2 class="section-title">📅 進路タイムライン</h2>
-
+ 
   <!-- ===================== 4月 ===================== -->
   <div class="month-block open" id="mb-apr">
     <div class="month-hd hd-red" onclick="toggleMonth('apr')">
@@ -603,9 +692,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▲</div>
     </div>
     <div class="month-body" id="bd-apr">
-
+ 
       <div class="task-section-title">📌 イベント・手続き</div>
-
+ 
       <div class="task-item" id="ti-apr-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-apr-1" onchange="taskToggle('apr-1');save()">
@@ -616,7 +705,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-apr-1" placeholder="例：第1志望を〇〇高校にした。理由は…　迷ったのは…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-apr-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-apr-2" onchange="taskToggle('apr-2');save()">
@@ -627,9 +716,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-apr-2" placeholder="例：先生から「内申を○○科目で上げよう」と言われた。自分の希望を伝えたら…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🔍 調べる・把握する</div>
-
+ 
       <div class="task-item" id="ti-apr-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-apr-3" onchange="taskToggle('apr-3');save()">
@@ -640,7 +729,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-apr-3" placeholder="例：〇〇高校の偏差値は約△△。一般入試は5教科。昨年倍率は◇◇倍。今の自分との差は…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-apr-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-apr-4" onchange="taskToggle('apr-4');save()">
@@ -651,9 +740,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-apr-4" placeholder="例：英語◎、数学△（関数が苦手）。内申は今のところ…。上げる必要があるのは…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🎯 今月の学習作戦</div>
-
+ 
       <div class="task-item" id="ti-apr-5">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-apr-5" onchange="taskToggle('apr-5');save()">
@@ -664,14 +753,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-apr-5" placeholder="例：数学→一次関数、図形の証明 / 英語→現在完了、不規則動詞 / 理科→化学変化…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 4月のまとめ・気づき・今月の一言</span>
         <textarea class="month-memo" id="mm-apr" placeholder="この月が終わったとき、自分への言葉を残そう。何ができた？何が課題だった？" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 6月 ===================== -->
   <div class="month-block" id="mb-jun">
     <div class="month-hd hd-ink" onclick="toggleMonth('jun')">
@@ -684,9 +773,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-jun">
-
+ 
       <div class="task-section-title">📌 オープンスクール</div>
-
+ 
       <div class="task-item" id="ti-jun-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jun-1" onchange="taskToggle('jun-1');save()">
@@ -697,7 +786,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jun-1" placeholder="例：〇〇高校→7/△ 申込済。△△高校→6/□ 申込予定。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jun-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jun-2" onchange="taskToggle('jun-2');save()">
@@ -708,7 +797,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jun-2" placeholder="例：〇〇高校は文化祭の展示が面白かった。廊下の雰囲気が…。先輩が話しかけてくれて…。ここに通いたいと思ったのは…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jun-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jun-3" onchange="taskToggle('jun-3');save()">
@@ -719,9 +808,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jun-3" placeholder="例：実際に行って感じた〇〇高校の魅力は…。自分のやりたいこととつながるのは…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">📝 期末テスト対策</div>
-
+ 
       <div class="task-item" id="ti-jun-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jun-4" onchange="taskToggle('jun-4');save()">
@@ -732,7 +821,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jun-4" placeholder="例：数学目標85点→実際78点。関数でミスった。次は計算ミス対策を…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jun-5">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jun-5" onchange="taskToggle('jun-5');save()">
@@ -743,14 +832,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jun-5" placeholder="例：理科のレポートを丁寧に書いた。美術の授業で積極的に発言した…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 6月のまとめ・気づき・今月の一言</span>
         <textarea class="month-memo" id="mm-jun" placeholder="この月が終わったとき、自分への言葉を残そう。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 7月 ===================== -->
   <div class="month-block" id="mb-jul">
     <div class="month-hd hd-ink" onclick="toggleMonth('jul')">
@@ -763,9 +852,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-jul">
-
+ 
       <div class="task-section-title">📌 3者懇談</div>
-
+ 
       <div class="task-item" id="ti-jul-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jul-1" onchange="taskToggle('jul-1');save()">
@@ -776,7 +865,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jul-1" placeholder="例：先生から「夏休みに数学の基礎を固めると有利」と言われた。志望校についての先生の見解は…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jul-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jul-2" onchange="taskToggle('jul-2');save()">
@@ -787,9 +876,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jul-2" placeholder="例：7/21〜8/31、毎日4時間。午前：数学（問題集◯ページ）、午後：英語（単語100個+長文）。週1で過去問…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🎯 夏前の準備</div>
-
+ 
       <div class="task-item" id="ti-jul-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jul-3" onchange="taskToggle('jul-3');save()">
@@ -800,14 +889,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jul-3" placeholder="例：数学「〇〇問題集」→基礎から標準まで網羅。英語「△△」→単語と読解が両方できる。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 7月のまとめ・気づき・夏への誓い</span>
         <textarea class="month-memo" id="mm-jul" placeholder="夏休みに向けて、自分への約束を書こう。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 8月 ===================== -->
   <div class="month-block" id="mb-aug">
     <div class="month-hd hd-amber" onclick="toggleMonth('aug')">
@@ -820,9 +909,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-aug">
-
+ 
       <div class="task-section-title">📌 イベント・手続き</div>
-
+ 
       <div class="task-item" id="ti-aug-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-aug-1" onchange="taskToggle('aug-1');save()">
@@ -833,9 +922,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-aug-1" placeholder="例：4月と同じく〇〇高校第1志望。オープンスクールで確信が強くなった。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🔥 夏の学習記録</div>
-
+ 
       <div class="task-item" id="ti-aug-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-aug-2" onchange="taskToggle('aug-2');save()">
@@ -846,7 +935,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-aug-2" placeholder="例：数学の関数→教科書の問題を全部解き直した。最初は6割しかできなかったが、今は8〜9割解けるようになった。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-aug-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-aug-3" onchange="taskToggle('aug-3');save()">
@@ -857,7 +946,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-aug-3" placeholder="例：〇〇年度→数学65点、英語70点。英語の長文が読み切れなかった。数学は大問3が難しい。次は…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-aug-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-aug-4" onchange="taskToggle('aug-4');save()">
@@ -868,7 +957,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-aug-4" placeholder="例：△△模試→偏差値◯◯、〇〇高校C判定。英語リスニングが足を引っ張っている。9月から…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-aug-5">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-aug-5" onchange="taskToggle('aug-5');save()">
@@ -879,14 +968,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-aug-5" placeholder="例：最初の2週間は集中できた。後半に友達と遊びすぎて失速。来年の自分へ：〇〇に気をつけろ。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 夏のまとめ・今の自分に正直な総評</span>
         <textarea class="month-memo" id="mm-aug" placeholder="夏が終わったとき、自分に正直に書こう。やり切れた？後悔してる？それをそのまま書くことが、次へのエネルギーになる。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 11月 ===================== -->
   <div class="month-block" id="mb-nov">
     <div class="month-hd hd-ink" onclick="toggleMonth('nov')">
@@ -899,9 +988,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-nov">
-
+ 
       <div class="task-section-title">📌 イベント・手続き</div>
-
+ 
       <div class="task-item" id="ti-nov-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-nov-1" onchange="taskToggle('nov-1');save()">
@@ -912,7 +1001,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-nov-1" placeholder="例：志望校は変わらず。ただ私立の第1志望を〇〇から△△に変えた。理由は…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-nov-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-nov-2" onchange="taskToggle('nov-2');save()">
@@ -923,7 +1012,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-nov-2" placeholder="例：先生「今の内申では〇〇高校は少し厳しい。△△高校なら十分狙える」と言われた。自分としては…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-nov-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-nov-3" onchange="taskToggle('nov-3');save()">
@@ -934,9 +1023,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-nov-3" placeholder="例：〇〇高校私立Ⅰ期：出願12/〇〜12/△、受験1/□。必要書類：調査書、写真〇枚、受験料…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🎯 入試対策</div>
-
+ 
       <div class="task-item" id="ti-nov-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-nov-4" onchange="taskToggle('nov-4');save()">
@@ -947,7 +1036,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-nov-4" placeholder="例：英語は読解が安定してきた。数学の確率・統計が弱い。残り3ヶ月で集中的に…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-nov-5">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-nov-5" onchange="taskToggle('nov-5');save()">
@@ -958,14 +1047,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-nov-5" placeholder="例：「志望理由」→〇〇。「中学で頑張ったこと」→△△。うまく言えなかった質問…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 11月のまとめ・カウントダウン開始の言葉</span>
         <textarea class="month-memo" id="mm-nov" placeholder="入試まであと少し。今の自分の状態を正直に書こう。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 12月 ===================== -->
   <div class="month-block" id="mb-dec">
     <div class="month-hd hd-red" onclick="toggleMonth('dec')">
@@ -978,9 +1067,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-dec">
-
+ 
       <div class="task-section-title">📌 受験校確定・出願準備</div>
-
+ 
       <div class="task-item" id="ti-dec-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-dec-1" onchange="taskToggle('dec-1');save()">
@@ -991,7 +1080,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-dec-1" placeholder="例：私立Ⅰ期→〇〇高校（専願/併願）、公立特別→受験しない、公立一般→△△高校" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-dec-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-dec-2" onchange="taskToggle('dec-2');save()">
@@ -1002,9 +1091,9 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-dec-2" placeholder="例：出願期間〇/△〜〇/□。調査書→先生に依頼済。写真→□枚撮影済。受験料→振込済（領収書保管）" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-section-title">🎯 冬の追い込み</div>
-
+ 
       <div class="task-item" id="ti-dec-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-dec-3" onchange="taskToggle('dec-3');save()">
@@ -1015,7 +1104,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-dec-3" placeholder="例：12/26〜1/10。毎日5時間。午前→過去問（数・英交互）、午後→弱点補強（理科化学）。大晦日も元日も休まない。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-dec-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-dec-4" onchange="taskToggle('dec-4');save()">
@@ -1026,14 +1115,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-dec-4" placeholder="例：〇〇年度→数学72点（目標80点）。大問4に時間かけすぎ。本番は大問1→2→3を先に確実に取る作戦に変更。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 12月のまとめ・年末年始の自分への言葉</span>
         <textarea class="month-memo" id="mm-dec" placeholder="受験が目前に迫った今、自分に言い聞かせたいことを書こう。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 1月 ===================== -->
   <div class="month-block" id="mb-jan">
     <div class="month-hd hd-amber" onclick="toggleMonth('jan')">
@@ -1046,9 +1135,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-jan">
-
+ 
       <div class="task-section-title">📌 直前・当日</div>
-
+ 
       <div class="task-item" id="ti-jan-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jan-1" onchange="taskToggle('jan-1');save()">
@@ -1059,7 +1148,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jan-1" placeholder="" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jan-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jan-2" onchange="taskToggle('jan-2');save()">
@@ -1070,7 +1159,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jan-2" placeholder="例：受験票◯、鉛筆5本・消しゴム2個、腕時計（スマホNG）。電車→〇〇駅7:30発。会場まで徒歩10分。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jan-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jan-3" onchange="taskToggle('jan-3');save()">
@@ -1081,7 +1170,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jan-3" placeholder="例：数学→大問3で詰まった。英語リスニングは聞き取れた。全体的な手応えは〇〇点くらいかな。緊張したけど…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-jan-4">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-jan-4" onchange="taskToggle('jan-4');save()">
@@ -1092,14 +1181,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-jan-4" placeholder="例：〇〇高校→合格（または不合格）。この結果を受けて、公立に向けて〇〇を続ける。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 1月のまとめ・公立入試前の自分への言葉</span>
         <textarea class="month-memo" id="mm-jan" placeholder="最初の本番を終えた今、自分に正直に。次に何をする？" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 2月 ===================== -->
   <div class="month-block" id="mb-feb">
     <div class="month-hd hd-red" onclick="toggleMonth('feb')">
@@ -1112,9 +1201,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-feb">
-
+ 
       <div class="task-section-title">📌 特別選抜</div>
-
+ 
       <div class="task-item" id="ti-feb-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-feb-1" onchange="taskToggle('feb-1');save()">
@@ -1125,7 +1214,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-feb-1" placeholder="例：出願期間〇/△〜。調査書・志願書・写真を〇/△に提出済。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-feb-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-feb-2" onchange="taskToggle('feb-2');save()">
@@ -1136,7 +1225,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-feb-2" placeholder="例：面接練習→「志望理由」「中学で頑張ったこと」「入学後にやりたいこと」を5回練習。先生から「もっと具体的に」と言われた。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-feb-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-feb-3" onchange="taskToggle('feb-3');save()">
@@ -1147,14 +1236,14 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-feb-3" placeholder="例：面接→「なぜこの高校を選んだか」→〇〇と答えた。予想外の質問は「△△」。全体の手応えは…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 2月のまとめ・一般選抜前の自分への言葉</span>
         <textarea class="month-memo" id="mm-feb" placeholder="特別選抜を終えて。結果・気持ち・次への切り替えを書こう。" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
   <!-- ===================== 3月 ===================== -->
   <div class="month-block" id="mb-mar">
     <div class="month-hd hd-amber" onclick="toggleMonth('mar')">
@@ -1167,9 +1256,9 @@ textarea { overflow: hidden; }
       <div class="month-toggle-btn">▼</div>
     </div>
     <div class="month-body" id="bd-mar">
-
+ 
       <div class="task-section-title">📌 一般選抜・合格発表</div>
-
+ 
       <div class="task-item" id="ti-mar-1">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-mar-1" onchange="taskToggle('mar-1');save()">
@@ -1180,7 +1269,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-mar-1" placeholder="" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-mar-2">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-mar-2" onchange="taskToggle('mar-2');save()">
@@ -1191,7 +1280,7 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-mar-2" placeholder="例：数学→時間は余裕あった。大問5の空間図形でミスった気がする。英語→長文は読めた。全体で〇〇点くらいかな…" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="task-item" id="ti-mar-3">
         <div class="task-head">
           <input class="task-cb" type="checkbox" id="cb-mar-3" onchange="taskToggle('mar-3');save()">
@@ -1202,21 +1291,21 @@ textarea { overflow: hidden; }
           <textarea class="task-note" id="tn-mar-3" placeholder="例：〇月△日、合格（または…）。発表を見たときの気持ち：…。入学手続き期日：〇/□。" oninput="autoResize(this);save()"></textarea>
         </div>
       </div>
-
+ 
       <div class="month-memo-wrap">
         <span class="month-memo-label">📒 すべてが終わったとき、この1年間の自分への言葉</span>
         <textarea class="month-memo" id="mm-mar" placeholder="長かった進路の旅が終わる。この1年で何が変わった？何を学んだ？高校でどんな自分になりたい？" oninput="autoResize(this);save()"></textarea>
       </div>
     </div>
   </div>
-
+ 
 </div><!-- /timeline -->
-
+ 
 <!-- ===== PLEDGE ===== -->
 <div class="pledge-block" style="margin-top:32px">
   <div class="section-eyebrow">// STEP 03 — 約束を刻む</div>
   <h2 class="section-title">✍️ 親子の約束</h2>
-
+ 
   <div class="pledge-statement">
     俺は<strong id="ps-name">＿＿＿＿</strong>。<br>
     目指す高校は<strong id="ps-school">＿＿＿＿</strong>。<br>
@@ -1224,7 +1313,7 @@ textarea { overflow: hidden; }
     親は<strong id="ps-parent">＿＿＿＿</strong>でサポートする。<br>
     一緒に、この挑戦を乗り越える。
   </div>
-
+ 
   <div class="pledge-grid">
     <div>
       <label class="p-label" for="pg-name">息子の名前</label>
@@ -1252,17 +1341,46 @@ textarea { overflow: hidden; }
     </div>
   </div>
 </div>
-
+ 
 <!-- ===== ACTIONS ===== -->
-<div class="actions">
-  <button class="btn" onclick="window.print()">🖨 A4印刷</button>
-  <button class="btn ghost" onclick="expandAll()">📂 全部開く</button>
-  <button class="btn ghost" onclick="collapseAll()">📁 全部閉じる</button>
-  <button class="btn ghost" onclick="clearAll()">🗑 リセット</button>
+<div class="actions-wrap">
+ 
+  <div class="actions-row">
+    <button class="btn" onclick="window.print()">🖨 A4印刷</button>
+    <button class="btn ghost" onclick="expandAll()">📂 全部開く</button>
+    <button class="btn ghost" onclick="collapseAll()">📁 全部閉じる</button>
+    <button class="btn ghost danger" onclick="clearAll()">🗑 リセット</button>
+  </div>
+ 
+  <div class="io-panel">
+    <div class="io-panel-title">💾 データのバックアップ ／ 引き継ぎ</div>
+    <p class="io-desc">
+      入力内容はブラウザに自動保存されますが、<strong>別のデバイスや別のブラウザでは共有できません。</strong><br>
+      エクスポートしたJSONファイルを保存しておくことで、どこからでも復元できます。
+    </p>
+    <div class="io-row">
+      <!-- EXPORT -->
+      <div class="io-card">
+        <div class="io-card-label">📤 エクスポート</div>
+        <div class="io-card-desc">今の入力内容をJSONファイルとして保存します。<br>定期的に保存しておくことをおすすめします。</div>
+        <button class="btn io-btn" onclick="exportData()">JSONをダウンロード</button>
+      </div>
+      <!-- IMPORT -->
+      <div class="io-card">
+        <div class="io-card-label">📥 インポート</div>
+        <div class="io-card-desc">保存したJSONファイルを読み込みます。<br><strong>現在の入力内容は上書きされます。</strong></div>
+        <label class="btn io-btn ghost" for="importFile">JSONを選択して読み込む</label>
+        <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
+    <!-- STATUS -->
+    <div id="io-status" class="io-status" style="display:none"></div>
+  </div>
+ 
 </div>
-
+ 
 </div><!-- /page -->
-
+ 
 <script>
 /* ============================================================
    AUTO RESIZE
@@ -1274,12 +1392,12 @@ function autoResize(el) {
 function resizeAll() {
   document.querySelectorAll('textarea').forEach(autoResize);
 }
-
+ 
 /* ============================================================
    TOGGLE
 ============================================================ */
 const months = ['apr','jun','jul','aug','nov','dec','jan','feb','mar'];
-
+ 
 function toggleMonth(id) {
   const mb = document.getElementById('mb-' + id);
   const bd = document.getElementById('bd-' + id);
@@ -1289,7 +1407,7 @@ function toggleMonth(id) {
   if (isOpen) bd.style.display = 'block'; else bd.style.display = 'none';
   save();
 }
-
+ 
 function expandAll() {
   months.forEach(m => {
     document.getElementById('mb-' + m).classList.add('open');
@@ -1303,7 +1421,7 @@ function collapseAll() {
     document.getElementById('bd-' + m).style.display = 'none';
   });
 }
-
+ 
 /* ============================================================
    MARK DONE
 ============================================================ */
@@ -1312,7 +1430,7 @@ function markDone(id) {
   document.getElementById('mb-' + id).classList.toggle('is-done', cb.checked);
   updateProgress();
 }
-
+ 
 /* ============================================================
    TASK TOGGLE
 ============================================================ */
@@ -1323,7 +1441,7 @@ function taskToggle(key) {
   ti.classList.toggle('checked', cb.checked);
   updateProgress();
 }
-
+ 
 /* ============================================================
    PROGRESS
 ============================================================ */
@@ -1335,7 +1453,7 @@ function updateProgress() {
   document.getElementById('pCount').textContent =
     done.length + ' / ' + all.length + ' タスク完了（' + pct + '%）';
 }
-
+ 
 /* ============================================================
    PLEDGE
 ============================================================ */
@@ -1347,12 +1465,111 @@ function updatePledge() {
   document.getElementById('ps-action').textContent = document.getElementById('pg-action').value || '＿＿＿＿';
   document.getElementById('ps-parent').textContent = document.getElementById('pg-parent').value || '＿＿＿＿';
 }
-
+ 
+/* ============================================================
+   EXPORT / IMPORT
+============================================================ */
+function collectData() {
+  const data = {};
+  document.querySelectorAll('[id]').forEach(el => {
+    if (el.tagName === 'INPUT' && el.type === 'text')      data[el.id] = el.value;
+    if (el.tagName === 'TEXTAREA')                          data[el.id] = el.value;
+    if (el.tagName === 'INPUT' && el.type === 'checkbox')  data[el.id] = el.checked;
+  });
+  months.forEach(m => { data['open_' + m] = document.getElementById('mb-' + m).classList.contains('open'); });
+  return data;
+}
+ 
+function exportData() {
+  const data = collectData();
+  const meta = {
+    _version: 'shinro_v2',
+    _exported: new Date().toISOString(),
+    _label: '俺の高校進学完全攻略MAP — バックアップ',
+    ...data
+  };
+  const json = JSON.stringify(meta, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const ts   = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  a.href     = url;
+  a.download = 'shinro_map_' + ts + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showStatus('✅ エクスポート完了！ファイル: shinro_map_' + ts + '.json', false);
+}
+ 
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+    showStatus('❌ JSONファイルを選択してください。', true);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const raw = JSON.parse(e.target.result);
+      // バージョンチェック（あれば）
+      if (raw._version && raw._version !== 'shinro_v2') {
+        if (!confirm('バージョンが異なるファイルです。それでも読み込みますか？')) return;
+      }
+      // _meta キーを除いてlocalStorageに保存
+      const clean = {};
+      Object.keys(raw).forEach(k => { if (!k.startsWith('_')) clean[k] = raw[k]; });
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(clean)); } catch(err) {}
+      // UIに反映
+      applyData(clean);
+      showStatus('✅ インポート完了！ ' + (raw._exported ? '保存日時: ' + raw._exported.slice(0,10) : '') + ' のデータを読み込みました。', false);
+    } catch(err) {
+      showStatus('❌ ファイルの読み込みに失敗しました。正しいJSONファイルか確認してください。', true);
+    }
+    // input をリセットして同じファイルを再度選択できるようにする
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+ 
+function applyData(data) {
+  Object.keys(data).forEach(key => {
+    const el = document.getElementById(key);
+    if (!el) return;
+    if (el.type === 'checkbox') {
+      el.checked = data[key];
+      if (key.startsWith('done-')) markDone(key.replace('done-', ''));
+      if (key.startsWith('cb-'))   taskToggle(key.replace('cb-', ''));
+    } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.value = data[key];
+    }
+  });
+  months.forEach(m => {
+    const isOpen = data['open_' + m];
+    const mb = document.getElementById('mb-' + m);
+    const bd = document.getElementById('bd-' + m);
+    if (isOpen === false) { mb.classList.remove('open'); bd.style.display = 'none'; }
+    else if (isOpen === true) { mb.classList.add('open'); bd.style.display = 'block'; }
+  });
+  setTimeout(resizeAll, 50);
+  updatePledge();
+  updateProgress();
+}
+ 
+function showStatus(msg, isError) {
+  const el = document.getElementById('io-status');
+  el.textContent = msg;
+  el.className = 'io-status' + (isError ? ' error' : '');
+  el.style.display = 'block';
+  if (!isError) setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+ 
 /* ============================================================
    SAVE / LOAD (localStorage)
 ============================================================ */
 const STORE_KEY = 'shinro_v2';
-
+ 
 function save() {
   const data = {};
   document.querySelectorAll('[id]').forEach(el => {
@@ -1365,11 +1582,11 @@ function save() {
   updatePledge();
   updateProgress();
 }
-
+ 
 function load() {
   let data;
   try { data = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch(e) { data = {}; }
-
+ 
   Object.keys(data).forEach(key => {
     const el = document.getElementById(key);
     if (!el) return;
@@ -1382,7 +1599,7 @@ function load() {
       el.value = data[key];
     }
   });
-
+ 
   // restore open/close
   months.forEach(m => {
     const isOpen = data['open_' + m];
@@ -1396,18 +1613,18 @@ function load() {
       bd.style.display = 'block';
     }
   });
-
+ 
   setTimeout(resizeAll, 50);
   updatePledge();
   updateProgress();
 }
-
+ 
 function clearAll() {
   if (!confirm('本当にリセットしますか？すべての入力が消えます。')) return;
   try { localStorage.removeItem(STORE_KEY); } catch(e) {}
   location.reload();
 }
-
+ 
 /* ============================================================
    INIT
 ============================================================ */
@@ -1418,8 +1635,7 @@ months.forEach(m => {
   if (mb.classList.contains('open')) bd.style.display = 'block';
   else bd.style.display = 'none';
 });
-
+ 
 load();
 </script>
 </body>
-</html>
