@@ -1,581 +1,876 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>生成AI活用研修チラシ（第1回・令和8年5月）</title>
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>俺の進路MAP 2025–2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Oswald:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --accent: #e63946;
+    --gold: #f4a300;
+    --steel: #2b2d42;
+    --mist: #8d99ae;
+    --success: #2dc653;
+    --border: 2.5px solid var(--ink);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, #d8d0c0 39px, #d8d0c0 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, #d8d0c0 39px, #d8d0c0 40px);
+    background-size: 40px 40px;
+  }
+
+  .wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    border: 4px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px 32px 20px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 100%;
+    background: var(--accent);
+    clip-path: polygon(40px 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .header-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--mist);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-family: 'Oswald', 'Noto Sans JP', sans-serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    position: relative;
+    z-index: 1;
+  }
+  header h1 span { color: var(--gold); }
+  .header-sub {
+    font-size: 13px;
+    color: var(--mist);
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== INTRO CARD ===== */
+  .intro-card {
+    border: var(--border);
+    background: white;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .intro-icon { font-size: 36px; flex-shrink: 0; }
+  .intro-text { font-size: 14px; line-height: 1.9; color: #333; }
+  .intro-text strong { color: var(--accent); }
+
+  /* ===== DREAM SECTION ===== */
+  .section-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 6px;
+  }
+  .dream-section {
+    border: var(--border);
+    background: var(--steel);
+    color: var(--paper);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .dream-section .section-label { color: var(--mist); }
+  .dream-section h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    color: var(--gold);
+  }
+  .dream-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .dream-grid { grid-template-columns: 1fr; } }
+  .dream-field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--mist);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .dream-field input, .dream-field textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid var(--mist);
+    color: var(--paper);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color .2s;
+    border-radius: 0;
+    resize: none;
+  }
+  .dream-field input:focus, .dream-field textarea:focus {
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.13);
+  }
+  .dream-field.full { grid-column: 1 / -1; }
+
+  /* ===== TIMELINE ===== */
+  .timeline-section { margin-bottom: 24px; }
+  .timeline-section > h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+
+  .month-card {
+    border: var(--border);
+    background: white;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .month-card:hover { box-shadow: 4px 4px 0 var(--ink); }
+  .month-card.done { opacity: 0.7; }
+  .month-card.done .month-header { background: #ccc; }
+
+  .month-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    user-select: none;
+  }
+  .month-header.accent-bg { background: var(--accent); }
+  .month-header.gold-bg { background: var(--gold); color: var(--ink); }
+
+  .month-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    min-width: 60px;
+  }
+  .month-events {
+    flex: 1;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+  }
+  .month-header.gold-bg .month-events { color: rgba(0,0,0,0.7); }
+
+  .check-done {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .check-done input[type=checkbox] {
+    width: 18px; height: 18px;
+    cursor: pointer;
+    accent-color: var(--success);
+  }
+
+  .month-body {
+    padding: 16px 18px;
+    display: none;
+    border-top: var(--border);
+  }
+  .month-body.open { display: block; }
+
+  .task-group { margin-bottom: 14px; }
+  .task-group-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 8px;
+    border-bottom: 1px dashed var(--mist);
+    padding-bottom: 4px;
+  }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .task-item input[type=checkbox] {
+    margin-top: 3px;
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .task-item label {
+    font-size: 14px;
+    line-height: 1.6;
+    cursor: pointer;
+  }
+  .task-item input[type=checkbox]:checked + label {
+    text-decoration: line-through;
+    color: var(--mist);
+  }
+
+  .memo-field {
+    margin-top: 12px;
+  }
+  .memo-field label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mist);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .memo-field textarea {
+    width: 100%;
+    border: 1.5px solid #ccc;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    resize: vertical;
+    min-height: 56px;
+    outline: none;
+    border-radius: 0;
+    transition: border-color .2s;
+  }
+  .memo-field textarea:focus { border-color: var(--accent); }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-section {
+    border: var(--border);
+    background: white;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+  }
+  .progress-section h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .progress-bar-outer {
+    height: 20px;
+    background: #e0e0e0;
+    border: 1.5px solid var(--ink);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: var(--accent);
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .progress-bar-inner::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 6px;
+    background: rgba(255,255,255,0.4);
+  }
+  .progress-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--mist);
+  }
+
+  /* ===== PLEDGE ===== */
+  .pledge-section {
+    border: 4px solid var(--accent);
+    background: white;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .pledge-section h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .pledge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .pledge-grid { grid-template-columns: 1fr; } }
+  .pledge-box label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 4px;
+  }
+  .pledge-box input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    padding: 6px 2px;
+    background: transparent;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .pledge-box input:focus { border-color: var(--accent); }
+  .pledge-statement {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    line-height: 2;
+    color: #555;
+    border-left: 4px solid var(--accent);
+    padding-left: 14px;
+    margin-bottom: 8px;
+  }
+
+  /* ===== ACTIONS ===== */
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border: 2.5px solid var(--ink);
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    transition: all .15s;
+  }
+  .btn:hover { background: var(--accent); border-color: var(--accent); }
+  .btn.secondary {
+    background: white;
+    color: var(--ink);
+  }
+  .btn.secondary:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body {
+      background: white;
+      background-image: none;
       padding: 0;
-    }
-
-    @page {
-      size: A4 portrait;
-      margin: 8mm 14mm;
-    }
-
-    html, body {
-      background: #dde3ec;
-      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
-    }
-
-    .flyer {
-      width: 210mm;
-      margin: 20px auto;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-    }
-
-    /* ========== ヘッダー ========== */
-.flyer-header {
-  background: url("back.png") center center / cover no-repeat;
-      color: #1a1a1a;
-      padding: 10px 24px 9px;
-      position: relative;
-      overflow: hidden;
-    }
-.flyer-header::after {
-  display: none;
-}
-.header-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 5px;
-}
-.chip {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 2px 9px;
-  border-radius: 20px;
-  /* 境界線の色をグレーに変更 */
-  border: 1px solid #aaa;
-  /* 背景を薄いグレーに変更 */
-  background: #f0f0f0;
-}
-.chip-round {
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 2px 9px;
-  border-radius: 20px;
-  /* 目立つように背景と文字色を反転 */
-  background: #0d2f6e;
-  color: #fff;
-}
-.flyer-header h1 {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.35;
-  position: relative;
-}
-.flyer-header h1 em {
-  font-style: normal;
-  font-size: 18px;
-  display: block;
-  margin-top: 2px;
-}
-    .header-date-badge {
-      position: absolute;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #fff;
-      color: #0d2f6e;
-      border-radius: 7px;
-      padding: 6px 14px;
-      text-align: center;
-      font-weight: 700;
-      line-height: 1.35;
-      z-index: 1;
-    }
-    .header-date-badge .date-label {
-      font-size: 9px;
-      color: #555;
-      margin-bottom: 1px;
-    }
-    .header-date-badge .date-main {
-      font-size: 15px;
-      color: #0d2f6e;
-    }
-    .header-date-badge .date-sub {
-      font-size: 9.5px;
-      color: #333;
-    }
-
-    /* ========== 本体 ========== */
-    .flyer-body {
-      flex: 1;
-      padding: 9px 22px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    /* ========== リード文 ========== */
-    .lead {
       font-size: 11px;
-      line-height: 1.7;
-      color: #222;
-      background: #f5f7fb;
-      border-left: 4px solid #0d2f6e;
-      padding: 6px 12px;
-      border-radius: 0 5px 5px 0;
     }
+    .wrapper { max-width: 100%; }
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .month-body { display: block !important; }
+    .month-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .progress-section, .actions { display: none; }
+    .month-card { break-inside: avoid; }
+    .pledge-section { -webkit-print-color-adjust: exact; print-color-adjust: exact; break-inside: avoid; }
+  }
 
-    /* ========== セクションタイトル ========== */
-    .sec-title {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: #fff;
-      background: #1a1a1a;
-      display: inline-block;
-      padding: 2px 11px;
-      border-radius: 3px;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-
-    /* ========== コースカード ========== */
-    .course-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-    }
-    .course-card {
-      border-radius: 6px;
-      padding: 8px 11px;
-    }
-    .course-card.beginner {
-      background: #fff;
-      border: 1.5px solid #444;
-      border-top: 4px solid #1a1a1a;
-    }
-    .course-card.advanced {
-      background: #f0f0f0;
-      border: 1.5px solid #444;
-      border-top: 4px solid #555;
-    }
-    .cc-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 2px;
-    }
-    .cc-title {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-    .cc-badge {
-      font-size: 9.5px;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 10px;
-      background: #e0e0e0;
-      border: 1px solid #888;
-      color: #1a1a1a;
-      white-space: nowrap;
-    }
-    .cc-note {
-      font-size: 9.5px;
-      color: #555;
-      font-style: italic;
-      margin-bottom: 5px;
-    }
-    .course-card ul {
-      list-style: none;
-      padding: 0;
-    }
-    .course-card ul li {
-      font-size: 10.5px;
-      padding: 2px 0 2px 12px;
-      border-bottom: 1px dashed #bbb;
-      position: relative;
-      color: #1a1a1a;
-      line-height: 1.45;
-    }
-    .course-card ul li:last-child { border-bottom: none; }
-    .course-card ul li::before {
-      content: "▸";
-      position: absolute;
-      left: 1px;
-      top: 3px;
-      font-size: 9.5px;
-    }
-
-    /* ========== こんな方に ========== */
-    .recommend-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
-    }
-    .recommend-item {
-      background: #f5f5f5;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 5px 9px 5px 24px;
-      font-size: 10.5px;
-      color: #1a1a1a;
-      position: relative;
-      line-height: 1.45;
-    }
-    .recommend-item::before {
-      content: "✔";
-      position: absolute;
-      left: 7px;
-      top: 6px;
-      font-size: 10px;
-      color: #0d2f6e;
-      font-weight: 700;
-    }
-
-    /* ========== 開催概要 ========== */
-    .overview-box {
-      background: #f5f7fb;
-      border: 1.5px solid #b3cdf5;
-      border-radius: 6px;
-      padding: 8px 14px;
-    }
-    .overview-grid {
-      display: grid;
-      grid-template-columns: 4.8em 1fr;
-      font-size: 11px;
-    }
-    .overview-grid dt {
-      font-weight: 700;
-      color: #0d2f6e;
-      padding: 4px 7px 4px 0;
-      border-bottom: 1px solid #d0ddf0;
-      display: flex;
-      align-items: flex-start;
-    }
-    .overview-grid dd {
-      padding: 4px 0;
-      border-bottom: 1px solid #d0ddf0;
-      color: #1a1a1a;
-      line-height: 1.65;
-    }
-    .overview-grid dt:last-of-type,
-    .overview-grid dd:last-of-type {
-      border-bottom: none;
-    }
-
-    .time-cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
-      margin-top: 3px;
-    }
-    .time-col {
-      background: #fff;
-      border: 1px solid #bbb;
-      border-left: 3px solid #555;
-      border-radius: 0 4px 4px 0;
-      padding: 4px 8px;
-      font-size: 10px;
-    }
-    .time-col .tc-label {
-      font-weight: 700;
-      font-size: 10px;
-      margin-bottom: 1px;
-      color: #1a1a1a;
-    }
-    .time-col ul {
-      list-style: none;
-      padding: 0;
-    }
-    .time-col ul li {
-      padding-left: 9px;
-      position: relative;
-      color: #1a1a1a;
-      line-height: 1.55;
-    }
-    .time-col ul li::before {
-      content: "・";
-      position: absolute;
-      left: 0;
-    }
-    .time-note {
-      font-size: 9.5px;
-      color: #555;
-      margin-top: 3px;
-      padding-left: 11px;
-      position: relative;
-    }
-    .time-note::before {
-      content: "※";
-      position: absolute;
-      left: 0;
-    }
-
-    .caution-inline {
-      font-size: 9.5px;
-      color: #333;
-      background: #efefef;
-      border-left: 3px solid #888;
-      padding: 3px 8px;
-      border-radius: 0 4px 4px 0;
-      margin-top: 3px;
-      line-height: 1.6;
-    }
-
-    .apply-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .apply-btn {
-      display: inline-block;
-      background: #0d2f6e;
-      color: #fff;
-      font-weight: 700;
-      font-size: 10.5px;
-      padding: 6px 16px;
-      border-radius: 5px;
-      text-decoration: none;
-      border: 2px solid #0d2f6e;
-      white-space: nowrap;
-    }
-    .apply-btn:hover {
-      background: #1e5bb5;
-      border-color: #1e5bb5;
-    }
-    .apply-meta {
-      font-size: 10px;
-      color: #333;
-      line-height: 1.7;
-    }
-    .apply-meta strong {
-      color: #1a1a1a;
-    }
-
-    /* ========== スキル ========== */
-    .skill-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-    .skill-item {
-      background: #f0f0f0;
-      border: 1px solid #bbb;
-      border-radius: 5px;
-      padding: 7px 7px 6px;
-      text-align: center;
-      font-size: 10px;
-      color: #1a1a1a;
-      line-height: 1.45;
-    }
-    .skill-item .sk-icon {
-      font-size: 16px;
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    /* ========== フッター ========== */
-    .flyer-footer {
-      background: #1a1a1a;
-      color: #fff;
-      padding: 8px 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .footer-catch {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-    .footer-org {
-      font-size: 9.5px;
-      color: #ccc;
-      text-align: right;
-      line-height: 1.65;
-    }
-
-    /* ========== 印刷対応 ========== */
-    @media print {
-      html, body { background: #fff; }
-      .flyer {
-        margin: 0;
-        box-shadow: none;
-        width: 100%;
-      }
-      .flyer-header,
-      .flyer-footer {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-    }
-  </style>
+  /* ===== FADE IN ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .month-card { animation: fadeUp .4s ease both; }
+  .month-card:nth-child(1){ animation-delay:.05s }
+  .month-card:nth-child(2){ animation-delay:.10s }
+  .month-card:nth-child(3){ animation-delay:.15s }
+  .month-card:nth-child(4){ animation-delay:.20s }
+  .month-card:nth-child(5){ animation-delay:.25s }
+  .month-card:nth-child(6){ animation-delay:.30s }
+  .month-card:nth-child(7){ animation-delay:.35s }
+  .month-card:nth-child(8){ animation-delay:.40s }
+  .month-card:nth-child(9){ animation-delay:.45s }
+</style>
 </head>
 <body>
+<div class="wrapper">
 
-<div class="flyer">
-
-  <!-- ヘッダー -->
-  <header class="flyer-header">
-    <div class="header-eyebrow">
-      <span class="chip">職員研修のご案内</span>
-      <span class="chip-round">令和8年度 第1回</span>
-    </div>
-    <h1>
-      職員向け 生成AI活用研修
-      <em>Qommons AI をつかってみよう！</em>
-    </h1>
-    <div class="header-date-badge">
-      <div class="date-label">開催日</div>
-      <div class="date-main">5月27日（水）</div>
-      <div class="date-sub">会議室606</div>
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">中学3年生 · 2025–2026 · 進路MAP</div>
+    <h1>俺の<span>高校進学</span><br>完全攻略MAP</h1>
+    <p class="header-sub">自分で書いて、自分で動く。それがすべての始まり。</p>
   </header>
 
-  <!-- 本体 -->
-  <div class="flyer-body">
+  <!-- INTRO -->
+  <div class="intro-card">
+    <div class="intro-icon">🎯</div>
+    <div class="intro-text">
+      このページは<strong>君専用の進路ロードマップ</strong>。<br>
+      各月の予定・やること・メモをここに記録して、「なんとなく」を「確実」に変えよう。<br>
+      夢が決まっていなくてもOK。<strong>動いた分だけ、道は開ける。</strong>
+    </div>
+  </div>
 
-    <p class="lead">
-      総社市で導入中の生成AI「Qommons AI」，使えていますか？
-      本研修では，<strong>はじめての方から実務活用を深めたい方まで</strong>，レベル別の2コースを同日開催します。
-      実際に操作しながら学ぶ<strong>ハンズオン形式</strong>なので，当日その場で使い方が身につきます。
-    </p>
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <h3>🔥 タスク達成率</h3>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="progress-text" id="progressText">0 / 0 タスク完了</div>
+  </div>
 
-    <!-- コース紹介 -->
-    <div>
-      <div class="sec-title">研修で学べること</div>
-      <div class="course-row">
-        <div class="course-card beginner">
-          <div class="cc-head">
-            <span class="cc-title">🟢 入門コース</span>
-            <span class="cc-badge">60分</span>
-          </div>
-          <p class="cc-note">対象：Qommons AI 未使用・初心者の方</p>
-          <ul>
-            <li>ログイン操作と基本的な使い方</li>
-            <li>メール文の校正・文章改善</li>
-            <li>画像生成機能の体験</li>
-            <li>議会答弁書案の作成</li>
-          </ul>
+  <!-- DREAM -->
+  <div class="dream-section">
+    <div class="section-label">// STEP 01 — まず、夢を書く</div>
+    <h2>⚡ 俺が目指すもの</h2>
+    <div class="dream-grid">
+      <div class="dream-field">
+        <label>行きたい高校（第1志望）</label>
+        <input type="text" id="school1" placeholder="例：〇〇高校" oninput="save()">
+      </div>
+      <div class="dream-field">
+        <label>行きたい高校（第2志望）</label>
+        <input type="text" id="school2" placeholder="例：△△高校" oninput="save()">
+      </div>
+      <div class="dream-field">
+        <label>将来の夢・やりたいこと</label>
+        <input type="text" id="dream" placeholder="例：エンジニア、スポーツ選手、音楽…なんでも" oninput="save()">
+      </div>
+      <div class="dream-field">
+        <label>高校でやりたいこと・部活など</label>
+        <input type="text" id="club" placeholder="例：サッカー部、プログラミング部…" oninput="save()">
+      </div>
+      <div class="dream-field full">
+        <label>今、自分に正直に——「合格したら何が変わる？」</label>
+        <textarea id="motivation" rows="2" placeholder="自由に書こう。誰かに見せなくていい。" oninput="save()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline-section">
+    <div class="section-label">// STEP 02 — スケジュールを制す</div>
+    <h2>📅 進路タイムライン</h2>
+
+    <!-- 4月 -->
+    <div class="month-card" id="card-apr">
+      <div class="month-header accent-bg" onclick="toggle('apr')">
+        <div class="month-label">4月</div>
+        <div class="month-events">第1回進路希望調査 / 保護者懇談（2者）</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-apr" onchange="markDone('apr');save()">
+          <label for="done-apr">完了</label>
         </div>
-        <div class="course-card advanced">
-          <div class="cc-head">
-            <span class="cc-title">🔵 活用コース</span>
-            <span class="cc-badge">120分</span>
-          </div>
-          <p class="cc-note">対象：基本操作を習得済みの方　※内60分は個別相談会</p>
-          <ul>
-            <li>議会答弁書案の作成</li>
-            <li>市民問い合わせへの返信文作成</li>
-            <li>プライベートナレッジ機能の活用</li>
-            <li>個別相談（事前申込制・60分）</li>
-          </ul>
+      </div>
+      <div class="month-body open" id="body-apr">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-apr-1" onchange="updateProgress();save()"><label for="t-apr-1">第1回進路希望調査の用紙を記入・提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-apr-2" onchange="updateProgress();save()"><label for="t-apr-2">保護者懇談（2者）の日程を確認し、準備する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-apr-3" onchange="updateProgress();save()"><label for="t-apr-3">今の自分の成績・内申の現状を把握する</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-apr-4" onchange="updateProgress();save()"><label for="t-apr-4">志望校の偏差値・入試形式をざっくり調べる</label></div>
+          <div class="task-item"><input type="checkbox" id="t-apr-5" onchange="updateProgress();save()"><label for="t-apr-5">中1・中2の復習単元をリストアップする</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-apr" placeholder="懇談で言われたこと、自分で気づいたこと…" oninput="save()"></textarea>
         </div>
       </div>
     </div>
 
-    <!-- こんな方に -->
-    <div>
-      <div class="sec-title">こんな方におすすめ</div>
-      <div class="recommend-grid">
-        <div class="recommend-item">使ってみたいけど何から始めればいいかわからない，ログインさえしたことない…</div>
-        <div class="recommend-item">ログインはしたけど，結局どう使えばいいかよくわからない…</div>
-        <div class="recommend-item">答弁書や市民対応文書の作成にいつも時間がかかっている！</div>
-        <div class="recommend-item">生成AIを実務でもっと積極的に活用していきたい！</div>
+    <!-- 6月 -->
+    <div class="month-card" id="card-jun">
+      <div class="month-header" onclick="toggle('jun')">
+        <div class="month-label">6月</div>
+        <div class="month-events">オープンスクール本格化</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-jun" onchange="markDone('jun');save()">
+          <label for="done-jun">完了</label>
+        </div>
       </div>
-    </div>
-
-    <!-- 開催概要 -->
-    <div>
-      <div class="sec-title">開催概要</div>
-      <div class="overview-box">
-        <dl class="overview-grid">
-          <dt>日時</dt>
-          <dd>
-            令和8年 5月27日（水）
-            <div class="time-cols">
-              <div class="time-col">
-                <div class="tc-label">午前の部</div>
-                <ul>
-                  <li>入門コース（60分）8:50～9:50</li>
-                  <li>活用コース（120分）10:00～12:00</li>
-                </ul>
-              </div>
-              <div class="time-col">
-                <div class="tc-label">午後の部</div>
-                <ul>
-                  <li>入門コース（60分）13:30～14:30</li>
-                  <li>活用コース（120分）15:00～17:00</li>
-                </ul>
-              </div>
-            </div>
-            <p class="time-note">午前・午後の内容は同一。いずれか一方のみの参加も可。</p>
-          </dd>
-          <dt>会場</dt>
-          <dd>会議室606（西側の南北通路突当り左）</dd>
-          <dt>定員</dt>
-          <dd>
-            各回 <strong>20名</strong>（対象職員の定めなし） ※活用コースの個別相談は各回<strong>4名</strong>まで
-            <div class="caution-inline">
-              ハンズオン形式のため，庁内ネットワークに接続できるノートPC持参必須。<br>
-              PCをお持ちでない方は，申込フォームの「ノートPCの貸出」で <strong>「要」</strong> を選択してください。
-            </div>
-          </dd>
-          <dt>講師</dt>
-          <dd>デジタル推進課職員</dd>
-          <dt>申込</dt>
-          <dd>
-            <div class="apply-row">
-              <a class="apply-btn" href="https://tb.logoform.st-japan.asp.lgwan.jp/form/B3yA/1536176" target="_blank">LoGoフォームから申し込む</a>
-              <div class="apply-meta">
-                <strong>申込期限：令和8年5月26日（火）</strong><br>
-                ※定員に達し次第締め切り
-              </div>
-            </div>
-          </dd>
-        </dl>
-      </div>
-    </div>
-
-    <!-- スキル -->
-    <div>
-      <div class="sec-title">この研修で身につくこと</div>
-      <div class="skill-row">
-        <div class="skill-item">
-          <span class="sk-icon">💡</span>
-          基本操作と実務で使えるプロンプト術
+      <div class="month-body" id="body-jun">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-jun-1" onchange="updateProgress();save()"><label for="t-jun-1">第1志望・第2志望のオープンスクールに申し込む</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jun-2" onchange="updateProgress();save()"><label for="t-jun-2">実際に足を運び、雰囲気・校風を体感する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jun-3" onchange="updateProgress();save()"><label for="t-jun-3">見学メモ・感想を書き留める（志望理由に使える）</label></div>
         </div>
-        <div class="skill-item">
-          <span class="sk-icon">✍️</span>
-          生成AIへの効果的な指示の出し方
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-jun-4" onchange="updateProgress();save()"><label for="t-jun-4">期末テストに向け、1〜2週間前から計画的に勉強する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jun-5" onchange="updateProgress();save()"><label for="t-jun-5">内申に影響する提出物・授業態度を意識する</label></div>
         </div>
-        <div class="skill-item">
-          <span class="sk-icon">🔒</span>
-          業務で安全に使うためのルール
-        </div>
-        <div class="skill-item">
-          <span class="sk-icon">📋</span>
-          明日からすぐ使える活用アイデア
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-jun" placeholder="見学した高校の印象、感じたこと…" oninput="save()"></textarea>
         </div>
       </div>
     </div>
 
-  </div><!-- /flyer-body -->
+    <!-- 7月 -->
+    <div class="month-card" id="card-jul">
+      <div class="month-header" onclick="toggle('jul')">
+        <div class="month-label">7月</div>
+        <div class="month-events">保護者懇談（3者）</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-jul" onchange="markDone('jul');save()">
+          <label for="done-jul">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-jul">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-jul-1" onchange="updateProgress();save()"><label for="t-jul-1">3者懇談に向けて「今の自分の希望」を整理して話せるようにする</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jul-2" onchange="updateProgress();save()"><label for="t-jul-2">夏休みの学習計画を立てる（苦手科目を中心に）</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-jul-3" onchange="updateProgress();save()"><label for="t-jul-3">夏休みに入ったら中1・中2の総復習をスタートする</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jul-4" onchange="updateProgress();save()"><label for="t-jul-4">過去問や問題集を1冊決めて始める</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-jul" placeholder="懇談で話したこと、先生からのアドバイス…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
 
-  <!-- フッター -->
-  <footer class="flyer-footer">
-    <span class="footer-catch">皆様ふるってご参加ください！</span>
-    <span class="footer-org">
-      総社市 あたたか市民部 デジタル推進課<br>
-      本研修は職員研修として開催するものです
-    </span>
-  </footer>
+    <!-- 8月 -->
+    <div class="month-card" id="card-aug">
+      <div class="month-header gold-bg" onclick="toggle('aug')">
+        <div class="month-label">8月</div>
+        <div class="month-events">第2回進路希望調査 ★夏が勝負！</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-aug" onchange="markDone('aug');save()">
+          <label for="done-aug">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-aug">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-aug-1" onchange="updateProgress();save()"><label for="t-aug-1">第2回進路希望調査を記入・提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-aug-2" onchange="updateProgress();save()"><label for="t-aug-2">夏期講習・自主学習で弱点を徹底的につぶす</label></div>
+          <div class="task-item"><input type="checkbox" id="t-aug-3" onchange="updateProgress();save()"><label for="t-aug-3">志望校の過去問を1年分解いてみる</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-aug-4" onchange="updateProgress();save()"><label for="t-aug-4">「夏休みに何をしたか」が秋以降の差になる——毎日コツコツ</label></div>
+          <div class="task-item"><input type="checkbox" id="t-aug-5" onchange="updateProgress();save()"><label for="t-aug-5">体調管理（睡眠・食事・運動）も学力のうち</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-aug" placeholder="夏休みの目標、達成できたこと…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
 
-</div>
+    <!-- 11月 -->
+    <div class="month-card" id="card-nov">
+      <div class="month-header" onclick="toggle('nov')">
+        <div class="month-label">11月</div>
+        <div class="month-events">保護者懇談（3者）/ 第3回進路希望調査</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-nov" onchange="markDone('nov');save()">
+          <label for="done-nov">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-nov">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-nov-1" onchange="updateProgress();save()"><label for="t-nov-1">第3回進路希望調査を記入・提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-nov-2" onchange="updateProgress();save()"><label for="t-nov-2">3者懇談で志望校を「具体的に」先生・親と話し合う</label></div>
+          <div class="task-item"><input type="checkbox" id="t-nov-3" onchange="updateProgress();save()"><label for="t-nov-3">私立受験の出願手続き・スケジュールを確認する</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-nov-4" onchange="updateProgress();save()"><label for="t-nov-4">実力テスト・模試の結果を分析し、弱点を再確認する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-nov-5" onchange="updateProgress();save()"><label for="t-nov-5">私立入試の面接練習・作文対策を始める</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-nov" placeholder="懇談での話し合い内容、志望校の最新状況…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12月 -->
+    <div class="month-card" id="card-dec">
+      <div class="month-header accent-bg" onclick="toggle('dec')">
+        <div class="month-label">12月</div>
+        <div class="month-events">保護者懇談（3者）★志望校確定へ</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-dec" onchange="markDone('dec');save()">
+          <label for="done-dec">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-dec">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-dec-1" onchange="updateProgress();save()"><label for="t-dec-1">3者懇談で私立・公立の受験校を最終確認する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-dec-2" onchange="updateProgress();save()"><label for="t-dec-2">冬休みの学習計画を立て、入試直前対策を開始する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-dec-3" onchange="updateProgress();save()"><label for="t-dec-3">私立Ⅰ期の出願書類を揃える</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-dec-4" onchange="updateProgress();save()"><label for="t-dec-4">過去問を繰り返し解き、時間配分を体に覚えさせる</label></div>
+          <div class="task-item"><input type="checkbox" id="t-dec-5" onchange="updateProgress();save()"><label for="t-dec-5">年末年始も学習リズムを崩さない（1日でも止めると戻すのが大変）</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・気づき</label>
+          <textarea id="memo-dec" placeholder="受験校確定の経緯、作戦メモ…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1月 -->
+    <div class="month-card" id="card-jan">
+      <div class="month-header gold-bg" onclick="toggle('jan')">
+        <div class="month-label">1月</div>
+        <div class="month-events">第4回進路希望調査 / 私立Ⅰ期入試 🔥</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-jan" onchange="markDone('jan');save()">
+          <label for="done-jan">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-jan">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-jan-1" onchange="updateProgress();save()"><label for="t-jan-1">第4回進路希望調査を記入・提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jan-2" onchange="updateProgress();save()"><label for="t-jan-2">私立Ⅰ期入試に臨む（会場・持ち物・交通を事前確認）</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jan-3" onchange="updateProgress();save()"><label for="t-jan-3">入試後すぐに自己採点・振り返りをする</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-jan-4" onchange="updateProgress();save()"><label for="t-jan-4">前日は早めに就寝・当日は余裕を持って行動する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-jan-5" onchange="updateProgress();save()"><label for="t-jan-5">私立の結果に一喜一憂しすぎず、公立に向けて気持ちを整える</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・受験の記録</label>
+          <textarea id="memo-jan" placeholder="入試の感触、気づいた問題傾向、次に向けての改善点…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2月 -->
+    <div class="month-card" id="card-feb">
+      <div class="month-header accent-bg" onclick="toggle('feb')">
+        <div class="month-label">2月</div>
+        <div class="month-events">公立 特別入学者選抜 🔥</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-feb" onchange="markDone('feb');save()">
+          <label for="done-feb">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-feb">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-feb-1" onchange="updateProgress();save()"><label for="t-feb-1">出願書類を期日までに提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-feb-2" onchange="updateProgress();save()"><label for="t-feb-2">特別選抜の形式（面接・作文・実技等）に応じた対策を完成させる</label></div>
+          <div class="task-item"><input type="checkbox" id="t-feb-3" onchange="updateProgress();save()"><label for="t-feb-3">本番当日を万全の状態で迎える</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-feb-4" onchange="updateProgress();save()"><label for="t-feb-4">「なぜこの高校か」を自分の言葉で語れるようにする</label></div>
+          <div class="task-item"><input type="checkbox" id="t-feb-5" onchange="updateProgress();save()"><label for="t-feb-5">一般選抜に向けた学習も並行して続ける</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・受験の記録</label>
+          <textarea id="memo-feb" placeholder="面接で聞かれたこと、手応えなど…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3月 -->
+    <div class="month-card" id="card-mar">
+      <div class="month-header gold-bg" onclick="toggle('mar')">
+        <div class="month-label">3月</div>
+        <div class="month-events">公立 一般入学者選抜 🏆 FINAL</div>
+        <div class="check-done">
+          <input type="checkbox" id="done-mar" onchange="markDone('mar');save()">
+          <label for="done-mar">完了</label>
+        </div>
+      </div>
+      <div class="month-body" id="body-mar">
+        <div class="task-group">
+          <div class="task-group-title">やること</div>
+          <div class="task-item"><input type="checkbox" id="t-mar-1" onchange="updateProgress();save()"><label for="t-mar-1">出願書類を期日までに提出する</label></div>
+          <div class="task-item"><input type="checkbox" id="t-mar-2" onchange="updateProgress();save()"><label for="t-mar-2">公立一般入試に全力で臨む</label></div>
+          <div class="task-item"><input type="checkbox" id="t-mar-3" onchange="updateProgress();save()"><label for="t-mar-3">合格発表を確認し、入学手続きを完了する</label></div>
+        </div>
+        <div class="task-group">
+          <div class="task-group-title">対策・意識すること</div>
+          <div class="task-item"><input type="checkbox" id="t-mar-4" onchange="updateProgress();save()"><label for="t-mar-4">これまでやってきたことを信じ、平常心で本番に臨む</label></div>
+          <div class="task-item"><input type="checkbox" id="t-mar-5" onchange="updateProgress();save()"><label for="t-mar-5">合格の先——新しいスタートをイメージしてモチベを保つ</label></div>
+        </div>
+        <div class="memo-field">
+          <label>メモ・入試の記録</label>
+          <textarea id="memo-mar" placeholder="入試の感触、合格発表の日の気持ち…" oninput="save()"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- PLEDGE -->
+  <div class="pledge-section">
+    <div class="section-label">// STEP 03 — 誓いを書く</div>
+    <h2>✍️ 親子の約束</h2>
+    <div class="pledge-grid">
+      <div class="pledge-box" style="grid-column:1/-1">
+        <p class="pledge-statement">
+          俺は<strong id="pledge-name-display">____</strong>。<br>
+          目指す高校は <strong id="pledge-school-display">____</strong>。<br>
+          そのために、毎日 <strong id="pledge-action-display">____</strong> を続ける。<br>
+          親は、<strong id="pledge-parent-display">____</strong> でサポートする。<br>
+          一緒に、この挑戦を乗り越えよう。
+        </p>
+      </div>
+      <div class="pledge-box">
+        <label>息子の名前</label>
+        <input type="text" id="pledge-name" placeholder="君の名前" oninput="updatePledge();save()">
+      </div>
+      <div class="pledge-box">
+        <label>志望校（最終確定）</label>
+        <input type="text" id="pledge-school" placeholder="〇〇高校" oninput="updatePledge();save()">
+      </div>
+      <div class="pledge-box">
+        <label>毎日続けること（息子）</label>
+        <input type="text" id="pledge-action" placeholder="例：英単語10個・数学30分" oninput="updatePledge();save()">
+      </div>
+      <div class="pledge-box">
+        <label>親のサポート宣言</label>
+        <input type="text" id="pledge-parent" placeholder="例：食事・環境・話を聞く" oninput="updatePledge();save()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn" onclick="window.print()">🖨 印刷（A4）</button>
+    <button class="btn secondary" onclick="expandAll()">📂 全て開く</button>
+    <button class="btn secondary" onclick="collapseAll()">📁 全て閉じる</button>
+    <button class="btn secondary" onclick="clearAll()">🗑 リセット</button>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+  const months = ['apr','jun','jul','aug','nov','dec','jan','feb','mar'];
+
+  function toggle(id) {
+    const body = document.getElementById('body-'+id);
+    body.classList.toggle('open');
+  }
+  function expandAll() { months.forEach(m => document.getElementById('body-'+m).classList.add('open')); }
+  function collapseAll() { months.forEach(m => document.getElementById('body-'+m).classList.remove('open')); }
+
+  function markDone(id) {
+    const card = document.getElementById('card-'+id);
+    const done = document.getElementById('done-'+id).checked;
+    card.classList.toggle('done', done);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.task-item input[type=checkbox]');
+    const checked = document.querySelectorAll('.task-item input[type=checkbox]:checked');
+    const pct = all.length ? Math.round(checked.length / all.length * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = checked.length + ' / ' + all.length + ' タスク完了（' + pct + '%）';
+  }
+
+  function updatePledge() {
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val || '____';
+    };
+    set('pledge-name-display', document.getElementById('pledge-name').value);
+    set('pledge-school-display', document.getElementById('pledge-school').value || document.getElementById('school1').value);
+    set('pledge-action-display', document.getElementById('pledge-action').value);
+    set('pledge-parent-display', document.getElementById('pledge-parent').value);
+  }
+
+  // LocalStorage save/load
+  function save() {
+    const data = {};
+    document.querySelectorAll('input[type=text], textarea').forEach(el => { if(el.id) data[el.id] = el.value; });
+    document.querySelectorAll('input[type=checkbox]').forEach(el => { if(el.id) data[el.id] = el.checked; });
+    months.forEach(m => { data['open-'+m] = document.getElementById('body-'+m).classList.contains('open'); });
+    try { localStorage.setItem('shinromap_v1', JSON.stringify(data)); } catch(e){}
+    updatePledge();
+    updateProgress();
+  }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem('shinromap_v1');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      Object.keys(data).forEach(key => {
+        const el = document.getElementById(key);
+        if (!el) return;
+        if (el.type === 'checkbox') {
+          el.checked = data[key];
+          if (key.startsWith('done-')) { const m = key.replace('done-',''); document.getElementById('card-'+m)?.classList.toggle('done', data[key]); }
+        } else {
+          el.value = data[key];
+        }
+      });
+      months.forEach(m => {
+        if (data['open-'+m]) document.getElementById('body-'+m).classList.add('open');
+        else document.getElementById('body-'+m).classList.remove('open');
+      });
+    } catch(e){}
+    updatePledge();
+    updateProgress();
+  }
+
+  function clearAll() {
+    if (!confirm('本当にリセットしますか？入力したデータがすべて消えます。')) return;
+    try { localStorage.removeItem('shinromap_v1'); } catch(e){}
+    location.reload();
+  }
+
+  load();
+</script>
 </body>
 </html>
