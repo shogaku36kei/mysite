@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>東総社駅からの通学ガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #e0dbd0;
+    --text-main: #1a1a1a;
+    --text-sub: #555;
+    --text-muted: #888;
+    --seiryo-color: #1a5276;
+    --seiryo-light: #d6eaf8;
+    --amaki-color: #1e8449;
+    --amaki-light: #d5f5e3;
+    --accent: #c0392b;
+    --tag-bg: #f0ede5;
+    --train-color: #2471a3;
+    --bus-color: #ca6f1e;
+    --walk-color: #555;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.7;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--text-main);
+    color: #fff;
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(255,255,255,0.03) 10px,
+      rgba(255,255,255,0.03) 20px
+    );
+  }
+  header .label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 12px;
+    display: block;
+  }
+  header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(22px, 5vw, 36px);
+    font-weight: 700;
+    line-height: 1.3;
+    position: relative;
+  }
+  header .subtitle {
+    margin-top: 12px;
+    color: #bbb;
+    font-size: 13px;
+  }
+  .start-badge {
+    display: inline-block;
+    margin-top: 20px;
+    background: #fff;
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    position: relative;
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 16px 80px;
+  }
+
+  .notice {
+    background: #fff8e1;
+    border-left: 4px solid #f39c12;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 36px;
+    font-size: 13px;
+    color: #7d5a00;
+  }
+  .notice strong { font-weight: 700; }
+
+  /* ===== SCHOOL CARD ===== */
+  .school-card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 48px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .school-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .school-badge {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .seiryo .school-badge { background: var(--seiryo-light); }
+  .amaki .school-badge { background: var(--amaki-light); }
+
+  .school-meta h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .seiryo .school-meta h2 { color: var(--seiryo-color); }
+  .amaki .school-meta h2 { color: var(--amaki-color); }
+
+  .school-meta .school-type {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .school-meta .address {
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+  .school-meta .address a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .school-links {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity .2s;
+  }
+  .btn-link:hover { opacity: 0.75; }
+  .seiryo .btn-link.official { background: var(--seiryo-color); color: #fff; }
+  .amaki .btn-link.official { background: var(--amaki-color); color: #fff; }
+  .btn-link.map { background: var(--tag-bg); color: var(--text-main); border: 1px solid var(--border); }
+
+  /* ===== ROUTE OVERVIEW ===== */
+  .route-overview {
+    padding: 18px 28px;
+    background: #fafaf8;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .route-overview .ov-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+  .time-chip {
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--text-main);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .route-overview .via {
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+
+  /* ===== ROUTE STEPS ===== */
+  .routes-body {
+    padding: 28px 28px 32px;
+  }
+
+  .route-section + .route-section {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .route-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .route-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--border);
+    vertical-align: middle;
+  }
+
+  /* Timeline steps */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 36px;
+    flex-shrink: 0;
+  }
+  .step-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    z-index: 1;
+    position: relative;
+  }
+  .step-icon.station { background: #dbeafe; }
+  .step-icon.train   { background: #dbeafe; }
+  .step-icon.bus     { background: #fef3c7; }
+  .step-icon.walk    { background: #f0fdf4; }
+  .step-icon.school  { background: #fce7f3; }
+
+  .step-line {
+    width: 2px;
+    background: var(--border);
+    flex: 1;
+    min-height: 20px;
+    margin: 0 auto;
+  }
+  /* No line after last step */
+  .step:last-child .step-line { display: none; }
+
+  .step-content {
+    flex: 1;
+    padding-bottom: 24px;
+    min-width: 0;
+  }
+  .step:last-child .step-content { padding-bottom: 0; }
+
+  .step-place {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .step-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .mode-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .mode-train { background: #dbeafe; color: #1e40af; }
+  .mode-bus   { background: #fef3c7; color: #92400e; }
+  .mode-walk  { background: #f0fdf4; color: #166534; }
+
+  .step-detail {
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .step-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* ===== TIPS ===== */
+  .tip-box {
+    margin-top: 20px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #78350f;
+  }
+  .tip-box strong { font-weight: 700; }
+
+  /* ===== LINKS SECTION ===== */
+  .link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .link-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-main);
+    transition: background .15s;
+  }
+  .link-pill:hover { background: var(--tag-bg); }
+
+  /* ===== FARE TABLE ===== */
+  .fare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  .fare-table th {
+    background: var(--tag-bg);
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .fare-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .fare-table tr:last-child td { border-bottom: none; }
+  .fare-bold { font-weight: 700; }
+
+  /* ===== COMPARISON ===== */
+  .compare-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-top: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+  .compare-section h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 540px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    .school-header { flex-wrap: wrap; }
+    .school-links { margin-left: 0; flex-direction: row; }
+  }
+  .compare-item {
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  .compare-item .ci-school {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .compare-item .ci-value {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .compare-item .ci-label { color: var(--text-sub); }
+
+  .seiryo-bg { background: var(--seiryo-light); }
+  .amaki-bg  { background: var(--amaki-light); }
+  .seiryo-val { color: var(--seiryo-color); }
+  .amaki-val  { color: var(--amaki-color); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 32px 16px;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="label">Commute Guide / 通学ガイド</span>
+  <h1>東総社駅から高校への通学</h1>
+  <p class="subtitle">倉敷清陵高校 ／ 倉敷天城高校</p>
+  <div class="start-badge">🚉 出発：東総社駅（JR桃太郎線）</div>
+</header>
+
+<div class="container">
+
+  <div class="notice">
+    <strong>⚠ ご注意：</strong>所要時間・運賃は目安です。ダイヤ改正や時間帯によって変わります。必ず<a href="https://transit.yahoo.co.jp/" target="_blank">Yahoo!乗換案内</a>や各交通機関の公式サイトで最新情報をご確認ください。
+  </div>
+
+  <!-- ===== 倉敷清陵高校 ===== -->
+  <div class="school-card seiryo">
+    <div class="school-header">
+      <div class="school-badge">🏫</div>
+      <div class="school-meta">
+        <span class="school-type">岡山県立</span>
+        <h2>倉敷清陵高等学校</h2>
+        <div class="address">
+          〒710-0043 倉敷市羽島1046-2　TEL: 086-422-8001<br>
+          <a href="https://maps.app.goo.gl/G5y5FcDxvxZsJ2VQ6" target="_blank">📍 Googleマップで見る</a>
+        </div>
+      </div>
+      <div class="school-links">
+        <a class="btn-link official" href="https://www.seiryo.okayama-c.ed.jp/wp/" target="_blank">🔗 公式HP</a>
+        <a class="btn-link map" href="https://transit.yahoo.co.jp/search/result?from=%E6%9D%B1%E7%B7%8F%E7%A4%BE&to=%E5%80%89%E6%95%B7%E9%9D%92%E9%99%B5%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1&ticket=ic" target="_blank">🗺 乗換案内</a>
+      </div>
+    </div>
+
+    <div class="route-overview">
+      <span class="ov-label">目安所要時間</span>
+      <span class="time-chip">約50〜65分</span>
+      <span class="via">電車＋バス乗り継ぎ ／ 乗換1〜2回</span>
+    </div>
+
+    <div class="routes-body">
+
+      <!-- ルートA -->
+      <div class="route-section">
+        <div class="route-title">ルートA ／ JR桃太郎線＋伯備線＋下電バス（おすすめ）</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon station">🚉</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-place">東総社駅 　出発</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR桃太郎線</span>
+                <span class="step-time">約3分</span>
+              </div>
+              <div class="step-detail">総社行（1駅） →<strong>総社駅</strong>下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR伯備線</span>
+                <span class="step-time">約20〜25分</span>
+              </div>
+              <div class="step-detail">岡山方面行 → <strong>倉敷駅</strong>下車<br>
+              <small>（清音・倉敷経由）</small></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon bus">🚌</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-bus">下電バス</span>
+                <span class="step-time">約15〜20分</span>
+              </div>
+              <div class="step-detail">倉敷駅前から<strong>JR児島駅行き・鷲羽山行き・茶屋町駅行き・興除車庫行き</strong>いずれかに乗車<br>
+              →「<strong>青陵高等学校西</strong>」または「<strong>青陵高校北</strong>」バス停下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon walk">🚶</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-walk">徒歩</span>
+                <span class="step-time">約1分</span>
+              </div>
+              <div class="step-detail">バス停からすぐ（徒歩約1分）</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon school">🎒</div>
+            </div>
+            <div class="step-content">
+              <div class="step-place" style="color:var(--seiryo-color)">倉敷清陵高等学校　到着</div>
+            </div>
+          </div>
+
+        </div><!-- /steps -->
+
+        <div class="tip-box">
+          💡 <strong>ポイント：</strong>下電バスは「倉敷駅前」バス停（倉敷駅南口）から発車します。複数の行き先のバスが青陵高校を経由するので乗り継ぎしやすいです。ICカード（ICOCA等）利用可。
+        </div>
+
+        <div class="link-row">
+          <a class="link-pill" href="https://shimoden.net/rosen/rosen/top.html" target="_blank">🔗 下電バス路線案内</a>
+          <a class="link-pill" href="https://transit.yahoo.co.jp/search/result?from=%E6%9D%B1%E7%B7%8F%E7%A4%BE&to=%E9%9D%92%E9%99%B5%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%A5%BF" target="_blank">🗺 Yahoo!乗換案内で経路確認</a>
+          <a class="link-pill" href="https://www.seiryo.okayama-c.ed.jp/wp/access/" target="_blank">🏫 学校公式アクセスページ</a>
+        </div>
+      </div>
+
+      <!-- 運賃・定期代 -->
+      <div class="route-section">
+        <div class="route-title">目安運賃・通学定期代（参考）</div>
+        <table class="fare-table">
+          <tr>
+            <th>区間</th>
+            <th>通常（IC）</th>
+            <th>通学定期 1ヶ月</th>
+          </tr>
+          <tr>
+            <td>東総社→倉敷（JR）</td>
+            <td class="fare-bold">240円</td>
+            <td>約7,260円</td>
+          </tr>
+          <tr>
+            <td>倉敷駅前→青陵高校前（バス）</td>
+            <td class="fare-bold">別途バス運賃</td>
+            <td>別途バス定期</td>
+          </tr>
+        </table>
+        <div class="tip-box" style="margin-top:12px;">
+          💡 正確な定期代は<a href="https://transit.yahoo.co.jp/" target="_blank">Yahoo!乗換案内</a>または駅窓口・バス会社でご確認ください。
+        </div>
+      </div>
+
+    </div><!-- /routes-body -->
+  </div><!-- /school-card seiryo -->
+
+
+  <!-- ===== 倉敷天城高校 ===== -->
+  <div class="school-card amaki">
+    <div class="school-header">
+      <div class="school-badge">🏫</div>
+      <div class="school-meta">
+        <span class="school-type">岡山県立（中高一貫・SSH指定）</span>
+        <h2>倉敷天城高等学校</h2>
+        <div class="address">
+          〒710-0132 倉敷市藤戸町天城269　TEL: 086-428-1251<br>
+          <a href="https://maps.app.goo.gl/x5f3JqMMX1F5vdLh6" target="_blank">📍 Googleマップで見る</a>
+        </div>
+      </div>
+      <div class="school-links">
+        <a class="btn-link official" href="https://www.amaki.okayama-c.ed.jp/wordpress/" target="_blank">🔗 公式HP</a>
+        <a class="btn-link map" href="https://transit.yahoo.co.jp/search/result?from=%E6%9D%B1%E7%B7%8F%E7%A4%BE&to=%E5%80%89%E6%95%B7%E5%A4%A9%E5%9F%8E%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1&ticket=ic" target="_blank">🗺 乗換案内</a>
+      </div>
+    </div>
+
+    <div class="route-overview">
+      <span class="ov-label">目安所要時間</span>
+      <span class="time-chip">約60〜80分</span>
+      <span class="via">電車＋下電バス乗り継ぎ ／ 乗換1〜2回</span>
+    </div>
+
+    <div class="routes-body">
+
+      <!-- ルートA -->
+      <div class="route-section">
+        <div class="route-title">ルートA ／ JR（伯備線経由）＋下電バス「天城線」（おすすめ）</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon station">🚉</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-place">東総社駅　出発</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR桃太郎線</span>
+                <span class="step-time">約3分</span>
+              </div>
+              <div class="step-detail">総社行 → <strong>総社駅</strong>下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR伯備線</span>
+                <span class="step-time">約20〜25分</span>
+              </div>
+              <div class="step-detail">岡山方面行 → <strong>倉敷駅</strong>下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon bus">🚌</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-bus">下電バス「天城線」</span>
+                <span class="step-time">約20〜30分</span>
+              </div>
+              <div class="step-detail">倉敷駅前バス停から<strong>天城経由 JR児島駅行き</strong>に乗車<br>
+              →「<strong>天城中学高校西入口</strong>」バス停下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon walk">🚶</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-walk">徒歩</span>
+                <span class="step-time">約10分</span>
+              </div>
+              <div class="step-detail">バス停から徒歩約10分</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon school">🎒</div>
+            </div>
+            <div class="step-content">
+              <div class="step-place" style="color:var(--amaki-color)">倉敷天城高等学校　到着</div>
+            </div>
+          </div>
+
+        </div><!-- /steps -->
+
+        <div class="tip-box">
+          💡 <strong>ポイント：</strong>下電バス「天城線」は本数が少ない場合があります。必ず事前に時刻表をご確認ください。「天城中学高校南入口」バス停（JR児島駅方面からの場合）も利用可。
+        </div>
+
+        <div class="link-row">
+          <a class="link-pill" href="https://shimoden.net/rosen/rosen/amaki.html" target="_blank">🔗 下電バス天城線 時刻表</a>
+          <a class="link-pill" href="https://transit.yahoo.co.jp/search/result?from=%E6%9D%B1%E7%B7%8F%E7%A4%BE&to=%E5%80%89%E6%95%B7%E5%A4%A9%E5%9F%8E%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1&ticket=ic" target="_blank">🗺 Yahoo!乗換案内で経路確認</a>
+          <a class="link-pill" href="https://www.amaki.okayama-c.ed.jp/wordpress/?page_id=1343" target="_blank">🏫 学校公式アクセスページ</a>
+        </div>
+      </div>
+
+      <!-- ルートB -->
+      <div class="route-section">
+        <div class="route-title">ルートB ／ JR（伯備線経由）＋茶屋町駅から自転車</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon station">🚉</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-place">東総社駅　出発</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR桃太郎線＋伯備線</span>
+                <span class="step-time">約25〜30分</span>
+              </div>
+              <div class="step-detail">東総社→総社乗換→岡山方面行き→<strong>倉敷駅</strong>下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon train">🚃</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-train">JR宇野線（瀬戸大橋線）</span>
+                <span class="step-time">約10分</span>
+              </div>
+              <div class="step-detail">倉敷→<strong>茶屋町駅</strong>下車</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon walk">🚶</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-action">
+                <span class="mode-tag mode-walk">自転車</span>
+                <span class="step-time">約10〜15分</span>
+              </div>
+              <div class="step-detail">茶屋町駅から自転車で約10〜15分（徒歩約30分）<br>
+              ※駅に駐輪場あり（有料の場合あり）</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-left">
+              <div class="step-icon school">🎒</div>
+            </div>
+            <div class="step-content">
+              <div class="step-place" style="color:var(--amaki-color)">倉敷天城高等学校　到着</div>
+            </div>
+          </div>
+
+        </div><!-- /steps -->
+
+        <div class="tip-box">
+          💡 <strong>ポイント：</strong>茶屋町駅からの自転車通学は雨天・荒天時の対策が必要です。駐輪場の有無・料金は現地確認をおすすめします。バス便が少ない時間帯の代替として有効です。
+        </div>
+      </div>
+
+      <!-- 運賃 -->
+      <div class="route-section">
+        <div class="route-title">目安運賃・通学定期代（参考）</div>
+        <table class="fare-table">
+          <tr>
+            <th>区間・手段</th>
+            <th>通常（IC）</th>
+            <th>通学定期 1ヶ月</th>
+          </tr>
+          <tr>
+            <td>東総社→倉敷（JR）</td>
+            <td class="fare-bold">240円</td>
+            <td>約7,260円</td>
+          </tr>
+          <tr>
+            <td>倉敷駅前→天城中学高校（バス）</td>
+            <td class="fare-bold">別途バス運賃</td>
+            <td>別途バス定期</td>
+          </tr>
+          <tr>
+            <td>東総社→茶屋町（JR、ルートB）</td>
+            <td class="fare-bold">別途計算</td>
+            <td>別途計算</td>
+          </tr>
+        </table>
+        <div class="tip-box" style="margin-top:12px;">
+          💡 正確な定期代・運賃は<a href="https://transit.yahoo.co.jp/" target="_blank">Yahoo!乗換案内</a>またはJR窓口・下電バスでご確認ください。
+        </div>
+      </div>
+
+    </div><!-- /routes-body -->
+  </div><!-- /school-card amaki -->
+
+
+  <!-- ===== 比較 ===== -->
+  <div class="compare-section">
+    <h2>📊 2校の通学まとめ比較</h2>
+    <div class="compare-grid">
+      <div class="compare-item seiryo-bg">
+        <span class="ci-school">倉敷清陵高校</span>
+        <div class="ci-value seiryo-val">50〜65<small style="font-size:14px">分</small></div>
+        <div class="ci-label">JR桃太郎線＋伯備線＋下電バス<br>バス停から徒歩1分</div>
+      </div>
+      <div class="compare-item amaki-bg">
+        <span class="ci-school">倉敷天城高校</span>
+        <div class="ci-value amaki-val">60〜80<small style="font-size:14px">分</small></div>
+        <div class="ci-label">JR桃太郎線＋伯備線＋天城線バス<br>バス停から徒歩10分</div>
+      </div>
+      <div class="compare-item seiryo-bg">
+        <span class="ci-school">清陵 / バス便</span>
+        <div class="ci-value seiryo-val" style="font-size:16px">複数系統</div>
+        <div class="ci-label">倉敷駅から多方面のバスが利用可</div>
+      </div>
+      <div class="compare-item amaki-bg">
+        <span class="ci-school">天城 / バス便</span>
+        <div class="ci-value amaki-val" style="font-size:16px">天城線のみ</div>
+        <div class="ci-label">天城線の時刻確認が重要<br>茶屋町駅＋自転車も選択肢</div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:20px;">
+      🔗 <strong>おすすめリンク：</strong><br>
+      <a href="https://transit.yahoo.co.jp/" target="_blank">Yahoo!乗換案内</a>
+      ／ <a href="https://shimoden.net/" target="_blank">下電バス公式</a>
+      ／ <a href="https://www.jr-odekake.net/" target="_blank">JR西日本おでかけネット</a>
+      ／ <a href="https://www.jr-odekake.net/eki/top?id=0651508" target="_blank">東総社駅情報</a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  ※ 本資料は各公式情報・乗換案内サービスをもとに作成した参考資料です。<br>
+  時刻・運賃は変更になる場合があります。必ず各交通機関の公式情報をご確認ください。<br>
+  作成日：2026年4月
+</footer>
+
+</body>
+</html>
