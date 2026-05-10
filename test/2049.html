@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ゾンビちゃん合体！16×16</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;700&display=swap');
+  :root{--bg:#0d0520;--grid-bg:#1a0a38;--cell-bg:#2a1050;--accent1:#ff4dff;--accent2:#00ffcc;--accent3:#ffcc00;--text:#fff0ff;--gap:3px;--pad:5px}
+  *{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation}
+  body{background:var(--bg);height:100dvh;display:flex;flex-direction:column;align-items:center;font-family:'Zen Maru Gothic',sans-serif;color:var(--text);overflow:hidden}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 15%,#ff4dff18 0%,transparent 45%),radial-gradient(ellipse at 85% 80%,#00ffcc18 0%,transparent 45%),radial-gradient(ellipse at 50% 50%,#6600cc22 0%,transparent 65%);pointer-events:none;z-index:0}
+  .wrapper{position:relative;z-index:1;width:100%;height:100dvh;max-width:600px;padding:6px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:5px}
+  h1{font-family:'Dela Gothic One',sans-serif;font-size:clamp(0.95rem,4.5vw,1.4rem);background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:hue-shift 4s linear infinite;white-space:nowrap;flex-shrink:0}
+  @keyframes hue-shift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+  .top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:5px;flex-shrink:0}
+  .score-box{background:linear-gradient(135deg,#2a1050,#1a0a38);border:1.5px solid var(--accent1);border-radius:10px;padding:3px 10px;text-align:center;box-shadow:0 0 8px #ff4dff44;flex:1;min-width:0}
+  .score-box .label{font-size:0.5rem;color:var(--accent1);letter-spacing:0.08em;text-transform:uppercase}
+  .score-box .value{font-family:'Dela Gothic One',sans-serif;font-size:clamp(0.8rem,3vw,1.1rem);color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .btn{background:linear-gradient(135deg,var(--accent1),#aa00ff);border:none;border-radius:9px;color:#fff;font-family:'Dela Gothic One',sans-serif;font-size:0.72rem;padding:7px 10px;cursor:pointer;box-shadow:0 0 10px #ff4dff66;transition:transform 0.1s;white-space:nowrap;flex-shrink:0}
+  .btn:active{transform:scale(0.92)}
+  .grid-wrap{position:relative;width:100%;flex:1;min-height:0}
+  .grid-bg{position:absolute;inset:0;background:var(--grid-bg);border-radius:14px;border:1.5px solid #5500aa;box-shadow:0 0 20px #5500aa55,inset 0 0 10px #00000044;display:grid;grid-template-columns:repeat(16,1fr);grid-template-rows:repeat(16,1fr);gap:var(--gap);padding:var(--pad)}
+  .cell-bg{background:var(--cell-bg);border-radius:5px;opacity:0.6}
+  .tiles-layer{position:absolute;inset:var(--pad)}
+  .tile{position:absolute;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Dela Gothic One',sans-serif;line-height:1;transition:left 0.1s ease,top 0.1s ease;user-select:none;overflow:hidden}
+  .tile .emoji{display:block;line-height:1}
+  .tile .num{display:block;font-weight:bold;line-height:1;margin-top:1px}
+  .tile.appear{animation:appear 0.18s ease}
+  .tile.merge-pop{animation:merge-pop 0.25s ease}
+  @keyframes appear{0%{transform:scale(0) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0deg);opacity:1}}
+  @keyframes merge-pop{0%{transform:scale(1)}45%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .p0{background:linear-gradient(135deg,#3d0066,#6600aa);border:1px solid #aa66ff;color:#ddb0ff}
+  .p1{background:linear-gradient(135deg,#004466,#006699);border:1px solid #00ccff;color:#99eeff}
+  .p2{background:linear-gradient(135deg,#004400,#006600);border:1px solid #00ff88;color:#99ffcc}
+  .p3{background:linear-gradient(135deg,#665500,#998800);border:1px solid #ffdd00;color:#fff099}
+  .p4{background:linear-gradient(135deg,#660000,#aa1100);border:1px solid #ff4400;color:#ffaa88}
+  .p5{background:linear-gradient(135deg,#660044,#aa0066);border:1px solid #ff0088;color:#ffaacc}
+  .p6{background:linear-gradient(135deg,#001166,#002299);border:1px solid #0055ff;color:#aabbff}
+  .p7{background:linear-gradient(135deg,#440066,#770099);border:1px solid #cc00ff;color:#ee99ff}
+  .p8{background:linear-gradient(135deg,#006633,#009944);border:1px solid #00ff66;color:#88ffbb}
+  .p9{background:linear-gradient(135deg,#663300,#995500);border:1px solid #ff8800;color:#ffddaa}
+  .p10{background:linear-gradient(135deg,#003333,#005566);border:1px solid #00dddd;color:#aaffff}
+  .p11{background:linear-gradient(135deg,#330033,#660066);border:1px solid #ff66ff;color:#ffbbff}
+  .p12{background:linear-gradient(135deg,#1a0033,#330066);border:1px solid #8844ff;color:#ccaaff}
+  .p13{background:linear-gradient(135deg,#003300,#005500);border:1px solid #44ff44;color:#aaffaa}
+  .p14{background:linear-gradient(135deg,#330000,#550011);border:1px solid #ff2244;color:#ffaaaa}
+  .p15{background:linear-gradient(135deg,#000033,#001155);border:1px solid #2266ff;color:#aaccff}
+  .p16{background:linear-gradient(135deg,#660066,#ff0099);border:1px solid #ff00ff;box-shadow:0 0 12px #ff00ffaa;animation:rainbow 1s linear infinite;color:#fff}
+  .p17{background:linear-gradient(135deg,#111,#333);border:1.5px solid #fff;box-shadow:0 0 16px #fff8;animation:white-pulse 0.8s ease-in-out infinite alternate;color:#fff}
+  .p18,.p19,.p20{background:linear-gradient(135deg,#ffcc00,#ff6600);border:1.5px solid #fff;box-shadow:0 0 20px #ffcc0099;animation:gold-pulse 0.6s ease-in-out infinite alternate;color:#000}
+  @keyframes rainbow{0%{filter:hue-rotate(0deg) brightness(1.2)}100%{filter:hue-rotate(360deg) brightness(1.2)}}
+  @keyframes white-pulse{0%{box-shadow:0 0 8px #fff6}100%{box-shadow:0 0 24px #ffff}}
+  @keyframes gold-pulse{0%{box-shadow:0 0 8px #ffcc0066}100%{box-shadow:0 0 28px #ffcc00cc}}
+  .progress-wrap{width:100%;flex-shrink:0}
+  .progress-label{font-size:0.52rem;color:#9966cc;display:flex;justify-content:space-between;margin-bottom:2px}
+  .progress-bar{width:100%;height:5px;background:#2a1050;border-radius:3px;overflow:hidden;border:1px solid #5500aa44}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:3px;transition:width 0.3s ease;box-shadow:0 0 6px var(--accent1)}
+  .howto{font-size:0.55rem;color:#7744aa;text-align:center;flex-shrink:0}
+  .overlay{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
+  .overlay.hidden{display:none}
+  .msg-box{background:linear-gradient(135deg,#2d1458,#1a0a2e);border:2px solid var(--accent1);border-radius:20px;padding:28px;text-align:center;box-shadow:0 0 40px #ff4dffaa;animation:appear 0.3s ease;max-width:320px;width:90%}
+  .msg-box .big{font-size:3.5rem;display:block}
+  .msg-box h2{font-family:'Dela Gothic One',sans-serif;font-size:1.5rem;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:8px 0 4px}
+  .msg-box p{font-size:0.82rem;color:#ccaaff;margin-bottom:16px}
+  .btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .spawn-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:linear-gradient(135deg,#003333,#006644);border:2px solid var(--accent2);border-radius:16px;padding:16px 24px;text-align:center;font-family:'Dela Gothic One',sans-serif;font-size:0.9rem;color:var(--accent2);box-shadow:0 0 40px #00ffcc88;z-index:300;opacity:0;transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none}
+  .spawn-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .spawn-toast b{color:#fff;font-size:1.2em}
+  .particle{position:fixed;pointer-events:none;z-index:200;animation:fly-up 1s ease forwards}
+  @keyframes fly-up{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120px) scale(0.2);opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <h1>🧟 ゾンビちゃん合体！ 16×16 極限版</h1>
+  <div class="top-bar">
+    <div class="score-box"><div class="label">スコア</div><div class="value" id="score">0</div></div>
+    <div class="score-box"><div class="label">最高記録</div><div class="value" id="best">0</div></div>
+    <div class="score-box"><div class="label">最大タイル</div><div class="value" id="max-tile">2</div></div>
+    <div class="score-box" style="border-color:#00ffcc;box-shadow:0 0 8px #00ffcc44"><div class="label" style="color:#00ffcc">出現ブロック</div><div class="value" id="spawn-display" style="color:#00ffcc">〜4</div></div>
+    <button class="btn" id="newgame-btn">🔄 リセット</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="prog-label">目標: 2048</span><span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="grid-wrap"><div class="grid-bg" id="grid-bg"></div><div class="tiles-layer" id="tiles-layer"></div></div>
+  <div class="howto">⬆⬇⬅➡ キーまたはスワイプ ／ 同じ数が合体して2倍に！目標は2048！</div>
+</div>
+<div class="overlay hidden" id="win-overlay">
+  <div class="msg-box">
+    <span class="big">🧟‍♀️👑</span><h2>ゾンビクイーン爆誕！！</h2>
+    <p id="win-msg">16×16で2048達成！！ヤバすぎる…</p>
+    <div class="btn-row"><button class="btn" onclick="continueGame()">まだ続ける👻</button><button class="btn" onclick="newGame()">もう一回！</button></div>
+  </div>
+</div>
+<div class="overlay hidden" id="lose-overlay">
+  <div class="msg-box">
+    <span class="big">💀</span><h2>ゲームオーバー…</h2>
+    <p id="lose-msg">でもよくやった！</p>
+    <button class="btn" onclick="newGame()">もう一回！🧠</button>
+  </div>
+</div>
+<script>
+const SIZE=16,GAP=3,PAD=5;
+const EMOJIS={2:'🦷',4:'👁️',8:'🧠',16:'🫀',32:'🦴',64:'🐛',128:'🐸',256:'🕷️',512:'👾',1024:'🧟',2048:'🧟‍♀️',4096:'💀',8192:'👽',16384:'🫧',32768:'🌑',65536:'☄️',131072:'🌀',262144:'⚡',524288:'🔥',1048576:'✨'};
+const SPAWN_LEVELS=[
+  {threshold:0,    pool:[2,2,2,4,4,4]},
+  {threshold:512,  pool:[2,2,4,4,8,8]},
+  {threshold:1024, pool:[2,4,4,8,8,16]},
+  {threshold:2048, pool:[2,4,8,8,16,32]},
+  {threshold:4096, pool:[4,8,16,16,32,64]},
+  {threshold:8192, pool:[8,16,16,32,32,128]},
+  {threshold:32768,pool:[16,32,32,64,128,256]},
+];
+const SPAWN_COUNTS=[{threshold:32768,count:4},{threshold:8192,count:3},{threshold:512,count:2},{threshold:0,count:1}];
+const TARGETS=[128,256,512,1024,2048,4096,8192,32768,131072,1048576];
+let grid,domTiles,nextId,score,best,allTimeMax,milestone2048Done,won,continueAfterWin;
+
+function fmtNum(n){if(n>=1000000)return(n/1000000).toFixed(1)+‘M’;if(n>=10000)return Math.round(n/1000)+‘k’;if(n>=1000)return(n/1000).toFixed(1)+‘k’;return String(n)}
+function getPClass(v){return’p’+Math.min(Math.log2(v)-1,20)}
+function getEmoji(v){return EMOJIS[v]||‘💫’}
+function getSpawnLevel(){let lv=SPAWN_LEVELS[0];for(const l of SPAWN_LEVELS)if(allTimeMax>=l.threshold)lv=l;return lv}
+function getSpawnCount(){for(const s of SPAWN_COUNTS)if(allTimeMax>=s.threshold)return s.count;return 1}
+function cellSize(){const layer=document.getElementById(‘tiles-layer’);return(layer.getBoundingClientRect().width-GAP*(SIZE-1))/SIZE}
+function tileStyle(r,c){const sz=cellSize();return{left:c*(sz+GAP),top:r*(sz+GAP),size:sz}}
+
+function renderTileContent(el,value){
+const sz=parseFloat(el.style.width),showEmoji=sz>=22;
+const es=Math.max(sz*0.38,8),ns=Math.max(sz*0.22,6);
+el.innerHTML=showEmoji
+?`<span class="emoji" style="font-size:${es}px">${getEmoji(value)}</span><span class="num" style="font-size:${ns}px">${fmtNum(value)}</span>`
+:`<span class="num" style="font-size:${ns}px">${fmtNum(value)}</span>`;
+}
+function placeTileEl(id,value,r,c,anim){
+const layer=document.getElementById(‘tiles-layer’),el=document.createElement(‘div’);
+const{left,top,size}=tileStyle(r,c);
+el.id=‘dt-’+id;el.className=`tile ${getPClass(value)} ${anim}`;
+el.style.cssText=`left:${left}px;top:${top}px;width:${size}px;height:${size}px;`;
+renderTileContent(el,value);layer.appendChild(el);domTiles[id]={el,value,r,c};
+}
+function moveTileEl(id,r,c){
+const t=domTiles[id];if(!t)return;
+const{left,top,size}=tileStyle(r,c);
+t.el.style.left=left+‘px’;t.el.style.top=top+‘px’;t.el.style.width=size+‘px’;t.el.style.height=size+‘px’;t.r=r;t.c=c;
+}
+function upgradeTileEl(id,value){
+const t=domTiles[id];if(!t)return;
+t.value=value;t.el.className=`tile ${getPClass(value)} merge-pop`;
+renderTileContent(t.el,value);
+t.el.addEventListener(‘animationend’,()=>t.el.classList.remove(‘merge-pop’),{once:true});
+}
+function killTileEl(id){const t=domTiles[id];if(!t)return;t.el.remove();delete domTiles[id]}
+
+function init(){
+const gb=document.getElementById(‘grid-bg’);gb.innerHTML=’’;
+for(let i=0;i<SIZE*SIZE;i++){const c=document.createElement(‘div’);c.className=‘cell-bg’;gb.appendChild(c)}
+best=parseInt(localStorage.getItem(‘zombie16_best’)||‘0’);
+allTimeMax=parseInt(localStorage.getItem(‘zombie16_atmax’)||‘0’);
+document.getElementById(‘best’).textContent=fmtNum(best);
+updateSpawnDisplay();
+}
+function newGame(){
+busy=false;
+grid=Array.from({length:SIZE},()=>Array(SIZE).fill(0));
+domTiles={};nextId=0;score=0;won=false;continueAfterWin=false;milestone2048Done=false;
+document.getElementById(‘tiles-layer’).innerHTML=’’;
+document.getElementById(‘score’).textContent=‘0’;
+document.getElementById(‘max-tile’).textContent=‘2’;
+document.getElementById(‘win-overlay’).classList.add(‘hidden’);
+document.getElementById(‘lose-overlay’).classList.add(‘hidden’);
+updateProgress(2);updateSpawnDisplay();
+for(let i=0;i<4;i++)spawnTile();
+}
+function continueGame(){continueAfterWin=true;document.getElementById(‘win-overlay’).classList.add(‘hidden’)}
+
+function spawnTile(){
+const empties=[];
+for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++)if(grid[r][c]===0)empties.push([r,c]);
+if(!empties.length)return;
+const[r,c]=empties[Math.floor(Math.random()*empties.length)];
+const pool=getSpawnLevel().pool,val=pool[Math.floor(Math.random()*pool.length)],id=++nextId;
+grid[r][c]=id;placeTileEl(id,val,r,c,‘appear’);
+}
+
+function extractLine(dir,i){
+const cells=[];
+for(let j=0;j<SIZE;j++){
+let r,c;
+if(dir===0){r=i;c=j}else if(dir===1){r=i;c=SIZE-1-j}else if(dir===2){r=j;c=i}else{r=SIZE-1-j;c=i}
+const id=grid[r][c];
+// domTilesに存在しないIDはgridの不整合なのでその場でクリア
+if(id!==0){
+if(domTiles[id]){cells.push({id,val:domTiles[id].value})}
+else{grid[r][c]=0}
+}
+}
+return cells;
+}
+function slideValues(cells){
+const result=[],mergeIds={},deadIds=[];let scoreAdd=0,i=0;
+while(i<cells.length){
+if(i+1<cells.length&&cells[i].val===cells[i+1].val){
+const newVal=cells[i].val*2;scoreAdd+=newVal;
+mergeIds[cells[i].id]=newVal;deadIds.push(cells[i+1].id);
+result.push({id:cells[i].id,val:newVal});i+=2;
+}else{result.push(cells[i]);i++}
+}
+return{result,scoreAdd,mergeIds,deadIds};
+}
+function writeLine(dir,i,result){
+for(let j=0;j<SIZE;j++){
+let r,c;
+if(dir===0){r=i;c=j}else if(dir===1){r=i;c=SIZE-1-j}else if(dir===2){r=j;c=i}else{r=SIZE-1-j;c=i}
+grid[r][c]=0;
+}
+for(let j=0;j<result.length;j++){
+let r,c;
+if(dir===0){r=i;c=j}else if(dir===1){r=i;c=SIZE-1-j}else if(dir===2){r=j;c=i}else{r=SIZE-1-j;c=i}
+grid[r][c]=result[j].id;moveTileEl(result[j].id,r,c);
+}
+}
+
+function move(dir){
+// busyは必ずtry/finallyで解放
+let moved=false,totalScore=0;
+const allMergeIds={},allDeadIds=[];
+try{
+for(let i=0;i<SIZE;i++){
+const snap=[];
+for(let j=0;j<SIZE;j++){
+let r,c;
+if(dir===0){r=i;c=j}else if(dir===1){r=i;c=SIZE-1-j}else if(dir===2){r=j;c=i}else{r=SIZE-1-j;c=i}
+snap.push(grid[r][c]);
+}
+const before=extractLine(dir,i);
+const{result,scoreAdd,mergeIds,deadIds}=slideValues(before);
+totalScore+=scoreAdd;Object.assign(allMergeIds,mergeIds);allDeadIds.push(…deadIds);
+writeLine(dir,i,result);
+for(let j=0;j<SIZE;j++){
+let r,c;
+if(dir===0){r=i;c=j}else if(dir===1){r=i;c=SIZE-1-j}else if(dir===2){r=j;c=i}else{r=SIZE-1-j;c=i}
+if(grid[r][c]!==snap[j])moved=true;
+}
+}
+for(const[idStr,newVal]of Object.entries(allMergeIds))upgradeTileEl(+idStr,newVal);
+for(const id of allDeadIds)killTileEl(id);
+}catch(e){
+console.error(‘move error:’,e);
+busy=false;return;
+}
+
+if(!moved&&totalScore===0){busy=false;return;}
+
+score+=totalScore;
+document.getElementById(‘score’).textContent=fmtNum(score);
+if(score>best){best=score;localStorage.setItem(‘zombie16_best’,best);document.getElementById(‘best’).textContent=fmtNum(best)}
+
+let maxVal=0;for(const id in domTiles)if(domTiles[id].value>maxVal)maxVal=domTiles[id].value;
+document.getElementById(‘max-tile’).textContent=fmtNum(maxVal);
+
+if(maxVal>allTimeMax){
+const prevLv=getSpawnLevel();allTimeMax=maxVal;localStorage.setItem(‘zombie16_atmax’,allTimeMax);
+const newLv=getSpawnLevel();if(newLv!==prevLv)showSpawnLevelUp(newLv.pool);
+}
+updateProgress(maxVal);updateSpawnDisplay();
+if(totalScore>=256)spawnParticles(totalScore);
+
+setTimeout(()=>{
+const n=getSpawnCount();
+for(let k=0;k<n;k++)spawnTile();
+checkWin(maxVal);
+if(!canMove())showLose(maxVal);
+busy=false;
+},150);
+}
+
+function canMove(){
+for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++){
+if(grid[r][c]===0)return true;
+const v=domTiles[grid[r][c]].value;
+if(c<SIZE-1&&grid[r][c+1]!==0&&domTiles[grid[r][c+1]].value===v)return true;
+if(r<SIZE-1&&grid[r+1][c]!==0&&domTiles[grid[r+1][c]].value===v)return true;
+}
+return false;
+}
+function checkWin(maxVal){
+if(!continueAfterWin&&maxVal>=2048&&!milestone2048Done){
+milestone2048Done=true;won=true;
+document.getElementById(‘win-msg’).textContent=`16×16で${fmtNum(maxVal)}達成！！ヤバすぎる…`;
+document.getElementById(‘win-overlay’).classList.remove(‘hidden’);
+}
+if(continueAfterWin&&maxVal>=1048576){
+document.getElementById(‘win-msg’).textContent=‘100万超え！！神様ゾンビ爆誕！！！’;
+document.getElementById(‘win-overlay’).classList.remove(‘hidden’);continueAfterWin=false;
+}
+}
+function updateProgress(maxVal){
+let target=TARGETS.find(t=>t>maxVal)||TARGETS[TARGETS.length-1];
+let prev=TARGETS[TARGETS.indexOf(target)-1]||2;
+const pct=Math.min(100,((maxVal-prev)/(target-prev))*100);
+document.getElementById(‘prog-label’).textContent=`目標: ${fmtNum(target)}`;
+document.getElementById(‘prog-pct’).textContent=Math.round(pct)+’%’;
+document.getElementById(‘prog-fill’).style.width=pct+’%’;
+}
+function updateSpawnDisplay(){
+const pool=getSpawnLevel().pool,maxSp=Math.max(…pool),cnt=getSpawnCount();
+const el=document.getElementById(‘spawn-display’);if(el)el.textContent=`〜${fmtNum(maxSp)} × ${cnt}個`;
+}
+function showLose(maxVal){
+document.getElementById(‘lose-msg’).textContent=`スコア ${fmtNum(score)} ／ 最大タイル ${fmtNum(maxVal)}！ゾンビも拍手👏`;
+document.getElementById(‘lose-overlay’).classList.remove(‘hidden’);
+}
+function showSpawnLevelUp(pool){
+const maxSp=Math.max(…pool),toast=document.createElement(‘div’);
+toast.className=‘spawn-toast’;
+toast.innerHTML=`🆙 出現ブロックが強くなった！<br><span>最大 <b>${fmtNum(maxSp)}</b> が出るようになった！</span>`;
+document.body.appendChild(toast);spawnParticles(maxSp*10);
+setTimeout(()=>toast.classList.add(‘show’),10);
+setTimeout(()=>{toast.classList.remove(‘show’);setTimeout(()=>toast.remove(),500)},3000);
+}
+function spawnParticles(val){
+const picks=val>=65536?[‘💀’,‘✨’,‘🌟’,‘💥’,‘🔥’]:val>=4096?[‘✨’,‘💫’,‘🩸’,‘👾’,‘⚡’]:[‘✨’,‘💫’,‘🩸’];
+const cnt=val>=65536?10:val>=4096?7:4;
+for(let i=0;i<cnt;i++){
+const p=document.createElement(‘div’);p.className=‘particle’;
+p.textContent=picks[Math.floor(Math.random()*picks.length)];
+p.style.fontSize=(0.9+Math.random()*0.8)+‘rem’;
+p.style.left=(10+Math.random()*80)+‘vw’;p.style.top=(20+Math.random()*60)+‘vh’;
+p.style.animationDelay=(Math.random()*0.4)+‘s’;
+document.body.appendChild(p);p.addEventListener(‘animationend’,()=>p.remove());
+}
+}
+
+let busy=false;
+function handleDir(dir){if(busy)return;busy=true;move(dir);}
+document.addEventListener(‘keydown’,e=>{const map={ArrowLeft:0,ArrowRight:1,ArrowUp:2,ArrowDown:3};if(e.key in map){e.preventDefault();handleDir(map[e.key])}});
+let tx,ty;
+document.addEventListener(‘touchstart’,e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+document.addEventListener(‘touchend’,e=>{
+const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.max(Math.abs(dx),Math.abs(dy))<15)return;
+handleDir(Math.abs(dx)>Math.abs(dy)?(dx<0?0:1):(dy<0?2:3));
+},{passive:true});
+document.getElementById(‘newgame-btn’).addEventListener(‘click’,newGame);
+init();newGame();
+</script>
+
+</body>
+</html>
